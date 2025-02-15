@@ -1,5 +1,6 @@
 import NavBar from "./Components/SharedComponent/NavBar";
 import "./globals.css";
+import { ThemeProvider } from "./Components/context/ThemeContext";
 
 export const metadata = {
   title: "This is site",
@@ -10,9 +11,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <NavBar></NavBar>
-        {children}
-        
+        <ThemeProvider>
+            <NavBar></NavBar>
+            {children}
+
+        </ThemeProvider>
+
+
       </body>
     </html>
   );
