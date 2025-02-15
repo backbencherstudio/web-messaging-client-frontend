@@ -12,10 +12,8 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <ThemeProvider>
-          <div className="">
             <NavBar></NavBar>
             {children}
-          </div>
 
         </ThemeProvider>
 
