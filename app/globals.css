@@ -6,23 +6,69 @@
 @tailwind utilities;
 
 
+
+
 body {
-    font-family: "Geist", serif;
+  font-family: "Geist", serif;
+
 }
+
+.dark body {
+  @apply dark-bg;
+}
+
 .geist {
-    font-family: "Geist", serif;
-  }
+  font-family: "Geist", serif;
+}
+
 /* text-color: */
 @layer utilities {
-    .c2 {
-      color: #393C44;
-    }
-    
-    .border-c2 {
-      border-color: #393C44;
-    }
-    .bg-global-gradient {
-      background: linear-gradient(90deg, rgba(227, 234, 255, 0.22) 0%, rgba(167, 177, 218, 0.22) 48.5%, rgba(227, 234, 255, 0.22) 100%);
-      backdrop-filter: blur(50px);
-    }
+  .text-c2 {
+    color: #393C44;
+  }
+
+  .border-c2 {
+    border-color: #393C44;
+  }
+
+  .bg-nav-gradient {
+    background: linear-gradient(90deg, rgba(227, 234, 255, 0.22) 0%, rgba(167, 177, 218, 0.22) 48.5%, rgba(227, 234, 255, 0.22) 100%);
+    backdrop-filter: blur(50px);
+  }
+
+  .bg-nav-dark-gradient {
+    background: linear-gradient(90deg, rgba(16, 16, 18, 0.22) 0%, rgba(227, 234, 255, 0.22) 48.5%, rgba(16, 16, 18, 0.22) 100%);
+    backdrop-filter: blur(170.55px);
+  }
+
+  .dark-bg {
+    background-color: #101011;
+    color: #FDFEFF;
+    /* Light gray text for contrast */
+  }
+
+  .bg-custom-gradient {
+    background:
+      linear-gradient(to bottom right, #070707 0%, #0E0E0F 50%) bottom right / 50% 50% no-repeat,
+      linear-gradient(to bottom left, #070707 0%, #0E0E0F 50%) bottom left / 50% 50% no-repeat,
+      linear-gradient(to top left, #070707 0%, #0E0E0F 50%) top left / 50% 50% no-repeat,
+      linear-gradient(to top right, #070707 0%, #0E0E0F 50%) top right / 50% 50% no-repeat;
+  }
+
+  .element {
+    opacity: 0.58;
+    background: url('../public/noise.png') lightgray 0% 0% / 40.625px 40.625px repeat,
+    linear-gradient(270deg, rgba(255, 255, 255, 0.01) -20%, rgba(40, 40, 40, 0.09) 75.76%, rgba(255, 255, 255, 0.01) 123.64%);
+    backdrop-filter: blur(90px);
+  }
+
+}
+
+.backdrop-effect {
+  width: 848px;
+  height: 848px;
+  border-radius: 848px;
+  border: 11px solid #EAF1FF;
+  opacity: 0.67;
+  filter: blur(54.04999923706055px);
 }
