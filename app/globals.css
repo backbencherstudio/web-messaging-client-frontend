@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+    font-family: "Geist", serif;
+}
+.geist {
+    font-family: "Geist", serif;
+  }
+/* text-color: */
+@layer utilities {
+    .c2 {
+      color: #393C44;
+    }
+    
+    .border-c2 {
+      border-color: #393C44;
+    }
+    .bg-global-gradient {
+      background: linear-gradient(90deg, rgba(227, 234, 255, 0.22) 0%, rgba(167, 177, 218, 0.22) 48.5%, rgba(227, 234, 255, 0.22) 100%);
+      backdrop-filter: blur(50px);
+    }
+}
