@@ -1,4 +1,3 @@
-import NavBar from "./Components/SharedComponent/NavBar";
 import "./globals.css";
 import { ThemeProvider } from "./Components/context/ThemeContext";
 
@@ -12,14 +11,8 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <ThemeProvider>
-          <div className="">
-            <NavBar></NavBar>
-            {children}
-          </div>
-
+          <div className="">{children}</div>
         </ThemeProvider>
-
-
       </body>
     </html>
   );
