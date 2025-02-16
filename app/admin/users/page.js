@@ -1,6 +1,7 @@
 "use client";
 
 import CustomTable from "@/app/Components/SharedComponent/CustomTable";
+import { userData } from "../data";
 
 export default function UsersPage() {
   const userColumns = [
@@ -11,16 +12,7 @@ export default function UsersPage() {
     { label: "Total views", accessor: "totalViews" },
     { label: "Last Message", accessor: "lastMessage" },
   ];
-  const userData = [
-    {
-      pNo: "#120",
-      userName: "Courtney Henry",
-      email: "CourtneyHenry@gmail.com",
-      totalMessages: "200",
-      totalViews: "20000",
-      lastMessage: "Lorem ipsum dolor sit amet, consectetur adipi...",
-    },
-  ];
+
   return (
     <div>
       <CustomTable

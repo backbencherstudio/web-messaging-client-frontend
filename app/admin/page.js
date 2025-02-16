@@ -1,5 +1,6 @@
 import React from "react";
 import CustomTable from "../Components/SharedComponent/CustomTable";
+import { messageData, userData } from "./data";
 
 const analyticsData = [
   {
@@ -74,29 +75,6 @@ export default function AdminDashboard() {
     { label: "Total Messages", accessor: "totalMessages" },
     { label: "Total views", accessor: "totalViews" },
     { label: "Last Message", accessor: "lastMessage" },
-  ];
-
-  const messageData = [
-    {
-      pNo: "#120",
-      messageContent: "Lorem ipsum dolor sit amet, consectetur adipi...",
-      postedBy: "Courtney Henry",
-      views: "20000",
-      pay: "$0.56",
-      timePosted: "April 28, 2024",
-      ranking: "#10",
-    },
-    // ... add more data rows as needed
-  ];
-  const userData = [
-    {
-      pNo: "#120",
-      userName: "Courtney Henry",
-      email: "CourtneyHenry@gmail.com",
-      totalMessages: "200",
-      totalViews: "20000",
-      lastMessage: "Lorem ipsum dolor sit amet, consectetur adipi...",
-    },
   ];
 
   return (

@@ -1,6 +1,7 @@
 "use client";
 
 import CustomTable from "@/app/Components/SharedComponent/CustomTable";
+import { messageData } from "../data";
 
 export default function MessagesPage() {
   const messageColumns = [
@@ -13,18 +14,7 @@ export default function MessagesPage() {
     { label: "Time Posted", accessor: "timePosted" },
     { label: "Action", accessor: "action" },
   ];
-  const messageData = [
-    {
-      pNo: "#120",
-      messageContent: "Lorem ipsum dolor sit amet, consectetur adipi...",
-      postedBy: "Courtney Henry",
-      views: "20000",
-      pay: "$0.56",
-      email: "CourtneyHenry@gmail.com",
-      timePosted: "April 28, 2024",
-      action: "Edit",
-    },
-  ];
+
   return (
     <div>
       <CustomTable
