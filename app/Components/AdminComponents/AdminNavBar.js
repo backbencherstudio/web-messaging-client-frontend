@@ -59,6 +59,9 @@ const AdminNavBar = () => {
           </Link>
         ))}
       </nav>
+      <p className="text-gray-500 text-sm mt-8 absolute bottom-6 left-6">
+        Logout
+      </p>
     </div>
   );
 };
