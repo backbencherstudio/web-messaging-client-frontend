@@ -121,7 +121,7 @@ const ContentPage = () => {
         {/* Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg w-96">
+            <div className="bg-white p-6 rounded-lg w-[80%] max-w-2xl">
               <h2 className="text-xl font-semibold mb-4">Add New FAQ</h2>
               <input
                 type="text"

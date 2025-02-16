@@ -1,8 +1,11 @@
 import React from "react";
 import { FaBell, FaSearch } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 
 const AdminHeader = () => {
+  const router = useRouter();
+
   return (
     <div className="bg-white px-8 py-4 shadow-sm flex justify-end items-center gap-4">
       <div className="relative w-[50%] lg:w-full lg:max-w-[315px]">
@@ -14,12 +17,16 @@ const AdminHeader = () => {
         />
       </div>
 
-      <div className="w-10 h-10 border border-[#EAF1FF] rounded-full flex items-center justify-center">
-        {" "}
+      <div
+        onClick={() => router.push("/admin/notification")}
+        className="w-10 h-10 border border-[#EAF1FF] rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-50"
+      >
         <FaBell />
       </div>
-      <div className="w-10 h-10 border border-[#EAF1FF] bg-[#f6f8fa ] rounded-full flex items-center justify-center">
-        {" "}
+      <div
+        onClick={() => router.push("/admin/profile")}
+        className="w-10 h-10 border border-[#EAF1FF] bg-[#f6f8fa] rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-100"
+      >
         <FaUser />
       </div>
     </div>
