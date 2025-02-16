@@ -109,7 +109,7 @@ export default function CustomTable({
                   key={col.accessor}
                   className="p-4 border-b border-[#f6f6f6]"
                 >
-                  {row[col.accessor]}
+                  {col.customCell ? col.customCell(row) : row[col.accessor]}
                 </TableCell>
               ))}
             </TableRow>

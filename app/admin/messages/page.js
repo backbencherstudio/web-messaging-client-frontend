@@ -1,9 +1,27 @@
 "use client";
 
 import CustomTable from "@/app/Components/SharedComponent/CustomTable";
+import DeleteModal from "@/app/Components/SharedComponent/DeleteModal";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { useState } from "react";
 import { messageData } from "../data";
 
 export default function MessagesPage() {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState(null);
+
+  const handleDelete = (message) => {
+    setSelectedMessage(message);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    // Implement your delete logic here
+    console.log("Deleting message:", selectedMessage);
+    setIsDeleteModalOpen(false);
+    setSelectedMessage(null);
+  };
+
   const messageColumns = [
     { label: "P No", accessor: "pNo" },
     { label: "Message content", accessor: "messageContent" },
@@ -12,7 +30,18 @@ export default function MessagesPage() {
     { label: "Pay", accessor: "pay" },
     { label: "Email ", accessor: "email" },
     { label: "Time Posted", accessor: "timePosted" },
-    { label: "Action", accessor: "action" },
+    {
+      label: "Action",
+      accessor: "action",
+      customCell: (row) => (
+        <button
+          onClick={() => handleDelete(row)}
+          className="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-xl p-2"
+        >
+          <RiDeleteBin5Line size={20} />
+        </button>
+      ),
+    },
   ];
 
   return (
@@ -24,6 +53,14 @@ export default function MessagesPage() {
         subtitle="Your report payroll sofar"
         pagination={true}
         search={true}
+      />
+
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete Message"
+        message="Are you sure you want to delete this message?"
       />
     </div>
   );
