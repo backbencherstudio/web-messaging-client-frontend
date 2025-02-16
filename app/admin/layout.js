@@ -1,11 +1,60 @@
+"use client";
 import AdminHeader from "../Components/AdminComponents/AdminHeader";
 import AdminNavBar from "../Components/AdminComponents/AdminNavBar";
+import { useState } from "react";
 
 export default function AdminLayout({ children }) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-      {/* Sidebar */}
-      <AdminNavBar />
+      {/* Mobile menu button */}
+      <button
+        className="lg:hidden fixed z-20 m-4 p-2 rounded-md bg-gray-800 text-white"
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+      >
+        {isSidebarOpen ? (
+          <svg
+            className="h-6 w-6"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        ) : (
+          <svg
+            className="h-6 w-6"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        )}
+      </button>
+
+      {/* Sidebar - hidden on mobile by default */}
+      <div
+        className={`fixed inset-0 z-10 lg:relative transform transition-transform duration-300 ease-in-out ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0`}
+      >
+        <div
+          className="absolute inset-0 bg-black opacity-50 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        ></div>
+        <div className="relative z-10">
+          <AdminNavBar />
+        </div>
+      </div>
+
       {/* Main Content */}
       <div className="flex-1 overflow-auto">
         <AdminHeader />

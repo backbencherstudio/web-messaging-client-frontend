@@ -1,38 +1,35 @@
 "use client";
 
 import CustomTable from "@/app/Components/SharedComponent/CustomTable";
-import { userData } from "../data";
-import { FaTrash } from "react-icons/fa6";
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { PiWarningCircle } from "react-icons/pi";
 import DeleteModal from "@/app/Components/SharedComponent/DeleteModal";
 import { RiDeleteBin5Line } from "react-icons/ri";
+import { useState } from "react";
+import { messageData } from "../data";
 
-export default function UsersPage() {
+export default function MessagesPage() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedMessage, setSelectedMessage] = useState(null);
 
-  const handleDelete = (user) => {
-    setSelectedUser(user);
+  const handleDelete = (message) => {
+    setSelectedMessage(message);
     setIsDeleteModalOpen(true);
   };
 
   const confirmDelete = () => {
     // Implement your delete logic here
-    console.log("Deleting user:", selectedUser);
+    console.log("Deleting message:", selectedMessage);
     setIsDeleteModalOpen(false);
-    setSelectedUser(null);
+    setSelectedMessage(null);
   };
 
-  const userColumns = [
+  const messageColumns = [
     { label: "P No", accessor: "pNo" },
-    { label: "User Name", accessor: "userName" },
-    { label: "Email", accessor: "email" },
-    { label: "Total Messages", accessor: "totalMessages" },
-    { label: "Total views", accessor: "totalViews" },
-    { label: "Last Message", accessor: "lastMessage" },
+    { label: "Message content", accessor: "messageContent" },
+    { label: "Posted by", accessor: "postedBy" },
+    { label: "Views", accessor: "views" },
+    { label: "Pay", accessor: "pay" },
+    { label: "Email ", accessor: "email" },
+    { label: "Time Posted", accessor: "timePosted" },
     {
       label: "Action",
       accessor: "action",
@@ -50,9 +47,9 @@ export default function UsersPage() {
   return (
     <div>
       <CustomTable
-        columns={userColumns}
-        data={userData}
-        title="All Users"
+        columns={messageColumns}
+        data={messageData}
+        title="Messages"
         subtitle="Your report payroll sofar"
         pagination={true}
         search={true}
@@ -62,8 +59,8 @@ export default function UsersPage() {
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={confirmDelete}
-        title="Delete User"
-        message={`Are you sure you want to delete user ${selectedUser?.userName}?`}
+        title="Delete Message"
+        message="Are you sure you want to delete this message?"
       />
     </div>
   );
