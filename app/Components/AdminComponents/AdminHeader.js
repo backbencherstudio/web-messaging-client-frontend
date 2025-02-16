@@ -10,7 +10,7 @@ const AdminHeader = () => {
         <input
           type="text"
           placeholder="Search Anything"
-          className=" w-full border  border-[#EAF1FF] rounded-lg p-2 pl-10"
+          className=" w-full border bg-[#f9fafb] border-[#EAF1FF] rounded-lg p-2 pl-10"
         />
       </div>
 

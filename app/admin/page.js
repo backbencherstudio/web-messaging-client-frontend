@@ -143,7 +143,7 @@ export default function AdminDashboard() {
       </div>
       <div className="mt-8">
         <CustomTable
-          title="Recent User"
+          title="Recent Users"
           subtitle="Your report payroll sofar"
           columns={userColumns}
           data={userData}

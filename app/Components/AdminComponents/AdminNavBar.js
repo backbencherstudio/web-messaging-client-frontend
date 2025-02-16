@@ -7,6 +7,7 @@ import { RxDashboard } from "react-icons/rx";
 import { TbMessage2 } from "react-icons/tb";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { PiNoteLight } from "react-icons/pi";
+import { IoIosLogOut } from "react-icons/io";
 const AdminNavBar = () => {
   const pathname = usePathname();
 
@@ -24,12 +25,12 @@ const AdminNavBar = () => {
     },
     {
       label: "Contact Us Info",
-      path: "/admin/contact-us",
+      path: "/admin/contacts",
       icon: <AiOutlineUserAdd size={18} />,
     },
     {
       label: "Content Customize",
-      path: "/admin/content-customize",
+      path: "/admin/content",
       icon: <PiNoteLight size={18} />,
     },
   ];
@@ -37,7 +38,7 @@ const AdminNavBar = () => {
   return (
     <div className="max-w-[250px] h-screen bg-white dark:bg-gray-800 border-r dark:border-gray-700 p-4 py-6">
       <div className="">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white ml-20 lg:ml-0">
           SayThat.sh
         </h1>
       </div>
@@ -59,9 +60,10 @@ const AdminNavBar = () => {
           </Link>
         ))}
       </nav>
-      <p className="text-gray-500 text-sm mt-8 absolute bottom-6 left-6">
-        Logout
-      </p>
+      <div className=" flex items-center gap-2 mt-8 absolute bottom-6 left-6 cursor-pointer hover:scale-105 transition-all duration-300">
+        <IoIosLogOut size={18} />
+        <p className="text-red-500">Logout</p>
+      </div>
     </div>
   );
 };
