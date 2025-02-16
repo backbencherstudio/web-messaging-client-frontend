@@ -16,7 +16,7 @@ export default function NewMessageForm() {
     };
 
     return (
-        <div className="flex justify-center    lg:pt-[188px] dark:bg-[url('/bg.png')] md:pt-[156px] pt-[121px] bg-cover bg-no-repeat">
+        <div className="flex justify-center     lg:pt-[188px] dark:bg-[url('/bg.png')] md:pt-[156px] pt-[121px] bg-cover bg-no-repeat">
             <div className="max-w-[1080px] w-full px-5 2xl:px-0 md:pb-[115px] pb-[104px] leading-[130%]">
                 <h1 className="text-[#070707] dark:text-[#FDFEFF] font-medium md:text-[28px] text-2xl lg:text-[32px] leading-[130%]">New Message!</h1>
 
