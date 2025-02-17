@@ -5,8 +5,12 @@ import DeleteModal from "@/app/Components/SharedComponent/DeleteModal";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { useState } from "react";
 import { messageData } from "../data";
+import { useRouter } from "next/navigation";
+import { FaEye } from "react-icons/fa6";
+import { CiEdit } from "react-icons/ci";
 
 export default function MessagesPage() {
+  const router = useRouter();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
 
@@ -34,12 +38,20 @@ export default function MessagesPage() {
       label: "Action",
       accessor: "action",
       customCell: (row) => (
-        <button
-          onClick={() => handleDelete(row)}
-          className="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-xl p-2"
-        >
-          <RiDeleteBin5Line size={20} />
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => router.push(`/admin/messages/${row.id}`)}
+            className="bg-gray-100 hover:bg-gray-200 rounded-xl p-2"
+          >
+            <CiEdit size={20} />
+          </button>
+          <button
+            onClick={() => handleDelete(row)}
+            className="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-xl p-2"
+          >
+            <RiDeleteBin5Line size={20} />
+          </button>
+        </div>
       ),
     },
   ];
