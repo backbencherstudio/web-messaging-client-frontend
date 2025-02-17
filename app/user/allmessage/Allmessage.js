@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { FaEye } from 'react-icons/fa';
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { ChevronDown } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { BsExclamationCircle } from "react-icons/bs";
 
 const messagesData = [
     {
@@ -116,6 +118,7 @@ const messagesData = [
 
 export default function MessageList() {
     const [currentPage, setCurrentPage] = useState(1);
+    const router = useRouter(); // Initialize router
     const itemsPerPage = 10;
     const totalPages = Math.ceil(messagesData.length / itemsPerPage);
 
@@ -123,6 +126,25 @@ export default function MessageList() {
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
+
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedMessage, setSelectedMessage] = useState(null);
+
+    const openModal = (message) => {
+        setSelectedMessage(message);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedMessage(null);
+    };
+
+    const handleDelete = () => {
+        console.log("Message deleted:", selectedMessage);
+        closeModal();
+    };
 
     return (
         <div className="flex lg:pt-[188px] md:pt-[156px] pt-[121px] bg-cover bg-no-repeat dark:bg-[url('/bg.png')]   pb-[400px] ">
@@ -161,10 +183,13 @@ export default function MessageList() {
                                 <td className="p-4 text-[#070707] dark:text-[#D1D7E5]">${msg.cost}</td>
                                 <td className="p-4 text-[#070707] dark:text-[#D1D7E5]">{msg.date}</td>
                                 <td className="p-4 flex gap-2">
-                                    <button className="bg-blue-500/10 backdrop-blur-md p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white">
+                                    <button
+                                        onClick={() => router.push(`messages/${msg.id}`)}
+                                        className="bg-blue-500/10 backdrop-blur-md p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white">
                                         <FaEye />
                                     </button>
-                                    <button className="bg-blue-500/10 backdrop-blur-md p-2 rounded-lg text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300">
+                                    <button onClick={() => openModal(msg)}
+                                    className="bg-blue-500/10 backdrop-blur-md p-2 rounded-lg text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300">
                                         <RiDeleteBin5Line />
                                     </button>
 
@@ -173,6 +198,40 @@ export default function MessageList() {
                         ))}
                     </tbody>
                 </table>
+
+
+     {isModalOpen && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                        <div className="bg-white dark:bg-[#1a1a1a] p-6 rounded-lg shadow-lg text-center">
+                        <div className='flex justify-center '>
+                        <div className='bg-red-50 w-20 h-20 flex justify-center items-center rounded-full'>
+                        <div className='bg-red-100 w-14 h-14 flex justify-center items-center rounded-full'>
+                        <BsExclamationCircle className='size-8 text-red-600' />
+                        </div>
+                        </div>
+                            
+                        </div>  
+                        
+                            <h3 className="text-lg font-semibold text-gray-900 pt-4 dark:text-white">Delete Message</h3>
+                            <div className="flex justify-center gap-4 mt-4">
+                                <button
+                                    onClick={closeModal}
+                                    className="px-4 py-2 bg-gray-300 dark:bg-gray-700 rounded-md">
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleDelete}
+                                    className="px-4 py-2 bg-red-600 text-white rounded-md">
+                                    Confirm Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+
+
+
                 <div className="flex justify-between items-center p-4 text-sm text-gray-600 dark:text-gray-300">
                     <span>Showing {itemsPerPage} entries</span>
                     <div className="flex gap-2">
@@ -191,6 +250,7 @@ export default function MessageList() {
                     </div>
                 </div>
             </div>
+            
         </div>
     );
 }
