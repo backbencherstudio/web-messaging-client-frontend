@@ -2,15 +2,17 @@
 
 import CustomTable from "@/app/Components/SharedComponent/CustomTable";
 import { userData } from "../data";
-import { FaTrash } from "react-icons/fa6";
+import { FaEye, FaTrash } from "react-icons/fa6";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { PiWarningCircle } from "react-icons/pi";
 import DeleteModal from "@/app/Components/SharedComponent/DeleteModal";
 import { RiDeleteBin5Line } from "react-icons/ri";
-
+import { IoEyeOutline } from "react-icons/io5";
+import { useRouter } from "next/navigation";
 export default function UsersPage() {
+  const router = useRouter();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
@@ -37,12 +39,20 @@ export default function UsersPage() {
       label: "Action",
       accessor: "action",
       customCell: (row) => (
-        <button
-          onClick={() => handleDelete(row)}
-          className="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-xl p-2"
-        >
-          <RiDeleteBin5Line size={20} />
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => router.push(`/admin/users/${row.id}`)}
+            className="bg-gray-100 hover:bg-gray-200 rounded-xl p-2"
+          >
+            <IoEyeOutline size={20} />
+          </button>
+          <button
+            onClick={() => handleDelete(row)}
+            className="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-xl p-2"
+          >
+            <RiDeleteBin5Line size={20} />
+          </button>
+        </div>
       ),
     },
   ];

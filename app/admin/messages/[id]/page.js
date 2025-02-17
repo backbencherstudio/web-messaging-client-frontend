@@ -1,8 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
-import { FaCircleUser } from "react-icons/fa6";
+import { FaAngleLeft, FaAngleRight, FaCircleUser } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 const ContentPage = () => {
+  const router = useRouter();
   const [content, setContent] = useState(
     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quosLorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quosLorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quosLorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quosLorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
   );
@@ -45,10 +47,17 @@ const ContentPage = () => {
 
   return (
     <div>
-      <div className="bg-white p-6 rounded-lg">
+      <div
+        onClick={() => router.back()}
+        className="flex items-center gap-2 cursor-pointer"
+      >
+        <FaAngleLeft />{" "}
+        <span className="text-gray-400">Message Management</span> / Edit Message
+      </div>
+      <div className="bg-white p-6 rounded-lg mt-5">
         <div className="flex justify-between items-center bg-white rounded-lg">
           <h1 className="text-2xl font-semibold flex items-center gap-2">
-            <CiEdit /> About Us
+            Message
           </h1>
           <div className="flex gap-4">
             <button className="bg-primary text-white px-4 py-2 rounded-full hover:bg-primary/90">
