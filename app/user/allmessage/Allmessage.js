@@ -147,23 +147,26 @@ export default function MessageList() {
     };
 
     return (
-        <div className="flex lg:pt-[188px] md:pt-[156px] pt-[121px] bg-cover bg-no-repeat dark:bg-[url('/bg.png')]   pb-[400px] ">
-            <div className="max-w-[1080px] w-full mx-auto  bg-white dark:bg-[#070707] shadow-md rounded-xl border dark:border-[#545460] p-5 mt-2 ">
+        <div className="flex px-5 2xl:px-0 lg:pt-[188px] md:pt-[156px] pt-[121px] bg-cover bg-no-repeat dark:bg-[url('/bg.png')]   md:pb-[100px] pb-[42px] ">
+            <div className="max-w-[1080px] w-full mx-auto min-h-scree bg-white dark:bg-[#070707] shadow-md rounded-xl border dark:border-[#545460] p-5 mt-2 ">
                 <div className="flex justify-between items-center mb-4">
                     <div>
-                        <h2 className="text-lg font-semibold text-[#070707] dark:text-[#FDFEFF]">My Message List</h2>
-                        <p className="text-sm text-gray-500 py-2 dark:text-gray-300">Your report payroll so far</p>
+                        <h2 className="text-2xl font-semibold text-[#111827] dark:text-[#FDFEFF] hidden md:block">My Message List</h2>
+                        <h2 className="text-2xl font-semibold text-[#111827] dark:text-[#FDFEFF] md:hidden block">My Messages</h2>
+                        <p className="text-sm text-[#9CA3AF] py-2 dark:text-gray-300">Your report payroll so far</p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex md:flex-row flex-col gap-2">
 
-                        <button className="px-4 py-2 text-sm bg-gray-200 dark:bg-[#545460] dark:text-[#FDFEFF] rounded-md flex items-center gap-2">
+                        <button className="pl-4 pr-3 py-[9px] text-sm bg-gray-200 dark:bg-[#545460] dark:text-[#FDFEFF] rounded-md flex items-center gap-2">
                             Most Views
                             <ChevronDown size={16} />
                         </button>
-                        <button className="px-4 py-4 text-sm bg-black text-white dark:bg-[#FDFEFF] dark:text-black rounded-md">New Message +</button>
+                        <button className="px-5 py-3 text-sm bg-black text-white dark:bg-[#FDFEFF] dark:text-black rounded-md hidden md:block">New Message +</button>
+                        <button className="px-5 py-3 text-sm bg-black text-white dark:bg-[#FDFEFF] dark:text-black rounded-md block md:hidden">New +</button>
                     </div>
                 </div>
-                <table className="w-full border-collapse text-sm">
+                <div className="overflow-x-auto custom-scrollbar max-h-screen ">
+                <table className=" border-collapse text-sm w-[760px] md:w-full ">
                     <thead>
                         <tr className="bg-gray-100 dark:bg-[#545460] text-left text-[#070707] dark:text-[#FDFEFF]">
                             <th className="p-4">P. No.</th>
@@ -176,7 +179,7 @@ export default function MessageList() {
                     </thead>
                     <tbody>
                         {displayedMessages.map((msg) => (
-                            <tr key={msg.id} className="border-b border-gray-300 dark:border-gray-600">
+                            <tr key={msg.id} className="border-b border-gray-300 dark:border-gray-600 ">
                                 <td className="p-4 text-[#070707] dark:text-[#D1D7E5]">#{msg.id}</td>
                                 <td className="p-4 truncate max-w-xs text-[#070707] dark:text-[#FDFEFF]">{msg.content}</td>
                                 <td className="p-4 text-[#070707] dark:text-[#D1D7E5]">{msg.views}</td>
@@ -198,7 +201,7 @@ export default function MessageList() {
                         ))}
                     </tbody>
                 </table>
-
+                    </div>
 
      {isModalOpen && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
