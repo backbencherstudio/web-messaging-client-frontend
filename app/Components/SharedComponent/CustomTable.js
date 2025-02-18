@@ -22,10 +22,11 @@ import {
 export default function CustomTable({
   title,
   subtitle,
-  columns,
-  data,
+  columns = [],
+  data = [],
   pagination = false,
   search = false,
+  filter = false,
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
@@ -68,7 +69,7 @@ export default function CustomTable({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="bg-white dark:bg-[#1a1a1a] rounded-lg shadow-md p-6">
       <div className="lg:flex justify-between items-center mb-4">
         <h2 className="text-2xl font-medium mb-3 lg:mb-0">{title}</h2>
         <div className="flex gap-4">
@@ -82,19 +83,21 @@ export default function CustomTable({
               />
             </div>
           )}
-          <select className="border rounded-md px-3 py-1 text-sm bg-[#f9fafb]">
-            <option>This month</option>
-          </select>
+          {filter && (
+            <select className="border rounded-md px-3 py-1 text-sm bg-[#f9fafb]">
+              <option>This month</option>
+            </select>
+          )}
         </div>
       </div>
       {subtitle && <p className="text-gray-500 text-sm mb-4">{subtitle}</p>}
       <Table>
-        <TableHeader className="bg-[#f6f6f6] rounded-t-lg">
+        <TableHeader className="bg-[#f6f6f6] dark:bg-[#1a1a1a]  rounded-t-lg">
           <TableRow>
             {columns.map((col) => (
               <TableCell
                 key={col.accessor}
-                className="text-gray-800 font-bold py-4 px-6"
+                className="text-gray-800 dark:text-white font-bold py-4 px-6"
               >
                 {col.label}
               </TableCell>
