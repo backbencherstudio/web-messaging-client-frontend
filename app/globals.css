@@ -47,6 +47,15 @@ body {
     transition: background 0.3s ease, color 0.3s ease; 
     /* Light gray text for contrast */
   }
+
+  .bg-form-gradient-light {
+    background: 
+      linear-gradient(to bottom right, #EAF1FF 0%, #FFF 50%) bottom right / 50% 50% no-repeat,
+      linear-gradient(to bottom left, #EAF1FF 0%, #FFF 50%) bottom left / 50% 50% no-repeat,
+      linear-gradient(to top left, #EAF1FF 0%, #FFF 50%) top left / 50% 50% no-repeat,
+      linear-gradient(to top right, #EAF1FF 0%, #FFF 50%) top right / 50% 50% no-repeat;
+  }
+
   @keyframes fadeUp {
     0% {
       opacity: 0;
