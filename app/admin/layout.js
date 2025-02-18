@@ -2,14 +2,23 @@
 import AdminHeader from "../Components/AdminComponents/AdminHeader";
 import AdminNavBar from "../Components/AdminComponents/AdminNavBar";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
+
 
 export default function AdminLayout({ children }) {
+
+  const pathname = usePathname();
+  const hideNavbarRoutes = ["/admin/login"];
+
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+
+    
+    <div className="flex h-screen bg-[#F9FAFB] dark:bg-gray-900">
       {/* Mobile menu button */}
-      <button
+      {!hideNavbarRoutes.includes(pathname) && <button
         className="lg:hidden fixed z-20 m-4 p-2 rounded-md bg-gray-800 text-white"
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
       >
@@ -38,7 +47,8 @@ export default function AdminLayout({ children }) {
             <path d="M4 6h16M4 12h16M4 18h16"></path>
           </svg>
         )}
-      </button>
+      </button> } 
+      
 
       {/* Sidebar - hidden on mobile by default */}
       <div
@@ -51,15 +61,17 @@ export default function AdminLayout({ children }) {
           onClick={() => setIsSidebarOpen(false)}
         ></div>
         <div className="relative z-10">
-          <AdminNavBar />
+        {!hideNavbarRoutes.includes(pathname) &&  <AdminNavBar />} 
+         
         </div>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto">
-        <AdminHeader />
+      {!hideNavbarRoutes.includes(pathname) && <AdminHeader />}   
         <div className="flex-1 overflow-auto">
-          <div className="p-3 lg:p-8">{children}</div>
+        <div className={`${!hideNavbarRoutes.includes(pathname) ? "p-5 lg:p-6" : ""}`}>
+        {children}</div>
         </div>
       </div>
     </div>
