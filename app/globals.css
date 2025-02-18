@@ -74,6 +74,30 @@ body {
     }
   }
   
+
+  /* Target the specific class for custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #EFF3FE;
+  border-radius: 1px;
+  
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #56565F; /* Thumb color */
+  border-radius: 10px;
+  /* border: 2px solid #f0f0f0; Optional border to match track */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #388e3c; /* Hover effect */
+}
+
+
   /* Utility classes for animations */
   .fade-up {
     animation: fadeUp 0.5s ease-out forwards;
