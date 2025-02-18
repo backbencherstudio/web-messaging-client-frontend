@@ -70,7 +70,7 @@ export default function AdminLayout({ children }) {
       <div className="flex-1 overflow-auto">
       {!hideNavbarRoutes.includes(pathname) && <AdminHeader />}   
         <div className="flex-1 overflow-auto">
-        <div className={`${!hideNavbarRoutes.includes(pathname) ? "p-3 lg:p-6" : ""}`}>
+        <div className={`${!hideNavbarRoutes.includes(pathname) ? "p-5 lg:p-6" : ""}`}>
         {children}</div>
         </div>
       </div>
