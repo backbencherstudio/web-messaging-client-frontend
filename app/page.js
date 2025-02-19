@@ -26,8 +26,11 @@ import {
 import Footer from "./Components/SharedComponent/Footer";
 import PaymentModal from "./Components/SharedComponent/PaymentModal";
 import { useState } from "react";
+
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
+ 
+  
   const messageColumns = [
     { label: "Ranking", accessor: "pNo" },
     { label: "Message content", accessor: "messageContent" },
@@ -59,7 +62,8 @@ export default function Home() {
   ];
   return (
     <div>
-      <PaymentModal open={showModal} onClose={() => setShowModal(false)} />
+      <PaymentModal open={showModal} onClose={() => setShowModal(false)}/>
+        
       <div className="lg:mt-44 mt-12 max-w-[1080px] mx-auto px-4 lg:px-0">
         {/* about section  */}
         <div className="border rounded-lg">
@@ -118,6 +122,7 @@ export default function Home() {
             >
               Pay & Submit Message
             </Button>
+
           </div>
           <p className="text-[18px] opacity-70 my-12">
             [ Note : After submitting 50 messages, further submissions will

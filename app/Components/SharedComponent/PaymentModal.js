@@ -16,17 +16,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+
 
 const PaymentModal = ({ open, onClose }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const handleModal = () => {
-    setIsModalOpen(!isModalOpen);
-    
-  }
+
+  
+
   return (
     <div >
-      <div className={`${isModalOpen ? "opacity-0" : "opacity-100"}`}>
+      <div>
         <Dialog open={open} onOpenChange={onClose} >
           <DialogContent className="lg:max-w-[1080px] text-lg mx-5 md:mx-4 lg:mx-0 rounded-lg">
             <DialogHeader>
@@ -78,9 +76,6 @@ const PaymentModal = ({ open, onClose }) => {
           </DialogContent>
         </Dialog>
       </div>
-      {isModalOpen && <div>
-        <h1>Payment successful</h1>
-      </div>}
     </div>
   );
 };
