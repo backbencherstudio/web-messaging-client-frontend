@@ -24,8 +24,7 @@ const PaymentModal = ({ open, onClose, setOpenSuccess }) => {
     onClose();
   };
   return (
-    <div >
-      <div>
+
         <Dialog open={open} onOpenChange={onClose} >
           <DialogContent className="lg:max-w-[1080px] text-lg mx-5 md:mx-4 lg:mx-0 rounded-lg">
             <DialogHeader>
@@ -69,44 +68,12 @@ const PaymentModal = ({ open, onClose, setOpenSuccess }) => {
                   non-refundable.
                 </label>
               </div>
-              <Button onClick={handleModal} className="w-[234px] py-6 px-12 text-lg rounded-full">
+              <Button onClick={handleSuccess} className="w-[234px] py-6 px-12 text-lg rounded-full">
                 Payment & Submit
               </Button>
             </div>
-            <Input placeholder="Card number" className="text-lg p-8" />
-            <div className="flex gap-2">
-              <Input placeholder="MM / YY" className="text-lg p-8" />
-              <Input placeholder="CVC" className="text-lg p-8" />
-            </div>
-            <div className="flex gap-2">
-              <Select>
-                <SelectTrigger className="text-lg p-8">
-                  <SelectValue placeholder="Country" />
-                </SelectTrigger>
-                <SelectContent className="text-lg">
-                  <SelectItem value="us">United States</SelectItem>
-                  <SelectItem value="ca">Canada</SelectItem>
-                </SelectContent>
-              </Select>
-              <Input placeholder="Postal code" className="text-lg p-8" />
-            </div>
-            <div className="flex items-center gap-2">
-              <input type="checkbox" id="terms" className="h-5 w-5" />
-              <label htmlFor="terms" className="text-base">
-                By agreeing to this, you accept the terms. This payment is
-                non-refundable.
-              </label>
-            </div>
-            <Button
-              onClick={handleSuccess}
-              className="w-[234px] py-6 px-12 text-lg rounded-full"
-            >
-              Payment & Submit
-            </Button>
-          </div>
         </DialogContent>
       </Dialog>
-    </div>
   );
 };
 

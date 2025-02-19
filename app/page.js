@@ -71,8 +71,8 @@ export default function Home() {
         setOpenSuccess={setOpenSuccess}
       />
       <SuccessModal open={openSuccess} onClose={() => setOpenSuccess(false)} />
-      <PaymentModal open={showModal} onClose={() => setShowModal(false)}/>
-        
+
+              
       <div className="lg:mt-44 mt-12 max-w-[1080px] mx-auto px-4 lg:px-0">
         {/* about section  */}
         <div className="border rounded-lg">
