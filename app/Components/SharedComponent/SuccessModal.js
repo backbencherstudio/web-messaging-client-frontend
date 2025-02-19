@@ -16,17 +16,13 @@ import {
 } from "@/components/ui/select";
 import React from "react";
 
-const PaymentModal = ({ open, onClose, setOpenSuccess }) => {
-  const handleSuccess = () => {
-    setOpenSuccess(true);
-    onClose();
-  };
+const SuccessModal = ({ open, onClose }) => {
   return (
     <div>
       <Dialog open={open} onOpenChange={onClose}>
         <DialogContent className="lg:max-w-[1080px] text-lg mx-5 md:mx-4 lg:mx-0 rounded-lg">
           <DialogHeader>
-            <DialogTitle className="text-2xl">Payment</DialogTitle>
+            <DialogTitle className="text-2xl">Success</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <Input placeholder="Your Email" className="text-lg p-8" />
@@ -66,10 +62,7 @@ const PaymentModal = ({ open, onClose, setOpenSuccess }) => {
                 non-refundable.
               </label>
             </div>
-            <Button
-              onClick={handleSuccess}
-              className="w-[234px] py-6 px-12 text-lg rounded-full"
-            >
+            <Button className="w-[234px] py-6 px-12 text-lg rounded-full">
               Payment & Submit
             </Button>
           </div>
@@ -79,4 +72,4 @@ const PaymentModal = ({ open, onClose, setOpenSuccess }) => {
   );
 };
 
-export default PaymentModal;
+export default SuccessModal;
