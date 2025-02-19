@@ -31,8 +31,14 @@ import SuccessModal from "./Components/SharedComponent/SuccessModal";
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
- 
-  
+
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   const messageColumns = [
     { label: "Ranking", accessor: "pNo" },
     { label: "Message content", accessor: "messageContent" },
@@ -63,7 +69,7 @@ export default function Home() {
     },
   ];
   return (
-    <div>
+    <div id="home">
       <PaymentModal
         open={showModal}
         onClose={() => setShowModal(false)}
@@ -72,8 +78,7 @@ export default function Home() {
       />
       <SuccessModal open={openSuccess} onClose={() => setOpenSuccess(false)} />
 
-              
-      <div className="lg:mt-44 mt-12 max-w-[1080px] mx-auto px-4 lg:px-0">
+      <div className="md:mt-44 mt-24 max-w-[1080px] mx-auto px-4 lg:px-0">
         {/* about section  */}
         <div className="border rounded-lg">
           <div className="flex justify-between items-center bg-[#f7f9ff] px-4 lg:px-16 py-5 dark:bg-[#1a1a1a]">
@@ -131,7 +136,6 @@ export default function Home() {
             >
               Pay & Submit Message
             </Button>
-
           </div>
           <p className="text-[18px] opacity-70 my-12">
             [ Note : After submitting 50 messages, further submissions will
@@ -157,83 +161,90 @@ export default function Home() {
           </div>
         </div>
         {/* leader board  */}
-        <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium mt-16 lg:mt-28 mb-8">
-          LeaderBoard
-        </h1>
+        <div id="leaderboard">
+          <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium mt-16 lg:mt-28 mb-8">
+            LeaderBoard
+          </h1>
 
-        <CustomTable
-          title="Top Most views messages"
-          data={messageData}
-          columns={messageColumns}
-        />
-        {/* faq  */}
-        <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium mt-16 lg:mt-28">
-          Frequently Asked Question (FAQ)
-        </h1>
-        <Accordion type="single" collapsible className="mt-8">
-          {faqData.map((item, index) => (
-            <AccordionItem
-              key={index}
-              value={`item-${index}`}
-              className="border rounded-lg my-2"
-            >
-              <AccordionTrigger className="text-[1.2rem] font-medium bg-gray-100 dark:bg-[#1a1a1a] p-5">
-                {item.question}
-              </AccordionTrigger>
-              <AccordionContent className="text-[16px] text-[#393C44] dark:text-white p-5 font-normal">
-                {item.answer}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-        {/* about us  */}
-        <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium mt-16 lg:mt-28">
-          About SayThat
-        </h1>
-        <p className="text-[clamp(1rem,2vw,1rem)] mt-9 text-[#393C44] dark:text-white">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-        <p className="text-[clamp(1rem,2vw,1rem)] mt-4 text-[#393C44] dark:text-white">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-
-        {/* contact us  */}
-        <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium mt-16 lg:mt-28">
-          Contact Us
-        </h1>
-        <div className="border rounded-lg p-6 mt-8 mb-28">
-          <Input placeholder="Your Name" className="py-8 px-6" />
-          <Input placeholder="Your Email" className="py-8 px-6 mt-6" />
-          <Select>
-            <SelectTrigger className="py-8 px-6 mt-6">
-              <SelectValue placeholder="Subject" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="light">Light</SelectItem>
-              <SelectItem value="dark">Dark</SelectItem>
-              <SelectItem value="system">System</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Textarea
-            placeholder="Your Message"
-            className="py-8 px-6 my-6 min-h-[274px]"
+          <CustomTable
+            title="Top Most views messages"
+            data={messageData}
+            columns={messageColumns}
           />
-          <Button className="w-[188px] py-6 rounded-full text-[18px]">
-            Submit
-          </Button>
+        </div>
+        {/* faq  */}
+        <div id="faq">
+          <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium mt-16 lg:mt-28">
+            Frequently Asked Question (FAQ)
+          </h1>
+          <Accordion type="single" collapsible className="mt-8">
+            {faqData.map((item, index) => (
+              <AccordionItem
+                key={index}
+                value={`item-${index}`}
+                className="border rounded-lg my-2"
+              >
+                <AccordionTrigger className="text-[1.2rem] font-medium bg-gray-100 dark:bg-[#1a1a1a] p-5">
+                  {item.question}
+                </AccordionTrigger>
+                <AccordionContent className="text-[16px] text-[#393C44] dark:text-white p-5 font-normal">
+                  {item.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+        {/* about us  */}
+        <div id="about">
+          <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium mt-16 lg:mt-28">
+            About SayThat
+          </h1>
+          <p className="text-[clamp(1rem,2vw,1rem)] mt-9 text-[#393C44] dark:text-white">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat. Duis aute irure dolor in
+            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+            culpa qui officia deserunt mollit anim id est laborum.
+          </p>
+          <p className="text-[clamp(1rem,2vw,1rem)] mt-4 text-[#393C44] dark:text-white">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat. Duis aute irure dolor in
+            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+            culpa qui officia deserunt mollit anim id est laborum.
+          </p>
+        </div>
+        {/* contact us  */}
+        <div id="contact">
+          <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium mt-16 lg:mt-28">
+            Contact Us
+          </h1>
+          <div className="border rounded-lg p-6 mt-8 mb-28">
+            <Input placeholder="Your Name" className="py-8 px-6" />
+            <Input placeholder="Your Email" className="py-8 px-6 mt-6" />
+            <Select>
+              <SelectTrigger className="py-8 px-6 mt-6">
+                <SelectValue placeholder="Subject" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="light">Light</SelectItem>
+                <SelectItem value="dark">Dark</SelectItem>
+                <SelectItem value="system">System</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Textarea
+              placeholder="Your Message"
+              className="py-8 px-6 my-6 min-h-[274px]"
+            />
+            <Button className="w-[188px] py-6 rounded-full text-[18px]">
+              Submit
+            </Button>
+          </div>
         </div>
       </div>
       <Footer />

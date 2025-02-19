@@ -2,6 +2,13 @@ import React from "react";
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 
 const Footer = () => {
+  const handleNavigation = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="bg-black text-white px-5 md:px-24 py-12 md:py-16">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 border-b border-[#65687280] pb-12">
@@ -14,11 +21,36 @@ const Footer = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div className="flex flex-col gap-3 border-b md:border-b-0 border-[#65687280] pb-8 md:pb-0">
-            <a href="#">Home</a>
-            <a href="#">Leaderboard</a>
-            <a href="#">FAQ</a>
-            <a href="#">About</a>
-            <a href="#">Contact</a>
+            <button
+              onClick={() => handleNavigation("home")}
+              className="text-left"
+            >
+              Home
+            </button>
+            <button
+              onClick={() => handleNavigation("leaderboard")}
+              className="text-left"
+            >
+              Leaderboard
+            </button>
+            <button
+              onClick={() => handleNavigation("faq")}
+              className="text-left"
+            >
+              FAQ
+            </button>
+            <button
+              onClick={() => handleNavigation("about")}
+              className="text-left"
+            >
+              About
+            </button>
+            <button
+              onClick={() => handleNavigation("contact")}
+              className="text-left"
+            >
+              Contact
+            </button>
           </div>
           <div className="pt-6 md:pt-0">
             <p className="font-medium">Social Connect</p>
