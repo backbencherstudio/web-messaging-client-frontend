@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Image from "next/image";
 import React from "react";
 
 const SuccessModal = ({ open, onClose }) => {
@@ -22,11 +23,18 @@ const SuccessModal = ({ open, onClose }) => {
       <Dialog open={open} onOpenChange={onClose} className="">
         <DialogContent className=" text-lg p-6  pt-[80px] pb-[70px] rounded-lg  md:max-w-[528px] max-w-[90%] ">
           <div className="flex ">
-            <div className="flex flex-col items-center justify-center md:w-full max-w-[80%] overflow-hidden">
-              <img className="max-w-[64px]" src="/congo.png" alt="" />
-              <h1 className="text-[#070707] dark:text-[#FDFEFF] leading-normal my-[18px] md:text-[32px] text-2xl  font-medium">
+            <div className="flex flex-col items-center justify-center md:w-full max-w-[80%] md:max-w-full overflow-hidden">
+              <Image
+                className="max-w-[64px]"
+                src="/congo.png"
+                alt=""
+                width={64}
+                height={64}
+              />
+              <DialogTitle className="text-[#070707] dark:text-[#FDFEFF] leading-normal my-[18px] md:text-[32px] text-2xl  font-medium">
+                {" "}
                 Congratulations!
-              </h1>
+              </DialogTitle>
               <p className="text-[#393C44] dark:text-[#A8AAB4] leading-[160%] text-center text-base  font-normal max-w-[414px]">
                 Your payment has been successfully processed. Your message has
                 been displayed—please check it now.
