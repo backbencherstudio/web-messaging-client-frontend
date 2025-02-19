@@ -26,9 +26,11 @@ import {
 import Footer from "./Components/SharedComponent/Footer";
 import PaymentModal from "./Components/SharedComponent/PaymentModal";
 import { useState } from "react";
+import SuccessModal from "./Components/SharedComponent/SuccessModal";
 
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
+  const [openSuccess, setOpenSuccess] = useState(false);
  
   
   const messageColumns = [
@@ -62,6 +64,13 @@ export default function Home() {
   ];
   return (
     <div>
+      <PaymentModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        onCloseSuccess={() => setOpenSuccess(false)}
+        setOpenSuccess={setOpenSuccess}
+      />
+      <SuccessModal open={openSuccess} onClose={() => setOpenSuccess(false)} />
       <PaymentModal open={showModal} onClose={() => setShowModal(false)}/>
         
       <div className="lg:mt-44 mt-12 max-w-[1080px] mx-auto px-4 lg:px-0">
