@@ -148,7 +148,7 @@ export default function MessageList() {
 
     return (
         <div className="flex px-5 2xl:px-0 lg:pt-[188px] md:pt-[156px] pt-[121px] bg-cover bg-no-repeat dark:bg-[url('/bg.png')]   md:pb-[100px] pb-[42px] ">
-            <div className="max-w-[1080px] w-full mx-auto min-h-scree bg-white dark:bg-[#070707] shadow-md rounded-xl border dark:border-[#545460] p-5 mt-2 ">
+            <div className="max-w-[1080px] w-full mx-auto min-h-scree bg-white  dark:bg-[#070707] shadow-md rounded-xl border dark:border-[#545460] p-5 mt-2 ">
                 <div className="flex justify-between items-center mb-4">
                     <div>
                         <h2 className="text-2xl font-semibold text-[#111827] dark:text-[#FDFEFF] hidden md:block">My Message List</h2>
