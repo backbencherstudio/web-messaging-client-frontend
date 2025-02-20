@@ -64,6 +64,7 @@ body {
       linear-gradient(to top right, #070707 0%, #0E0E0F 50%) top right / 50% 50% no-repeat;
   }
 
+
   @keyframes fadeUp {
     0% {
       opacity: 0;
@@ -114,7 +115,7 @@ body {
   .fade-out {
     animation: fadeOut 0.3s ease-out forwards;
   }
-  
+
 
   .bg-custom-gradient {
     background:
