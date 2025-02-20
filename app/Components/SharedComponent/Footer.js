@@ -54,10 +54,10 @@ const Footer = () => {
           </div>
           <div className="pt-6 md:pt-0">
             <p className="font-medium">Social Connect</p>
-            <div className="flex gap-4 mt-6">
+            <div className="flex gap-6 mt-6 ">
               <FaFacebook size={24} className="cursor-pointer" />
               <FaInstagram size={24} className="cursor-pointer" />
-              <FaTwitter size={24} className="cursor-pointer" />
+              {/* <FaTwitter size={24} className="cursor-pointer" /> */}
               <FaLinkedin size={24} className="cursor-pointer" />
             </div>
           </div>

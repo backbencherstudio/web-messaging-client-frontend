@@ -35,8 +35,7 @@ const SuccessModal = ({ open, onClose }) => {
                 Congratulations!
               </DialogTitle>
               <p className="text-[#393C44] dark:text-[#A8AAB4] leading-[160%] text-center text-sm md:text-base font-normal max-w-[90%] md:max-w-[414px]">
-                Your payment has been successfully processed. Your message has
-                been displayed—please check it now.
+              Your payment's been processed and your message was posted!
               </p>
               <div className="my-6 md:my-[48px] w-full max-w-[90%] md:max-w-full">
                 <svg
@@ -55,13 +54,12 @@ const SuccessModal = ({ open, onClose }) => {
                   />
                 </svg>
               </div>
-              <p className="text-[#393C44] dark:text-[#C9CCD8] leading-[160%] text-center text-sm md:text-base font-medium max-w-[90%] md:max-w-[34ch]">
-                Register now to access your user dashboard and manage your
-                message post easily.
+              <p className="text-[#393C44] dark:text-[#C9CCD8] leading-[160%] text-center text-sm md:text-base font-medium max-w-[90%] md:max-w-[40ch]">
+              Let's see how many views it gets before someone decides theirs is more valuable
               </p>
-              <div className="flex gap-3 md:gap-4 justify-center flex-row items-center mt-6">
-                <button className="bg-[#070707] dark:bg-[#F3F6FE] dark:text-[#070707] text-white px-4 md:px-[32px] py-3 md:py-4 rounded-[99px] border-[#070707] text-sm md:text-base font-medium">
-                  Register Now
+              <div className="flex flex-col gap-3 md:gap-4 justify-center items-center mt-6">
+                <button className="bg-[#070707] dark:bg-[#F3F6FE] dark:text-[#070707] text-white px-4 md:px-[16px] py-3 md:py- rounded-[36px] border-[#070707] text-sm md:text-base font-medium">
+                Register now to claim ownership over your message and track its exposure!
                 </button>
                 <button>
                   <a

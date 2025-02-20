@@ -103,12 +103,12 @@ export default function Home() {
               it requires collective effort, innovation, and commitment.
             </p>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 border bg-[#f7f9ff] dark:bg-[#1a1a1a] p-8 m-4 rounded-lg text-[1.1rem] font-medium gap-4 lg:gap-0">
-            <p className="">
+          <div className="grid grid-cols-1 lg:grid-cols-2 border bg-[#f7f9ff] dark:bg-[#1a1a1a] p-8 m-4 rounded-lg text-[1.1rem] font-medium gap-4 lg:gap-0">
+            {/* <p className="">
               <span className="opacity-70">Messages No :</span> 32
-            </p>
+            </p> */}
             <p className="">
-              <span className="opacity-70">Current Value:</span> 32
+              <span className="opacity-70">Current Value:</span> $ 0.50
             </p>
             <p className="">
               <span className="opacity-70">Last Update:</span> 5:OOPM EST
@@ -120,21 +120,21 @@ export default function Home() {
           Is your message more valuable? Prove it!
         </h1>
         {/* payment form  */}
-        <div className="border rounded-lg p-6 mt-8">
-          <Input placeholder="Who are you?" className="py-8 px-6" />
+        <div className="border rounded-lg p-6 mt-4">
+          <Input placeholder="Who are you?" className="py-8 px-6  md:placeholder:text-[18px] placeholder:text-[16px]" />
           <Textarea
             placeholder="What's your message?"
-            className="py-8 px-6 my-6 min-h-[274px]"
+            className="py-8 px-6 my-6 min-h-[274px] md:placeholder:text-[18px] placeholder:text-[16px] "
           />
           <div className="flex flex-col lg:flex-row justify-between gap-4">
             <Button className="w-full py-6 rounded-full text-[18px]">
-              <IoIosSend /> Free Submit Message
+             Submit Free Message
             </Button>
             <Button
               onClick={() => setShowModal(true)}
               className="w-full py-6 hover:bg-gray-200 rounded-full bg-[#eff3fe] text-black dark:bg-[#1a1a1a] dark:text-white text-[18px]"
             >
-              Pay & Submit Message
+              Submit Message
             </Button>
           </div>
           <p className="text-[18px] opacity-70 my-12">
@@ -224,22 +224,22 @@ export default function Home() {
             Contact Us
           </h1>
           <div className="border rounded-lg p-6 mt-8 mb-28">
-            <Input placeholder="Your Name" className="py-8 px-6" />
-            <Input placeholder="Your Email" className="py-8 px-6 mt-6" />
+            <Input placeholder="Name" className="py-8 px-6 placeholder:text-[16px] md:placeholder:text-[18px]" />
+            <Input placeholder="Email" className="py-8 px-6 mt-6 placeholder:text-[16px] md:placeholder:text-[18px]" />
             <Select>
-              <SelectTrigger className="py-8 px-6 mt-6">
+              <SelectTrigger className="py-8 px-6 mt-6 text-[16px] md:text-[18px]">
                 <SelectValue placeholder="Subject" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="light">Light</SelectItem>
-                <SelectItem value="dark">Dark</SelectItem>
-                <SelectItem value="system">System</SelectItem>
+                <SelectItem className="text-[16px] md:text-[18px]" value="light">Light</SelectItem>
+                <SelectItem className="text-[16px] md:text-[18px]" value="dark">Dark</SelectItem>
+                <SelectItem className="text-[16px] md:text-[18px]" value="system">System</SelectItem>
               </SelectContent>
             </Select>
 
             <Textarea
-              placeholder="Your Message"
-              className="py-8 px-6 my-6 min-h-[274px]"
+              placeholder="Message"
+              className="py-8 px-6 my-6 min-h-[274px] placeholder:text-[16px] md:placeholder:text-[18px]"
             />
             <Button className="w-[188px] py-6 rounded-full text-[18px]">
               Submit
