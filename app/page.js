@@ -48,22 +48,22 @@ export default function Home() {
   ];
   const faqData = [
     {
-      question: "How can I submit a message?",
+      question: "How does SayThat.sh work?",
       answer:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
     },
     {
-      question: "What is the payment process?",
+      question: "Can I post a message without paying?",
       answer:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum..",
     },
     {
-      question: "How is the message ranking calculated?",
+      question: "How is the message price determined?",
       answer:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
     },
     {
-      question: "Is there a limit to free submissions?",
+      question: "What payment methods do you accept?",
       answer:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
     },
@@ -121,8 +121,8 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="dark:bg-[url('/shape-2.png')] dark:bg-cover dark:bg-no-repeat ">
-          <div className="max-w-[1080px] mx-auto px-4 lg:px-0 ">
+        <div className="dark:bg-[url('/shape-2.png')] dark:bg-center bg-cover dark:bg-no-repeat ">
+          <div className="max-w-[1080px] mx-auto px-4 lg:px-0 md:pb-[58px] pb-[26px]">
             <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium pt-[26px] lg:pt-[54px]">
               Is your message more valuable? Prove it!
             </h1>
@@ -170,22 +170,24 @@ export default function Home() {
           </div>
         </div>
         {/* leader board  */}
-        <div id="leaderboard" className="max-w-[1080px] mx-auto px-4 lg:px-0 ">
-          <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium mt-16 lg:mt-28 mb-8">
-            LeaderBoard
-          </h1>
+        <div className="dark:bg-[url('/shape-3.png')] dark:bg-cover dark:bg-center dark:bg-no-repeat ">
+          <div id="leaderboard" className="max-w-[1080px] mx-auto px-4 lg:px-0 md:pb-[72px] pb-[26 px]">
+            <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium pt-[26px] md:pt-[46px] lg:pt-[62px] md:pb-8 pb-6">
+              LeaderBoard
+            </h1>
 
-          <CustomTable
-            title="Top Most views messages"
-            data={messageData}
-            columns={messageColumns}
-          />
+            <CustomTable
+              title="Top Most views messages"
+              data={messageData}
+              columns={messageColumns}
+            />
+          </div>
         </div>
         {/* faq  */}
-        <div className="dark:bg-[url('/bg.png')] dark:bg-cover dark:bg-no-repeat ">
-          <div id="faq" className="max-w-[1080px] mx-auto px-4 lg:px-0 ">
-            <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium mt-16 lg:mt-28">
-              Frequently Asked Question (FAQ)
+        <div className="dark:bg-[url('/shape-4.png')] dark:bg-center dark:bg-cover dark:bg-no-repeat  ">
+          <div id="faq" className="max-w-[1080px] mx-auto px-4 lg:px-0 md:pb-[64px] pb-[26px]">
+            <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium  md:pt-[48px] pt-[26px] ">
+              Frequently Asked Questions (FAQ)
             </h1>
             <Accordion type="single" collapsible className="mt-8">
               {faqData.map((item, index) => (
@@ -194,10 +196,10 @@ export default function Home() {
                   value={`item-${index}`}
                   className="border rounded-lg my-2"
                 >
-                  <AccordionTrigger className="text-[1.2rem] font-medium bg-gray-100 dark:bg-[#1a1a1a] p-5">
+                  <AccordionTrigger className="text-[1.2rem] font-medium bg-gray-100 dark:bg-[#1B1B1C;] p-5">
                     {item.question}
                   </AccordionTrigger>
-                  <AccordionContent className="text-[16px] text-[#393C44] dark:text-white p-5 font-normal">
+                  <AccordionContent className="text-[16px] text-[#393C44] dark:text-white dark:bg-[#0B0B0C] p-5 font-normal">
                     {item.answer}
                   </AccordionContent>
                 </AccordionItem>
@@ -206,39 +208,42 @@ export default function Home() {
           </div>
         </div>
         {/* about us  */}
-        <div id="about" className="max-w-[1080px] mx-auto px-4 lg:px-0 ">
-          <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium mt-16 lg:mt-28">
-            About SayThat
-          </h1>
-          <p className="text-[clamp(1rem,2vw,1rem)] mt-9 text-[#393C44] dark:text-white">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </p>
-          <p className="text-[clamp(1rem,2vw,1rem)] mt-4 text-[#393C44] dark:text-white">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </p>
+        <div className="dark:bg-[url('/shape-5.png')] dark:bg-center dark:bg-cover dark:bg-no-repeat backdrop-blur-[90px]">
+          <div id="about" className="max-w-[1080px] mx-auto px-4 lg:px-0 lg:pb-[77px] md:pb-[47px] pb-[26px]">
+            <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium  pt-[26px] md:pt-[46px] lg:pt-[57px] ">
+              About SayThat
+            </h1>
+            <p className="text-[clamp(1rem,2vw,1rem)] mt-9 text-[#393C44] dark:text-white">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+              ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+              aliquip ex ea commodo consequat. Duis aute irure dolor in
+              reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+              pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+              culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+            <p className="text-[clamp(1rem,2vw,1rem)] mt-4 text-[#393C44] dark:text-white">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+              ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+              aliquip ex ea commodo consequat. Duis aute irure dolor in
+              reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+              pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+              culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+          </div>
         </div>
         {/* contact us  */}
-        <div id="contact" className="max-w-[1080px] mx-auto px-4 lg:px-0 ">
-          <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium mt-16 lg:mt-28">
+        <div  className="dark:bg-[url('/shape-6.png')] dark:bg-cover dark:bg-bottom dark:bg-no-repeat ">
+        <div id="contact" className="max-w-[1080px] mx-auto px-4 lg:px-0 pb-[26px] md:pb-[56px]">
+          <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium  md:pt-[43px] pt-[26px]">
             Contact Us
           </h1>
-          <div className="border rounded-lg p-6 mt-8 mb-28">
-            <Input placeholder="Name" className="py-8 px-6 placeholder:text-[16px] md:placeholder:text-[18px]" />
-            <Input placeholder="Email" className="py-8 px-6 mt-6 placeholder:text-[16px] md:placeholder:text-[18px]" />
+          <div className="border rounded-lg p-6 mt-8 dark:bg-custom-gradient">
+            <Input placeholder="Name" className="py-8 px-6 placeholder:text-[16px] md:placeholder:text-[18px] dark:bg-[#0B0B0C]" />
+            <Input placeholder="Email" className="py-8 px-6 mt-6 placeholder:text-[16px] md:placeholder:text-[18px] dark:bg-[#0B0B0C]" />
             <Select>
-              <SelectTrigger className="py-8 px-6 mt-6 text-[16px] md:text-[18px]">
+              <SelectTrigger className="py-8 px-6 mt-6 text-[16px] md:text-[18px] dark:bg-[#0B0B0C]">
                 <SelectValue placeholder="Subject" />
               </SelectTrigger>
               <SelectContent>
@@ -250,12 +255,13 @@ export default function Home() {
 
             <Textarea
               placeholder="Message"
-              className="py-8 px-6 my-6 min-h-[274px] placeholder:text-[16px] md:placeholder:text-[18px]"
+              className="py-8 px-6 my-6 min-h-[274px] placeholder:text-[16px] md:placeholder:text-[18px] dark:bg-[#0B0B0C]  "
             />
-            <Button className="w-[188px] py-6 rounded-full text-[18px]">
+            <Button className="bg-[#F3F6FE] border border-[#070707] text-[#070707] py-[24px] px-[64px] rounded-[99px] text-[18px] font-medium">
               Submit
             </Button>
           </div>
+        </div>
         </div>
       </div>
       <Footer />

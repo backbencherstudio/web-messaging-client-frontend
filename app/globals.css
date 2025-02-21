@@ -63,6 +63,7 @@ body {
       linear-gradient(to top left, #070707 0%, #0E0E0F 50%) top left / 50% 50% no-repeat,
       linear-gradient(to top right, #070707 0%, #0E0E0F 50%) top right / 50% 50% no-repeat;
   }
+  
 
 
   @keyframes fadeUp {
