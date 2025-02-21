@@ -69,7 +69,7 @@ export default function CustomTable({
   };
 
   return (
-    <div className="bg-white dark:bg-[#1a1a1a] rounded-lg shadow-md p-6">
+    <div className="bg-white dark:bg-custom-gradient rounded-lg shadow-md p-6">
       <div className="lg:flex justify-between items-center mb-4">
         <h2 className="text-2xl font-medium mb-3 lg:mb-0">{title}</h2>
         <div className="flex gap-4">

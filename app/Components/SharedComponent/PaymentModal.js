@@ -93,8 +93,7 @@ const PaymentModal = ({ open, onClose, setOpenSuccess }) => {
               className="h-4 w-4 md:h-5 md:w-5 mt-1 md:mt-0"
             />
             <label htmlFor="terms" className="text-sm md:text-base">
-              By agreeing to this, you accept the terms. This payment is
-              non-refundable.
+              By agreeing to this, you accept the terms.
             </label>
           </div>
           <Button
