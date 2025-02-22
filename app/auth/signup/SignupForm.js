@@ -331,8 +331,11 @@ export default function SignupForm({
                 className="my-8 md:py-6 py-5 text-center w-full bg-[#070707] dark:bg-[#F3F6FE] dark:border dark:border-[#070707] dark:text-[#070707] text-white font-medium text-lg leading-normal rounded-[12px]"
                 type="submit"
                 disabled={check}
+                
               >
-                {buttonText}
+                <Link href="/user/allmessage" >
+                {buttonText}      
+                </Link>
               </button>
             </div>
             <div>
