@@ -12,7 +12,7 @@ const Footer = () => {
   return (
 
     <div className="dark:bg-[url('/shape-7.png')]  dark:bg-cover dark:bg-no-repeat md:pt-[64px] pt-[32px] md:pb-[52px] pb-[24px] px-6">
-      <div className="bg-black text-white px-5 md:px-24 py-12 md:py-16 rounded-[12px]">
+      <div className="bg-[#070707] text-white px-5 lg:px-24 md:px-12 py-12 lg:py-16 rounded-[12px]">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 border-b border-[#65687280] pb-12">
           <div className=" max-w-[392px]">
             <h1 className=" text-3xl font-medium">SayThat.sh</h1>
