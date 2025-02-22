@@ -10,13 +10,22 @@ import { MdOutlineCheckBox } from "react-icons/md";
 import { useState } from "react";
 import Link from "next/link";
 
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 
 export default function SignupForm({
   bgImage, // Background image URL
   formTitle = "Create Your Account",
   formSubHeader = "Register now to access your dashboard and manage your message post seamlessly.", // Form Title
   buttonText = "Sign Up", // Button text
-  termsText = "By agreeing to this, you acknowledge and accept the terms. Please note that this payment is non-refundable.", // Terms text
+  termsText = "By agreeing to this, you accept the terms", // Terms text
   accountExist = "Already have an account? ",
   logs = "Log in here",
   forget,
@@ -35,9 +44,11 @@ export default function SignupForm({
   const [showPassword, setShowPassword] = useState([{ id: 1, value: false }]); // Initialize with one field
   const [showIcon, setShowIcon] = useState([{ id: 1, value: false }]); // Initialize with one icon
   const [check, setCheck] = useState(false);
-  
+
   const adminLogin = formTitle === "Admin Log In"
   const signInStyle = accountExist === "Don't have an account? "
+
+  const [termsOpen, setTermsOpen] = useState(false);
 
 
   const [formData, setFormData] = useState({
@@ -51,7 +62,7 @@ export default function SignupForm({
 
   // Conditionally set the form fields for Sign In and Sign Up
   const formFields = [
-   
+
     ...(isSignIn ? [] : [ // Only add the 'name' and 'location' fields for Sign Up
       {
         id: "name",
@@ -103,7 +114,7 @@ export default function SignupForm({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(isSignIn ? "Sign In Data:" : "Sign Up Data:", formData);
+    // console.log(isSignIn ? "Sign In Data:" : "Sign Up Data:", formData);
   };
 
   const togglePasswordVisibility = (id) => {
@@ -143,7 +154,7 @@ export default function SignupForm({
           </div>
           <form
             onSubmit={handleSubmit}
-            className={`md:p-6 px-4 py-6 md:px-6 border ${adminLogin ? "bg-white":"bg-form-gradient-light"} dark:border-[#545460] rounded-[16px] md:mt-8 mt-6  dark:bg-custom-gradient`}
+            className={`md:p-6 px-4 py-6 md:px-6 border ${adminLogin ? "bg-white" : "bg-form-gradient-light"} dark:border-[#545460] rounded-[16px] md:mt-8 mt-6  dark:bg-custom-gradient`}
           >
             <div className="flex flex-col gap-6">
               {formFields
@@ -207,11 +218,11 @@ export default function SignupForm({
               </div>
             </div>
 
-           {isSignIn ? "" :  <div className="mt-6 flex md:items-center items-start gap-[18px]">
+            {isSignIn ? "" : <div className="mt-6 flex md:items-center items-start gap-[18px]">
               <button onClick={() => setCheck(!check)}>
                 <div>
                   {check ? (
-                    <MdOutlineCheckBoxOutlineBlank className="text-2xl text-[#393C44] dark:text-[#A8AAB4]" />
+                    <MdOutlineCheckBoxOutlineBlank onClick={() => setTermsOpen(true)} className="text-2xl text-[#393C44] dark:text-[#A8AAB4]" />
                   ) : (
                     <MdOutlineCheckBox className="text-2xl text-[#393C44] dark:text-[#A8AAB4]" />
                   )}
@@ -221,9 +232,100 @@ export default function SignupForm({
                 htmlFor="agreed"
                 className="md:text-base text-[14px] text-c2 leading-[160%] dark:text-[#A8AAB4]"
               >
-               {termsText}
+                 {formTitle === "Create Your Account" ?  <label htmlFor="terms" className="text-sm md:text-base">
+              By agreeing to this, you accept the <span onClick={() => setTermsOpen(true)} className="text-blue-500 cursor-pointer underline" >terms</span>.
+            </label> : termsText}
               </label>
-            </div> }
+
+              {/* Terms and Condition pop up box */}
+              <Dialog open={termsOpen} onOpenChange={setTermsOpen}>
+                <DialogContent className="max-h-[80vh]">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl font-bold">Terms and Conditions</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-6 overflow-y-auto custom-scrollbar  max-h-[60vh] pr-4">
+                    <section>
+                      <h3 className="text-lg font-semibold mb-2">1. Introduction</h3>
+                      <p className="text-gray-600 dark:text-gray-300">
+                        These Terms and Conditions govern your use of our service and website. By accessing or using our service, you agree to be bound by these terms.
+                      </p>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-semibold mb-2">2. Definitions</h3>
+                      <p className="text-gray-600 dark:text-gray-300">
+                        "Service" refers to the website, platform, and all related services.
+                        "User" refers to any individual or entity using our Service.
+                        "Content" refers to all materials, information, and data available through our Service.
+                      </p>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-semibold mb-2">3. User Accounts</h3>
+                      <p className="text-gray-600 dark:text-gray-300">
+                        Users are responsible for maintaining the confidentiality of their account credentials.
+                        You must immediately notify us of any unauthorized use of your account.
+                        We reserve the right to terminate accounts that violate our terms.
+                      </p>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-semibold mb-2">4. Privacy Policy</h3>
+                      <p className="text-gray-600 dark:text-gray-300">
+                        Our Privacy Policy describes how we collect, use, and protect your personal information.
+                        By using our Service, you consent to our data practices as described in our Privacy Policy.
+                        We implement various security measures to protect your personal information.
+                      </p>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-semibold mb-2">5. Payment Terms</h3>
+                      <p className="text-gray-600 dark:text-gray-300">
+                        All payments are processed securely through our payment providers.
+                        Fees are non-refundable unless otherwise specified.
+                        We reserve the right to modify our pricing with appropriate notice.
+                      </p>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-semibold mb-2">6. Intellectual Property</h3>
+                      <p className="text-gray-600 dark:text-gray-300">
+                        All content, features, and functionality are owned by us and protected by international copyright laws.
+                        Users may not copy, modify, or distribute our content without permission.
+                      </p>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-semibold mb-2">7. Limitation of Liability</h3>
+                      <p className="text-gray-600 dark:text-gray-300">
+                        We shall not be liable for any indirect, incidental, special, consequential, or punitive damages.
+                        Our liability is limited to the amount paid for our services.
+                      </p>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-semibold mb-2">8. Changes to Terms</h3>
+                      <p className="text-gray-600 dark:text-gray-300">
+                        We reserve the right to modify these terms at any time.
+                        Continued use of the Service after changes constitutes acceptance of new terms.
+                        Users will be notified of significant changes.
+                      </p>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-semibold mb-2">9. Contact Information</h3>
+                      <p className="text-gray-600 dark:text-gray-300">
+                        For questions about these Terms, please contact us at support@example.com
+                      </p>
+                    </section>
+                  </div>
+                  <div className="flex justify-end mt-6 pt-4 border-t">
+                    <Button onClick={() => setTermsOpen(false)}>Close</Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+            </div>}
             <div>
               <button
                 className="my-8 md:py-6 py-5 text-center w-full bg-[#070707] dark:bg-[#F3F6FE] dark:border dark:border-[#070707] dark:text-[#070707] text-white font-medium text-lg leading-normal rounded-[12px]"
@@ -234,14 +336,14 @@ export default function SignupForm({
               </button>
             </div>
             <div>
-            {forget && (
-              <div>
-                <a href="#" className="text-[#393C44] dark:text-[#ECF0FE] text-base font-medium">
-                  {forget}
-                </a>
-              </div>
-            )}
-              <h2 className={`text-c2 leading-[160%] dark:text-[#A8AAB4] text-base ${signInStyle ? "pt-2":""}`}>
+              {forget && (
+                <div>
+                  <a href="#" className="text-[#393C44] dark:text-[#ECF0FE] text-base font-medium">
+                    {forget}
+                  </a>
+                </div>
+              )}
+              <h2 className={`text-c2 leading-[160%] dark:text-[#A8AAB4] text-base ${signInStyle ? "pt-2" : ""}`}>
                 {accountExist}
                 <span className="font-medium text-[#070707]">
                   <Link href="/auth/signin" className="border-b border-[#070707] dark:text-[#FDFEFF] dark:border-[#A8AAB4]">
@@ -250,7 +352,7 @@ export default function SignupForm({
                 </span>
               </h2>
             </div>
-            
+
           </form>
         </div>
       </div>

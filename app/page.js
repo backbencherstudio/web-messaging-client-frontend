@@ -10,6 +10,7 @@ import stripe from "@/app/assets/stripe.png";
 import paypal from "@/app/assets/paypal.jpg";
 import CustomTable from "./Components/SharedComponent/CustomTable";
 import { messageData } from "./admin/data";
+
 import {
   Accordion,
   AccordionContent,
@@ -27,7 +28,7 @@ import Footer from "./Components/SharedComponent/Footer";
 import PaymentModal from "./Components/SharedComponent/PaymentModal";
 import { useState } from "react";
 import SuccessModal from "./Components/SharedComponent/SuccessModal";
-
+  import CookieBanner from "./Components/SharedComponent/Cookies";
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
@@ -105,10 +106,10 @@ export default function Home() {
                   it requires collective effort, innovation, and commitment.
                 </p>
               </div>
-              <div className="flex md:flex-row flex-col justify-between border  bg-[#f7f9ff] dark:bg-[#070707] lg:x-8 lg:py-8 md:px-4 md:py-6 px-3 py-5 m-4 rounded-lg md:text-lg text-base font-medium gap-4 lg:gap-0">
-                {/* <p className="">
-              <span className="opacity-70">Messages No :</span> 32
-            </p> */}
+              <div className="flex md:flex-row flex-col justify-between border  bg-[#f7f9ff] dark:bg-[#070707] lg:x-8 lg:py-8 md:px-4 md:py-6 px-3 py-5 m-4 rounded-lg lg:text-lg text-base font-medium gap-4 md:gap-2 lg:gap-0">
+                <p className="">
+              <span className="opacity-70">Messages # :</span> 32
+            </p>
                 <p className="">
                   <span className="opacity-70">Current Value:</span> $ 0.50
                 </p>
@@ -144,9 +145,9 @@ export default function Home() {
                   Submit Message
                 </Button>
               </div>
-              <p className="text-[18px] opacity-70 my-12">
-                [ Note : After submitting 50 messages, further submissions will
-                require payment at the current value.]
+              <p className="text-[18px] opacity-70 my-8">
+                [ Note :While the message value is low, you can say what you want for free! Just keep in mind, others can too 
+                  ]
               </p>
               <p className="text-[18px] text-right">Payment Options </p>
               <div className="flex justify-end mt-4">
@@ -257,7 +258,7 @@ export default function Home() {
               placeholder="Message"
               className="py-8 px-6 my-6 min-h-[274px] placeholder:text-[16px] md:placeholder:text-[18px] dark:bg-[#0B0B0C]  "
             />
-            <Button className="bg-[#F3F6FE] border border-[#070707] text-[#070707] py-[24px] px-[64px] rounded-[99px] text-[18px] font-medium">
+            <Button className="bg-[#F3F6FE] hover:bg-[#070707] hover:text-white border border-[#070707] text-[#070707] py-[24px] px-[64px] rounded-[99px] text-[18px] font-medium">
               Submit
             </Button>
           </div>
@@ -265,6 +266,7 @@ export default function Home() {
         </div>
       </div>
       <Footer />
+      <CookieBanner />
     </div>
   );
 }
