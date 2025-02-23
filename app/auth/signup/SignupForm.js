@@ -1,4 +1,3 @@
-
 "use client";
 
 
@@ -31,18 +30,28 @@ export default function SignupForm({
   forget,
 
   placeholderText = {
-    email: "info@mail.com |",
-    name: "First name & last name",
-    location: "Area",
+    email: "email@example.com",
+    firstName: "First name",
+    lastName: "Last name",
+    country: "Country",
     password: "Password",
     confirmPassword: "Confirm Password",
   }, // Dynamic placeholders
   isSignIn = false, // Prop to differentiate Sign In or Sign Up
 }) {
 
-  // Adjust showPassword and showIcon for only one password field (Sign In)
-  const [showPassword, setShowPassword] = useState([{ id: 1, value: false }]); // Initialize with one field
-  const [showIcon, setShowIcon] = useState([{ id: 1, value: false }]); // Initialize with one icon
+  // Initialize showPassword state for both fields
+  const [showPassword, setShowPassword] = useState([
+    { id: 1, value: false },  // for password
+    { id: 2, value: false }   // for confirm password
+  ]);
+
+  // Initialize showIcon state for both fields
+  const [showIcon, setShowIcon] = useState([
+    { id: 1, value: false },  // for password
+    { id: 2, value: false }   // for confirm password
+  ]);
+
   const [check, setCheck] = useState(false);
 
   const adminLogin = formTitle === "Admin Log In"
@@ -66,14 +75,20 @@ export default function SignupForm({
     ...(isSignIn ? [] : [ // Only add the 'name' and 'location' fields for Sign Up
       {
         id: "name",
-        label: "Your Name",
+        label: "Name",
         type: "text",
-        placeholder: placeholderText.name,
-        fullWidth: true,
+        placeholder: placeholderText.firstName,
+        fullWidth: false,
+      },
+      {
+        id: "name2",
+        type: "text",
+        placeholder: placeholderText.lastName,
+        fullWidth: false,
       },
       {
         id: "location",
-        label: "Your Location (optional)",
+        label: "Country",
         type: "text",
         placeholder: placeholderText.location,
         fullWidth: true,
@@ -81,7 +96,7 @@ export default function SignupForm({
     ]),
     {
       id: "email",
-      label: "Your Email",
+      label: "Email",
       type: "email",
       placeholder: placeholderText.email,
       fullWidth: true,
@@ -118,23 +133,19 @@ export default function SignupForm({
   };
 
   const togglePasswordVisibility = (id) => {
-    // Safely toggle visibility
-    const updatedPassword = [...showPassword];
-    const passwordField = updatedPassword.find(p => p.id === id);
-    if (passwordField) {
-      passwordField.value = !passwordField.value;
-      setShowPassword(updatedPassword);
-    }
+    setShowPassword(prev => 
+      prev.map(item => 
+        item.id === id ? { ...item, value: !item.value } : item
+      )
+    );
   };
 
   const handleValue = (e, id) => {
-    // Safely check the value before accessing
-    const updatedIcon = [...showIcon];
-    const iconField = updatedIcon.find(i => i.id === id);
-    if (iconField) {
-      iconField.value = e.target.value ? true : false;
-      setShowIcon(updatedIcon);
-    }
+    setShowIcon(prev => 
+      prev.map(item => 
+        item.id === id ? { ...item, value: e.target.value ? true : false } : item
+      )
+    );
   };
 
   return (
@@ -157,64 +168,144 @@ export default function SignupForm({
             className={`md:p-6 px-4 py-6 md:px-6 border ${adminLogin ? "bg-white" : "bg-form-gradient-light"} dark:border-[#545460] rounded-[16px] md:mt-8 mt-6  dark:bg-custom-gradient`}
           >
             <div className="flex flex-col gap-6">
-              {formFields
-                .filter((field) => field.type !== "password")
-                .map((field) => (
-                  <div
-                    key={field.id}
-                    className={`${field.fullWidth ? "w-full" : "md:w-1/2 w-full"} flex flex-col gap-3`}
-                  >
-                    <label htmlFor={field.id} className="text-base text-c2 dark:text-[#ECF0FE]">
-                      {field.label}
+              {/* Name fields in a row - only for signup */}
+              {!isSignIn && (
+                <div className="flex flex-col  gap-6">
+                  <div className="flex flex-col gap-3 w-full">
+                    <label htmlFor="name" className="text-base text-c2 dark:text-[#ECF0FE]">
+                      Name
                     </label>
-                    <input
-                      type={field.type}
-                      id={field.id}
-                      name={field.id}
-                      value={formData[field.id]}
-                      onChange={handleChange}
-                      placeholder={field.placeholder}
-                      className={`border ${field.id === "name"
-                        ? "border-c2 dark:border-[#C9CCD8] placeholder:text-c2 dark:placeholder:text-[#ECF0FE]"
-                        : "border-[#DFE1E7] placeholder:text-[#878991] dark:border-[#393C44] dark:text-[#878991] dark:placeholder:text-[#878991]"
-                        } rounded-[8px] md:p-6 px-6 py-5 dark:bg-[#0B0B0C]  `} // Add dark styles here
-                    />
-                  </div>
-                ))}
+                    <div className="flex w-full gap-6">
 
-              {/* Password fields container */}
-              <div className="flex md:flex-row flex-col gap-6">
-                {formFields
-                  .filter((field) => field.type === "password")
-                  .map((field, index) => (
-                    <div key={field.id} className="flex flex-col gap-3 w-full">
-                      <label htmlFor={field.id} className="text-base text-c2 dark:text-[#ECF0FE]">
-                        {field.label}
-                      </label>
-                      <div className="relative">
-                        <input
-                          onChange={(e) => handleValue(e, index + 1)}
-                          type={showPassword[index]?.value ? "text" : "password"} // Dynamically toggle type
-                          name="password"
-                          className="border dark:bg-[#0B0B0C] dark:border-[#393C44] rounded-[8px] md:p-6 px-6 py-5 placeholder:text-c2 w-full border-[#DFE1E7]"
-                        />
-
-                        {showIcon[index]?.value && (
-                          <button
-                            type="button"
-                            onClick={() => togglePasswordVisibility(index + 1)}
-                            className="absolute top-1/2 right-1 -translate-x-1/2 -translate-y-1/2 transform text-[#2A2A2A]"
-                          >
-                            {showPassword[index]?.value ? (
-                              <MdRemoveRedEye className="text-2xl dark:text-white" />
-                            ) : (
-                              <FaEyeSlash className="text-2xl dark:text-white" />
-                            )}
-                          </button>
-                        )}
-                      </div>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        placeholder={placeholderText.firstName}
+                        className="border border-[#DFE1E7] dark:border-[#393C44] rounded-[8px] md:p-6 px-6 py-5 placeholder:text-[#878991] dark:bg-[#0B0B0C] dark:text-[#878991] dark:placeholder:text-[#878991] w-full"
+                      />
+                      <input
+                        type="text"
+                        id="name2"
+                        name="name2"
+                        value={formData.name2}
+                        onChange={handleChange}
+                        placeholder={placeholderText.lastName}
+                        className="border border-[#DFE1E7] dark:border-[#393C44] rounded-[8px] md:p-6 px-6 py-5 placeholder:text-[#878991] dark:bg-[#0B0B0C] dark:text-[#878991] dark:placeholder:text-[#878991] w-full"
+                      />
                     </div>
-                  ))}
+                  </div>
+                  <div className="flex flex-col gap-3 w-full md:w-1/2">
+
+
+                  </div>
+                </div>
+              )}
+
+              {/* Email field */}
+              <div className="flex flex-col gap-3">
+                <label htmlFor="email" className="text-base text-c2 dark:text-[#ECF0FE]">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder={placeholderText.email}
+                  className="border border-[#DFE1E7] dark:border-[#393C44] rounded-[8px] md:p-6 px-6 py-5 placeholder:text-[#878991] dark:bg-[#0B0B0C] dark:text-[#878991] dark:placeholder:text-[#878991]"
+                />
+              </div>
+
+              {/* Country field - only for signup */}
+              {!isSignIn && (
+                <div className="flex flex-col gap-3">
+                  <label htmlFor="location" className="text-base text-c2 dark:text-[#ECF0FE]">
+                    Country
+                  </label>
+                  <input
+                    type="text"
+                    id="location"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleChange}
+                    placeholder={placeholderText.country}
+                    className="border border-[#DFE1E7] dark:border-[#393C44] rounded-[8px] md:p-6 px-6 py-5 placeholder:text-[#878991] dark:bg-[#0B0B0C] dark:text-[#878991] dark:placeholder:text-[#878991]"
+                  />
+                </div>
+              )}
+
+      
+              {/* Password fields container */}
+              <div className="flex flex-col md:flex-row gap-6">
+                {/* Password field */}
+                <div className="flex flex-col gap-3 w-full md:w-1/2">
+                  <label htmlFor="password" className="text-base text-c2 dark:text-[#ECF0FE]">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword[0]?.value ? "text" : "password"}
+                      name="password"
+                      onChange={(e) => {
+                        handleValue(e, 1);
+                        handleChange(e);
+                      }}
+                      className="border dark:bg-[#0B0B0C] dark:border-[#393C44] rounded-[8px] md:p-6 px-6 py-5 placeholder:text-c2 w-full border-[#DFE1E7]"
+                      placeholder={placeholderText.password}
+                    />
+                    {showIcon[0]?.value && (
+                      <button
+                        type="button"
+                        onClick={() => togglePasswordVisibility(1)}
+                        className="absolute top-1/2 right-4 -translate-y-1/2 transform text-[#2A2A2A]"
+                      >
+                        {showPassword[0]?.value ? (
+                          <MdRemoveRedEye className="text-2xl dark:text-white" />
+                        ) : (
+                          <FaEyeSlash className="text-2xl dark:text-white" />
+                        )}
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Confirm Password field */}
+                {!isSignIn && (
+                  <div className="flex flex-col gap-3 w-full md:w-1/2">
+                    <label htmlFor="confirmPassword" className="text-base text-c2 dark:text-[#ECF0FE]">
+                      Confirm Password
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showPassword[1]?.value ? "text" : "password"}
+                        name="confirmPassword"
+                        onChange={(e) => {
+                          handleValue(e, 2);
+                          handleChange(e);
+                        }}
+                        className="border dark:bg-[#0B0B0C] dark:border-[#393C44] rounded-[8px] md:p-6 px-6 py-5 placeholder:text-c2 w-full border-[#DFE1E7]"
+                        placeholder={placeholderText.confirmPassword}
+                      />
+                      {showIcon[1]?.value && (
+                        <button
+                          type="button"
+                          onClick={() => togglePasswordVisibility(2)}
+                          className="absolute top-1/2 right-4 -translate-y-1/2 transform text-[#2A2A2A]"
+                        >
+                          {showPassword[1]?.value ? (
+                            <MdRemoveRedEye className="text-2xl dark:text-white" />
+                          ) : (
+                            <FaEyeSlash className="text-2xl dark:text-white" />
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -232,9 +323,9 @@ export default function SignupForm({
                 htmlFor="agreed"
                 className="md:text-base text-[14px] text-c2 leading-[160%] dark:text-[#A8AAB4]"
               >
-                 {formTitle === "Create Your Account" ?  <label htmlFor="terms" className="text-sm md:text-base">
-              By agreeing to this, you accept the <span onClick={() => setTermsOpen(true)} className="text-blue-500 cursor-pointer underline" >terms</span>.
-            </label> : termsText}
+                {formTitle === "Create Your Account" ? <label htmlFor="terms" className="text-sm md:text-base">
+                  By agreeing to this, you accept the <span onClick={() => setTermsOpen(true)} className="text-blue-500 cursor-pointer underline" >terms</span>.
+                </label> : termsText}
               </label>
 
               {/* Terms and Condition pop up box */}
@@ -331,10 +422,10 @@ export default function SignupForm({
                 className="my-8 md:py-6 py-5 text-center w-full bg-[#070707] dark:bg-[#F3F6FE] dark:border dark:border-[#070707] dark:text-[#070707] text-white font-medium text-lg leading-normal rounded-[12px]"
                 type="submit"
                 disabled={check}
-                
+
               >
                 <Link href="/user/allmessage" >
-                {buttonText}      
+                  {buttonText}
                 </Link>
               </button>
             </div>
@@ -358,8 +449,8 @@ export default function SignupForm({
 
           </form>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }
 
