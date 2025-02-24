@@ -28,7 +28,7 @@ import Footer from "./Components/SharedComponent/Footer";
 import PaymentModal from "./Components/SharedComponent/PaymentModal";
 import { useState } from "react";
 import SuccessModal from "./Components/SharedComponent/SuccessModal";
-  import CookieBanner from "./Components/SharedComponent/Cookies";
+import CookieBanner from "./Components/SharedComponent/Cookies";
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
@@ -82,11 +82,11 @@ export default function Home() {
       <div>
         {/* about section  */}
         <div className="dark:bg-[url('/bg.png')] dark:bg-cover dark:bg-no-repeat ">
-          <div className="md:pt-44 pt-24 md:pb-[66px] pb-[26px] max-w-[1080px] mx-auto px-4 lg:px-0 ">
+          <div className="md:pt-44 pt-24 md:pb-[66px] pb-[26px] max-w-[1080px] mx-auto px-5 2xl:px-0 ">
             <div className="border  rounded-lg dark:bg-custom-gradient">
               <div className="flex rounded-t-lg justify-between items-center bg-[#f7f9ff] px-4 lg:px-16 py-5 dark:bg-[#070707]">
-                <h1 className="text-[clamp(1rem,2vw,2rem)] font-semibold">
-                  Wade Warren
+                <h1 className="text-[clamp(1rem,2vw,2rem)] font-semibold dark:text-[#C9CCD8]">
+                Hey there! :)
                 </h1>
                 <span className="flex">
                   <SiComma size={20} />
@@ -95,21 +95,22 @@ export default function Home() {
               </div>
 
               <div className="px-4 lg:px-16  lg:py-16 py-8">
-                <p className="text-[clamp(24px,2vw,2.2rem)]">
-                  In today&apos;s world, we are facing numerous pressing challenges,
+                <p className="text-[clamp(24px,2vw,2.2rem)] flex flex-col gap-4 text-gray-700 dark:text-[#C9CCD8]">
+                  {/* In today&apos;s world, we are facing numerous pressing challenges,
                   but one of the most significant issues affecting humanity is
                   <span className="text-gray-500">
                     [mention the specific problem, e.g., climate change, poverty,
                     inequality, access to education]
                   </span>
                   . This issue continues to impact millions of lives, and addressing
-                  it requires collective effort, innovation, and commitment.
+                  it requires collective effort, innovation, and commitment. */}
+                  <span>Seems like you're first! Got  something to say?"</span>
                 </p>
               </div>
               <div className="flex md:flex-row flex-col justify-between border  bg-[#f7f9ff] dark:bg-[#070707] lg:x-8 lg:py-8 md:px-4 md:py-6 px-3 py-5 m-4 rounded-lg lg:text-lg text-base font-medium gap-4 md:gap-2 lg:gap-0">
                 <p className="">
-              <span className="opacity-70">Messages # :</span> 32
-            </p>
+                  <span className="opacity-70">Message # :</span> 32
+                </p>
                 <p className="">
                   <span className="opacity-70">Current Value:</span> $ 0.50
                 </p>
@@ -123,12 +124,12 @@ export default function Home() {
         </div>
 
         <div className="dark:bg-[url('/shape-2.png')] dark:bg-center bg-cover dark:bg-no-repeat ">
-          <div className="max-w-[1080px] mx-auto px-4 lg:px-0 md:pb-[58px] pb-[26px]">
-            <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium pt-[26px] lg:pt-[54px]">
+          <div className="max-w-[1080px] mx-auto md:pb-[58px] pb-[26px] px-5 2xl:px-0 ">
+            <h1 className="text-[clamp(32px,2vw,42px)] font-medium pt-[26px] lg:pt-[54px]">
               Is your message more valuable? Prove it!
             </h1>
             {/* payment form  */}
-            <div className="border rounded-lg p-6 mt-4 dark:bg-custom-gradient">
+            <div className="border rounded-lg md:p-6 p-4 mt-4 dark:bg-custom-gradient">
               <Input placeholder="Who are you?" className="py-8 px-6  md:placeholder:text-[18px] placeholder:text-[16px]" />
               <Textarea
                 placeholder="What's your message?"
@@ -146,8 +147,7 @@ export default function Home() {
                 </Button>
               </div>
               <p className="text-[18px] opacity-70 my-8">
-                [ Note :While the message value is low, you can say what you want for free! Just keep in mind, others can too 
-                  ]
+                Note: While the message value is low, you can say what you want for free! Just keep in mind, others can too
               </p>
               <p className="text-[18px] text-right">Payment Options </p>
               <div className="flex justify-end mt-4">
@@ -172,13 +172,13 @@ export default function Home() {
         </div>
         {/* leader board  */}
         <div className="dark:bg-[url('/shape-3.png')] dark:bg-cover dark:bg-center dark:bg-no-repeat ">
-          <div id="leaderboard" className="max-w-[1080px] mx-auto px-4 lg:px-0 md:pb-[72px] pb-[26 px]">
-            <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium pt-[26px] md:pt-[46px] lg:pt-[62px] md:pb-8 pb-6">
-              LeaderBoard
+          <div id="leaderboard" className="max-w-[1080px] mx-auto px-5 2xl:px-0 md:pb-[72px] pb-[26px]">
+            <h1 className="text-[clamp(32px,2vw,42px)] font-medium pt-[26px] md:pt-[46px] lg:pt-[62px] md:pb-8 pb-6">
+              Leaderboard
             </h1>
 
             <CustomTable
-              title="Top Most views messages"
+              title="Top 100 Most Viewed Messages"
               data={messageData}
               columns={messageColumns}
             />
@@ -186,7 +186,7 @@ export default function Home() {
         </div>
         {/* faq  */}
         <div className="dark:bg-[url('/shape-4.png')] dark:bg-center dark:bg-cover dark:bg-no-repeat  ">
-          <div id="faq" className="max-w-[1080px] mx-auto px-4 lg:px-0 md:pb-[64px] pb-[26px]">
+          <div id="faq" className="max-w-[1080px] mx-auto px-5 2xl:px-0 md:pb-[64px] pb-[26px]">
             <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium  md:pt-[48px] pt-[26px] ">
               Frequently Asked Questions (FAQ)
             </h1>
@@ -210,7 +210,7 @@ export default function Home() {
         </div>
         {/* about us  */}
         <div className="dark:bg-[url('/shape-5.png')] dark:bg-center dark:bg-cover dark:bg-no-repeat backdrop-blur-[90px]">
-          <div id="about" className="max-w-[1080px] mx-auto px-4 lg:px-0 lg:pb-[77px] md:pb-[47px] pb-[26px]">
+          <div id="about" className="max-w-[1080px] mx-auto px-5 2xl:px-0 lg:pb-[77px] md:pb-[47px] pb-[26px]">
             <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium  pt-[26px] md:pt-[46px] lg:pt-[57px] ">
               About SayThat
             </h1>
@@ -235,34 +235,34 @@ export default function Home() {
           </div>
         </div>
         {/* contact us  */}
-        <div  className="dark:bg-[url('/shape-6.png')] dark:bg-cover dark:bg-bottom dark:bg-no-repeat ">
-        <div id="contact" className="max-w-[1080px] mx-auto px-4 lg:px-0 pb-[26px] md:pb-[56px]">
-          <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium  md:pt-[43px] pt-[26px]">
-            Contact Us
-          </h1>
-          <div className="border rounded-lg p-6 mt-8 dark:bg-custom-gradient">
-            <Input placeholder="Name" className="py-8 px-6 placeholder:text-[16px] md:placeholder:text-[18px] dark:bg-[#0B0B0C]" />
-            <Input placeholder="Email" className="py-8 px-6 mt-6 placeholder:text-[16px] md:placeholder:text-[18px] dark:bg-[#0B0B0C]" />
-            <Select>
-              <SelectTrigger className="py-8 px-6 mt-6 text-[16px] md:text-[18px] dark:bg-[#0B0B0C]">
-                <SelectValue placeholder="Subject" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem className="text-[16px] md:text-[18px]" value="light">Light</SelectItem>
-                <SelectItem className="text-[16px] md:text-[18px]" value="dark">Dark</SelectItem>
-                <SelectItem className="text-[16px] md:text-[18px]" value="system">System</SelectItem>
-              </SelectContent>
-            </Select>
+        <div className="dark:bg-[url('/shape-6.png')] dark:bg-cover dark:bg-bottom dark:bg-no-repeat ">
+          <div id="contact" className="max-w-[1080px] mx-auto px-5 2xl:px-0 pb-[26px] md:pb-[56px]">
+            <h1 className="text-[clamp(1rem,2vw,2.7rem)] font-medium  md:pt-[43px] pt-[26px]">
+              Contact Us
+            </h1>
+            <div className="border rounded-lg p-6 mt-8 dark:bg-custom-gradient">
+              <Input placeholder="Name" className="py-8 px-6 placeholder:text-[16px] md:placeholder:text-[18px] dark:bg-[#0B0B0C]" />
+              <Input placeholder="Email" className="py-8 px-6 mt-6 placeholder:text-[16px] md:placeholder:text-[18px] dark:bg-[#0B0B0C]" />
+              <Select>
+                <SelectTrigger className="py-8 px-6 mt-6 text-[16px] md:text-[18px] dark:bg-[#0B0B0C]">
+                  <SelectValue placeholder="Subject" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem className="text-[16px] md:text-[18px]" value="light">Light</SelectItem>
+                  <SelectItem className="text-[16px] md:text-[18px]" value="dark">Dark</SelectItem>
+                  <SelectItem className="text-[16px] md:text-[18px]" value="system">System</SelectItem>
+                </SelectContent>
+              </Select>
 
-            <Textarea
-              placeholder="Message"
-              className="py-8 px-6 my-6 min-h-[274px] placeholder:text-[16px] md:placeholder:text-[18px] dark:bg-[#0B0B0C]  "
-            />
-            <Button className="bg-[#F3F6FE] hover:bg-[#070707] hover:text-white border border-[#070707] text-[#070707] py-[24px] px-[64px] rounded-[99px] text-[18px] font-medium">
-              Submit
-            </Button>
+              <Textarea
+                placeholder="Message"
+                className="py-8 px-6 my-6 min-h-[274px] placeholder:text-[16px] md:placeholder:text-[18px] dark:bg-[#0B0B0C]  "
+              />
+              <Button className="bg-[#F3F6FE] hover:bg-[#070707] hover:text-white border border-[#070707] text-[#070707] py-[24px] px-[64px] rounded-[99px] text-[18px] font-medium">
+                Submit
+              </Button>
+            </div>
           </div>
-        </div>
         </div>
       </div>
       <Footer />

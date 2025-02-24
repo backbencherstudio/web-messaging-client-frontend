@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { User, Eye, EyeOff } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 
 const dummyUsers = {
@@ -23,6 +24,17 @@ const dummyUsers = {
     avatar: null
   }
 };
+
+const countries = [
+  { value: "", label: "Select a country" },
+  { value: "US", label: "United States" },
+  { value: "UK", label: "United Kingdom" },
+  { value: "CA", label: "Canada" },
+  { value: "AU", label: "Australia" },
+  { value: "DE", label: "Germany" },
+  { value: "FR", label: "France" },
+];
+
 
 const EditProfile = () => {
  
@@ -83,6 +95,14 @@ const EditProfile = () => {
     );
   }
 
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
   return (
     <div className="flex justify-center pt-[121px] md:pt-[156px] lg:pt-[188px] bg-cover bg-no-repeat dark:bg-[url('/bg.png')] pb-[100px] ">
       <div className="m-4 border dark:border-[#545460] bg-white dark:bg-[#1E1E1E] text-[#070707] dark:text-[#FDFEFF] rounded-lg shadow-lg max-w-[942px] w-full px-6 py-6 md:px-10 md:py-8">
@@ -90,17 +110,17 @@ const EditProfile = () => {
         <h1 className="text-2xl font-semibold mb-8">Edit Profile</h1>
 
         {/* Profile Image Section */}
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center  mb-8">
           <div className="relative">
-            <div className="w-20 h-20 rounded-full bg-gray-200 dark:bg-[#2A2A2A] flex items-center justify-center">
+            {/* <div className="w-20 h-20 rounded-full bg-gray-200 dark:bg-[#2A2A2A] flex items-center justify-center">
               <User className="w-10 h-10 text-gray-500 dark:text-gray-400" />
-            </div>
-            <button 
+            </div> */}
+            {/* <button 
               className="absolute bottom-0 right-0 w-6 h-6 bg-black dark:bg-[#545460] rounded-full flex items-center justify-center"
               onClick={() => alert('Image upload functionality will be implemented')}
             >
               <span className="text-white text-xs">✎</span>
-            </button>
+            </button> */}
           </div>
           <div>
             <h2 className="text-lg font-medium">{formData.name}</h2>
@@ -137,17 +157,31 @@ const EditProfile = () => {
           </div>
 
           {/* Location Field */}
-          <div>
-            <label className="block text-sm font-medium mb-2">Location (optional)</label>
-            <input
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleInputChange}
-              placeholder="Dhaka, Bangladesh"
-              className="w-full px-4 py-3 rounded-lg border dark:border-[#545460] bg-white dark:bg-[#2A2A2A] focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-[#545460]"
-            />
-          </div>
+          <div className="flex flex-col gap-3">
+                  <label htmlFor="location" className=" dark:text-[#ECF0FE]">
+                    Country
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="location"
+                      name="location"
+                      value={formData.location}
+                      onChange={handleChange}
+                      className="border border-[#DFE1E7] dark:border-[#393C44] rounded-[8px] md:p-6 px-6 py-5 bg-white dark:bg-[#2A2A2A]  dark:text-[#ECF0FE] appearance-none cursor-pointer w-full"
+                    >
+                      {countries.map((country) => (
+                        <option
+                          key={country.value}
+                          value={country.value}
+                          className="py-2 bg-white dark:bg-[#0B0B0C]  dark:text-[#ECF0FE]"
+                        >
+                          {country.label}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#878991] dark:text-[#ECF0FE] pointer-events-none" />
+                  </div>
+                </div>
 
           {/* Password Field */}
           <div>
