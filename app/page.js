@@ -85,8 +85,8 @@ export default function Home() {
           <div className="md:pt-44 pt-24 md:pb-[66px] pb-[26px] max-w-[1080px] mx-auto px-5 2xl:px-0 ">
             <div className="border  rounded-lg dark:bg-custom-gradient">
               <div className="flex rounded-t-lg justify-between items-center bg-[#f7f9ff] px-4 lg:px-16 py-5 dark:bg-[#070707]">
-                <h1 className="text-[clamp(1rem,2vw,2rem)] font-semibold">
-                  Wade Warren
+                <h1 className="text-[clamp(1rem,2vw,2rem)] font-semibold dark:text-[#C9CCD8]">
+                Hey there! :)
                 </h1>
                 <span className="flex">
                   <SiComma size={20} />
@@ -95,15 +95,16 @@ export default function Home() {
               </div>
 
               <div className="px-4 lg:px-16  lg:py-16 py-8">
-                <p className="text-[clamp(24px,2vw,2.2rem)]">
-                  In today&apos;s world, we are facing numerous pressing challenges,
+                <p className="text-[clamp(24px,2vw,2.2rem)] flex flex-col gap-4 text-gray-700 dark:text-[#C9CCD8]">
+                  {/* In today&apos;s world, we are facing numerous pressing challenges,
                   but one of the most significant issues affecting humanity is
                   <span className="text-gray-500">
                     [mention the specific problem, e.g., climate change, poverty,
                     inequality, access to education]
                   </span>
                   . This issue continues to impact millions of lives, and addressing
-                  it requires collective effort, innovation, and commitment.
+                  it requires collective effort, innovation, and commitment. */}
+                  <span>Seems like you're first! Got  something to say?"</span>
                 </p>
               </div>
               <div className="flex md:flex-row flex-col justify-between border  bg-[#f7f9ff] dark:bg-[#070707] lg:x-8 lg:py-8 md:px-4 md:py-6 px-3 py-5 m-4 rounded-lg lg:text-lg text-base font-medium gap-4 md:gap-2 lg:gap-0">
@@ -177,7 +178,7 @@ export default function Home() {
             </h1>
 
             <CustomTable
-              title="Top Most views messages” to “Top 100 Most Viewed Messages"
+              title="Top 100 Most Viewed Messages"
               data={messageData}
               columns={messageColumns}
             />

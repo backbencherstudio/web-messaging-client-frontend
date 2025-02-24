@@ -46,7 +46,7 @@ export default function CookieBanner() {
             By clicking "Accept All", you consent to our use of cookies. Read more about how we use cookies in our 
             <button 
               onClick={() => window.open('/privacy-policy', '_blank')}
-              className="text-primary hover:text-primary/80 underline ml-1"
+              className="text-white hover:text-primary/80 underline ml-1"
             >
               Cookie Policy
             </button>.

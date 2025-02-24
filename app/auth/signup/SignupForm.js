@@ -8,6 +8,7 @@ import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
 import { MdOutlineCheckBox } from "react-icons/md";
 import { useState } from "react";
 import Link from "next/link";
+import { ChevronDown } from 'lucide-react';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +19,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+const countries = [
+  { value: "", label: "Select a country" },
+  { value: "US", label: "United States" },
+  { value: "UK", label: "United Kingdom" },
+  { value: "CA", label: "Canada" },
+  { value: "AU", label: "Australia" },
+  { value: "DE", label: "Germany" },
+  { value: "FR", label: "France" },
+];
 
 export default function SignupForm({
   bgImage, // Background image URL
@@ -133,16 +143,16 @@ export default function SignupForm({
   };
 
   const togglePasswordVisibility = (id) => {
-    setShowPassword(prev => 
-      prev.map(item => 
+    setShowPassword(prev =>
+      prev.map(item =>
         item.id === id ? { ...item, value: !item.value } : item
       )
     );
   };
 
   const handleValue = (e, id) => {
-    setShowIcon(prev => 
-      prev.map(item => 
+    setShowIcon(prev =>
+      prev.map(item =>
         item.id === id ? { ...item, value: e.target.value ? true : false } : item
       )
     );
@@ -170,12 +180,12 @@ export default function SignupForm({
             <div className="flex flex-col gap-6">
               {/* Name fields in a row - only for signup */}
               {!isSignIn && (
-                <div className="flex flex-col  gap-6">
+                <div className="flex flex-col  ">
                   <div className="flex flex-col gap-3 w-full">
                     <label htmlFor="name" className="text-base text-c2 dark:text-[#ECF0FE]">
                       Name
                     </label>
-                    <div className="flex w-full gap-6">
+                    <div className="flex md:flex-row flex-col w-full gap-6">
 
                       <input
                         type="text"
@@ -226,23 +236,34 @@ export default function SignupForm({
                   <label htmlFor="location" className="text-base text-c2 dark:text-[#ECF0FE]">
                     Country
                   </label>
-                  <input
-                    type="text"
-                    id="location"
-                    name="location"
-                    value={formData.location}
-                    onChange={handleChange}
-                    placeholder={placeholderText.country}
-                    className="border border-[#DFE1E7] dark:border-[#393C44] rounded-[8px] md:p-6 px-6 py-5 placeholder:text-[#878991] dark:bg-[#0B0B0C] dark:text-[#878991] dark:placeholder:text-[#878991]"
-                  />
+                  <div className="relative">
+                    <select
+                      id="location"
+                      name="location"
+                      value={formData.location}
+                      onChange={handleChange}
+                      className="border border-[#DFE1E7] dark:border-[#393C44] rounded-[8px] md:p-6 px-6 py-5 bg-white dark:bg-[#0B0B0C] text-[#878991] dark:text-[#ECF0FE] appearance-none cursor-pointer w-full"
+                    >
+                      {countries.map((country) => (
+                        <option
+                          key={country.value}
+                          value={country.value}
+                          className="py-2 bg-white dark:bg-[#0B0B0C] text-[#878991] dark:text-[#ECF0FE]"
+                        >
+                          {country.label}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#878991] dark:text-[#ECF0FE] pointer-events-none" />
+                  </div>
                 </div>
               )}
 
-      
+
               {/* Password fields container */}
               <div className="flex flex-col md:flex-row gap-6">
                 {/* Password field */}
-                <div className="flex flex-col gap-3 w-full md:w-1/2">
+                <div className="flex flex-col gap-3 w-full ">
                   <label htmlFor="password" className="text-base text-c2 dark:text-[#ECF0FE]">
                     Password
                   </label>
@@ -275,7 +296,7 @@ export default function SignupForm({
 
                 {/* Confirm Password field */}
                 {!isSignIn && (
-                  <div className="flex flex-col gap-3 w-full md:w-1/2">
+                  <div className="flex flex-col gap-3 w-full ">
                     <label htmlFor="confirmPassword" className="text-base text-c2 dark:text-[#ECF0FE]">
                       Confirm Password
                     </label>
@@ -418,16 +439,23 @@ export default function SignupForm({
 
             </div>}
             <div>
-              <button
-                className="my-8 md:py-6 py-5 text-center w-full bg-[#070707] dark:bg-[#F3F6FE] dark:border dark:border-[#070707] dark:text-[#070707] text-white font-medium text-lg leading-normal rounded-[12px]"
-                type="submit"
-                disabled={check}
 
-              >
-                <Link href="/user/allmessage" >
+
+              <Link href={
+                adminLogin
+                  ? "/admin" // If admin is logged in
+                  : buttonText === "Sign Up"
+                    ? "/auth/signin" // If button text is "Sign Up"
+                    : "/user/allmessage" // Default case
+              } >
+                <button
+                  className="my-8 md:py-6 py-5 text-center w-full bg-[#070707] dark:bg-[#F3F6FE] dark:border dark:border-[#070707] dark:text-[#070707] text-white font-medium text-lg leading-normal rounded-[12px]"
+                  type="submit"
+
+                >
                   {buttonText}
-                </Link>
-              </button>
+                </button>
+              </Link>
             </div>
             <div>
               {forget && (

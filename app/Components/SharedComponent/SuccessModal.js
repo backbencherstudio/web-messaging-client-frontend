@@ -54,7 +54,7 @@ const SuccessModal = ({ open, onClose }) => {
                   />
                 </svg>
               </div>
-              <p className="text-[#393C44] dark:text-[#C9CCD8] leading-[160%] text-center text-sm md:text-base font-medium md:w-full w-[26ch] ">
+              <p className="text-[#393C44] dark:text-[#C9CCD8] leading-[160%] text-justify text-sm md:text-base font-medium  max-w-[38ch] ">
               Let's see how many views it gets before someone decides theirs is more valuable. Register now to claim ownership over your message and track its exposure!
               </p>
               <div className="flex flex-col gap-3 md:gap-4 justify-center items-center mt-6">
