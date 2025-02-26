@@ -71,7 +71,9 @@ export default function CustomTable({
   return (
     <div className="bg-white dark:bg-custom-gradient rounded-lg shadow-md p-6">
       <div className="lg:flex justify-between items-center mb-4">
-        <h2 className="md:text-2xl text-xl font-medium mb-3 lg:mb-0">{title}</h2>
+        <h2 className="md:text-2xl text-xl font-medium mb-3 lg:mb-0">
+          {title}
+        </h2>
         <div className="flex gap-4">
           {search && (
             <div className="relative w-[50%] lg:w-full lg:max-w-[315px]">
@@ -120,7 +122,7 @@ export default function CustomTable({
         </TableBody>
       </Table>
 
-      {/* New Pagination Controls */}
+      {/* New Pagination Control*/}
       {pagination && shouldPaginate && (
         <div className="mt-6 flex justify-end">
           {" "}
