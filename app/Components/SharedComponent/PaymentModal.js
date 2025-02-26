@@ -34,7 +34,7 @@ const PaymentModal = ({ open, onClose, setOpenSuccess }) => {
         </DialogHeader>
         <div className="space-y-4">
           <Input
-            placeholder="Your Email"
+            placeholder="Email"
             className="text-base md:text-lg p-6 md:p-8"
           />
           <Input
@@ -203,7 +203,7 @@ const PaymentModal = ({ open, onClose, setOpenSuccess }) => {
             className="w-full md:w-[234px] py-4 md:py-6 px-8 md:px-12 text-base md:text-lg rounded-full"
             disabled={!isChecked}
           >
-            Payment & Submit
+            Submit
           </Button>
         </div>
       </DialogContent>

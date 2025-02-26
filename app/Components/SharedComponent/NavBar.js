@@ -54,7 +54,7 @@ const NavBar = () => {
   return (
     <div className="px-[6px] 2xl:px-0 ">
       <div
-        className={`fixed px-5 2xl:px-0 top-0 left-0 w-full z-50  transition-transform duration-500 ${showNavbar ? "translate-y-0" : "-translate-y-full"
+        className={`fixed px-5 2xl:px-0 top-0 left-0 w-full z-50  transition-transform duration-500 ${showNavbar ? "translate-y-00" : "-translate-y-fulll"
           }  ${isAtTop ? "mt-0" : "mt-6"} `}
       >
         <div className="max-w-[1552px] mx-auto md:py-6 py-[14px] 2xl:px-[96px] xl:px-[56px]  px-[14px] rounded-[12px] bg-nav-gradient backdrop-blur-3xl dark:bg-nav-dark-gradient flex  items-center">
@@ -63,7 +63,7 @@ const NavBar = () => {
               } flex items-center justify-between w-full`}
           >
             <Link href="/">
-              <h1 className="text-[#070707] dark:text-white font-medium lg:text-[32px] text-2xl md:text-[28px] lg:min-w-[254px] ">
+              <h1 className="text-[#070707] dark:text-white font-medium lg:text-[32px] text-2xl md:text-[28px] xl:min-w-[254px] lg:min-w-[200px] ">
                 SayThat.sh
               </h1>
             </Link>
@@ -71,7 +71,7 @@ const NavBar = () => {
             <div className="flex items-center  justify-between w-full ml-4 ">
               <div
                 className={` ${isAdminRoute || isUserRoute ? "hidden" : "hidden md:flex"
-                  }  md:text-[18px] items-center lg:space-x-6 space-x-3 text-base `}
+                  }   items-center lg:space-x-6 space-x-3 text-base md:text-sm lg:text-base xl:text-lg `}
               >
                 <Link href="/" className="text-[#070707] dark:text-white">
                   Home
