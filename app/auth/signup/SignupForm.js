@@ -1,14 +1,14 @@
 "use client";
 
 
-
 import { FaEyeSlash } from "react-icons/fa6";
 import { MdRemoveRedEye } from "react-icons/md";
 import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
 import { MdOutlineCheckBox } from "react-icons/md";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ChevronDown } from 'lucide-react';
+import { Command } from 'cmdk';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,15 +19,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-const countries = [
-  { value: "", label: "Select a country" },
-  { value: "US", label: "United States" },
-  { value: "UK", label: "United Kingdom" },
-  { value: "CA", label: "Canada" },
-  { value: "AU", label: "Australia" },
-  { value: "DE", label: "Germany" },
-  { value: "FR", label: "France" },
-];
 
 export default function SignupForm({
   bgImage, // Background image URL
@@ -41,8 +32,8 @@ export default function SignupForm({
 
   placeholderText = {
     email: "email@example.com",
-    firstName: "First name",
-    lastName: "Last name",
+    firstName: "First",
+    lastName: "Last",
     country: "Country",
     password: "Password",
     confirmPassword: "Confirm Password",
@@ -78,6 +69,37 @@ export default function SignupForm({
     confirmPassword: "",
     agreed: false,
   });
+
+  const [countries, setCountries] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    // Fetch countries from the REST Countries API
+    fetch('https://restcountries.com/v3.1/all')
+      .then(response => response.json())
+      .then(data => {
+        // Transform the data to our required format
+        console.log(data)
+        const formattedCountries = data
+          .map(country => ({
+            value: country.cca2, // ISO 3166-1 alpha-2 code
+            label: country.name.common === "United States" ? "United States Of America" : country.name.common // Common name united states change to united states of america
+          }))
+          .sort((a, b) => 
+            a.value === "US" ? -1 : 
+            b.value === "US" ? 1 : 
+            a.label.localeCompare(b.label)
+          );
+        setCountries(formattedCountries);
+        console.log(formattedCountries)
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching countries:', error);
+        setIsLoading(false);
+      });
+  }, []);
 
   // Conditionally set the form fields for Sign In and Sign Up
   const formFields = [
@@ -237,23 +259,46 @@ export default function SignupForm({
                     Country
                   </label>
                   <div className="relative">
-                    <select
-                      id="location"
-                      name="location"
-                      value={formData.location}
-                      onChange={handleChange}
-                      className="border border-[#DFE1E7] dark:border-[#393C44] rounded-[8px] md:p-6 px-6 py-5 bg-white dark:bg-[#0B0B0C] text-[#878991] dark:text-[#ECF0FE] appearance-none cursor-pointer w-full"
-                    >
-                      {countries.map((country) => (
-                        <option
-                          key={country.value}
-                          value={country.value}
-                          className="py-2 bg-white dark:bg-[#0B0B0C] text-[#878991] dark:text-[#ECF0FE]"
-                        >
-                          {country.label}
-                        </option>
-                      ))}
-                    </select>
+                    <Command className="border border-[#DFE1E7] dark:border-[#393C44] rounded-[8px] overflow-hidden">
+                      <div className="flex items-center border-b">
+                        <Command.Input 
+                          placeholder={isLoading ? "Loading countries..." : "Search countries..."}
+                          className="w-full p-6 outline-none cursor-pointer bg-white dark:bg-[#0B0B0C] text-[#878991] dark:text-[#ECF0FE]"
+                          value={formData.location}
+                          onValueChange={(value) => {
+                            handleChange({ target: { name: 'location', value } });
+                          }}
+                          onFocus={() => setIsOpen(true)}
+                          onBlur={() => setTimeout(() => setIsOpen(false), 200)}
+                          disabled={isLoading}
+                        />
+                      </div>
+                      {isOpen && (
+                        <Command.List className="max-h-[200px] overflow-y-auto custom-scrollbar">
+                          <Command.Empty className="py-2 px-3 text-[#878991] dark:text-[#ECF0FE]">
+                            {isLoading ? "Loading..." : "No country found."}
+                          </Command.Empty>
+                          {countries.map((country) => (
+                            <Command.Item
+                              key={country.value}
+                              value={country.label}
+                              onSelect={() => {
+                                handleChange({ 
+                                  target: { 
+                                    name: 'location', 
+                                    value: country.label
+                                  } 
+                                });
+                                setIsOpen(false);
+                              }}
+                              className="py-2 px-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 text-[#878991] dark:text-[#ECF0FE]"
+                            >
+                              {country.label}
+                            </Command.Item>
+                          ))}
+                        </Command.List>
+                      )}
+                    </Command>
                     <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#878991] dark:text-[#ECF0FE] pointer-events-none" />
                   </div>
                 </div>
@@ -296,9 +341,9 @@ export default function SignupForm({
 
                 {/* Confirm Password field */}
                 {!isSignIn && (
-                  <div className="flex flex-col gap-3 w-full ">
+                  <div className="w-full flex flex-col justify-end">
                     <label htmlFor="confirmPassword" className="text-base text-c2 dark:text-[#ECF0FE]">
-                      Confirm Password
+                      {/* Confirm Password */}
                     </label>
                     <div className="relative">
                       <input

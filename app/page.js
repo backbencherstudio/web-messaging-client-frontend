@@ -89,8 +89,8 @@ export default function Home() {
                 Hey there! :)
                 </h1>
                 <span className="flex">
-                  <SiComma size={20} />
-                  <SiComma size={20} />
+                  {/* <SiComma size={20} /> */}
+                  {/* <SiComma size={20} /> */}
                 </span>
               </div>
 
@@ -104,12 +104,12 @@ export default function Home() {
                   </span>
                   . This issue continues to impact millions of lives, and addressing
                   it requires collective effort, innovation, and commitment. */}
-                  <span>Seems like you're first! Got  something to say?"</span>
+                  <span>Seems like you're first! Got  something to say?</span>
                 </p>
               </div>
               <div className="flex md:flex-row flex-col justify-between border  bg-[#f7f9ff] dark:bg-[#070707] lg:x-8 lg:py-8 md:px-4 md:py-6 px-3 py-5 m-4 rounded-lg lg:text-lg text-base font-medium gap-4 md:gap-2 lg:gap-0">
                 <p className="">
-                  <span className="opacity-70">Message # :</span> 32
+                  <span className="opacity-70">Message #:</span> 32
                 </p>
                 <p className="">
                   <span className="opacity-70">Current Value:</span> $ 0.50

@@ -13,105 +13,105 @@ const messagesData = [
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
         "views": 20000,
         "cost": "0.90",
-        "date": "April 28, 2024"
+        "date": "April 28, 2024 12:30 PM"
     },
     {
         "id": 121,
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
         "views": 20000,
         "cost": "0.95",
-        "date": "April 28, 2024"
+        "date": "April 28, 2024 1:45 PM"
     },
     {
         "id": 122,
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
         "views": 20000,
         "cost": "0.95",
-        "date": "April 28, 2024"
+        "date": "April 28, 2024 12:30 PM"
     },
     {
         "id": 123,
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
         "views": 20000,
         "cost": "0.95",
-        "date": "April 28, 2024"
+        "date": "April 28, 2024 12:30 PM"
     },
     {
         "id": 124,
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
         "views": 20000,
         "cost": "0.95",
-        "date": "April 28, 2024"
+        "date": "April 28, 2024 12:30 PM"
     },
     {
         "id": 125,
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
         "views": 20000,
         "cost": "0.95",
-        "date": "April 28, 2024"
+        "date": "April 28, 2024 12:30 PM"
     },
     {
         "id": 126,
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
         "views": 20000,
         "cost": "0.95",
-        "date": "April 28, 2024"
+        "date": "April 28, 2024 12:30 PM"
     },
     {
         "id": 127,
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
         "views": 20000,
         "cost": "0.95",
-        "date": "April 28, 2024"
+        "date": "April 28, 2024 12:30 PM"
     },
     {
         "id": 128,
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
         "views": 20000,
         "cost": "0.95",
-        "date": "April 28, 2024"
+        "date": "April 28, 2024 12:30 PM"
     },
     {
         "id": 129,
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
         "views": 20000,
         "cost": "0.95",
-        "date": "April 28, 2024"
+        "date": "April 28, 2024 12:30 PM"
     },
     {
         "id": 130,
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
         "views": 20000,
         "cost": "0.95",
-        "date": "April 28, 2024"
+        "date": "April 28, 2024 12:30 PM"
     },
     {
         "id": 131,
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
         "views": 20000,
         "cost": "0.95",
-        "date": "April 28, 2024"
+        "date": "April 28, 2024 12:30 PM"
     },
     {
         "id": 132,
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
         "views": 20000,
         "cost": "0.95",
-        "date": "April 28, 2024"
+        "date": "April 28, 2024 12:30 PM"
     },
     {
         "id": 133,
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
         "views": 20000,
         "cost": "0.95",
-        "date": "April 28, 2024"
+        "date": "April 28, 2024 12:30 PM"
     },
     {
         "id": 134,
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
         "views": 20000,
         "cost": "0.95",
-        "date": "April 28, 2024"
+        "date": "April 28, 2024 3:15 PM"
     }
 ]
 
@@ -169,7 +169,7 @@ export default function MessageList() {
                 <table className=" border-collapse text-sm w-[760px] md:w-full ">
                     <thead>
                         <tr className="bg-gray-100 dark:bg-[#545460] text-left text-[#070707] dark:text-[#FDFEFF]">
-                            <th className="p-4">P. No.</th>
+                            <th className="p-4"> #</th>
                             <th className="p-4">Message Content</th>
                             <th className="p-4">Views</th>
                             <th className="p-4">Cost</th>
@@ -180,8 +180,8 @@ export default function MessageList() {
                     <tbody>
                         {displayedMessages.map((msg) => (
                             <tr key={msg.id} className="border-b border-gray-300 dark:border-gray-600 ">
-                                <td className="p-4 text-[#070707] dark:text-[#D1D7E5]">#{msg.id}</td>
-                                <td className="p-4 truncate max-w-xs text-[#070707] dark:text-[#FDFEFF]">{msg.content}</td>
+                                <td className="p-4 text-[#070707] dark:text-[#D1D7E5]">{msg.id}</td>
+                                <td className="p-4 truncate lg:max-w-xs md:max-w-[200px] max-w-[100px] text-[#070707] dark:text-[#FDFEFF]">{msg.content}</td>
                                 <td className="p-4 text-[#070707] dark:text-[#D1D7E5]">{msg.views}</td>
                                 <td className="p-4 text-[#070707] dark:text-[#D1D7E5]">${msg.cost}</td>
                                 <td className="p-4 text-[#070707] dark:text-[#D1D7E5]">{msg.date}</td>
