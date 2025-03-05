@@ -15,9 +15,6 @@ const NavBar = () => {
   const isUserRoute = pathname?.startsWith("/user");
 
   const [showDropdown, setShowDropdown] = useState(false);
-
-  console.log(pathname);
-
   const handleNavigation = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -54,13 +51,15 @@ const NavBar = () => {
   return (
     <div className="px-[6px] 2xl:px-0 ">
       <div
-        className={`fixed px-5 2xl:px-0 top-0 left-0 w-full z-50  transition-transform duration-500 ${showNavbar ? "translate-y-00" : "-translate-y-fulll"
-          }  ${isAtTop ? "mt-0" : "mt-6"} `}
+        className={`fixed px-5 2xl:px-0 top-0 left-0 w-full z-50  transition-transform duration-500 ${
+          showNavbar ? "translate-y-00" : "-translate-y-fulll"
+        }  ${isAtTop ? "mt-0" : "mt-6"} `}
       >
         <div className="max-w-[1552px] mx-auto md:py-6 py-[14px] 2xl:px-[96px] xl:px-[56px]  px-[14px] rounded-[12px] bg-nav-gradient backdrop-blur-3xl dark:bg-nav-dark-gradient flex  items-center">
           <div
-            className={`${isUserRoute ? "max-w-[1080px] mx-auto w-full" : ""
-              } flex items-center justify-between w-full`}
+            className={`${
+              isUserRoute ? "max-w-[1080px] mx-auto w-full" : ""
+            } flex items-center justify-between w-full`}
           >
             <Link href="/">
               <h1 className="text-[#070707] dark:text-white font-medium lg:text-[32px] text-2xl md:text-[28px] xl:min-w-[254px] lg:min-w-[200px] ">
@@ -70,8 +69,9 @@ const NavBar = () => {
             {/* Navigation Links */}
             <div className="flex items-center  justify-between w-full ml-4 ">
               <div
-                className={` ${isAdminRoute || isUserRoute ? "hidden" : "hidden md:flex"
-                  }   items-center lg:space-x-6 space-x-3 text-base md:text-sm lg:text-base xl:text-lg `}
+                className={` ${
+                  isAdminRoute || isUserRoute ? "hidden" : "hidden md:flex"
+                }   items-center lg:space-x-6 space-x-3 text-base md:text-sm lg:text-base xl:text-lg `}
               >
                 <Link href="/" className="text-[#070707] dark:text-white">
                   Home
@@ -141,14 +141,16 @@ const NavBar = () => {
                     </Link>
                     <button onClick={() => setShowDropdown(!showDropdown)}>
                       <RiArrowDownSLine
-                        className={`text-xl dark:text-[#D1D7E6] duration-500 ${showDropdown ? "rotate-180 " : ""
-                          }`}
+                        className={`text-xl dark:text-[#D1D7E6] duration-500 ${
+                          showDropdown ? "rotate-180 " : ""
+                        }`}
                       />
                     </button>
 
                     <div
-                      className={`duration-700 w-[290px] dark:box-shadow ${showDropdown ? "opacity-100 " : "opacity-0"
-                        } absolute z-50 top-full 2xl:right-[15%] xl:right-[12.5%] right-0   bg-white shadow-lg rounded-[8px] dark:border dark:bg-custom-gradient dark:border-[#070707] transition-opacity duration-500`}
+                      className={`duration-700 w-[290px] dark:box-shadow ${
+                        showDropdown ? "opacity-100 " : "opacity-0"
+                      } absolute z-50 top-full 2xl:right-[15%] xl:right-[12.5%] right-0   bg-white shadow-lg rounded-[8px] dark:border dark:bg-custom-gradient dark:border-[#070707] transition-opacity duration-500`}
                     >
                       <div className="p-4 pb-[46px]">
                         <div className="flex items-center gap-3 py-4 px-3 bg-[#F6F8FA] dark:bg-[#191A1C] rounded-[12px]">

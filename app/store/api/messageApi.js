@@ -1,0 +1,49 @@
+import { baseApi } from "./baseApi";
+
+export const messageApi = baseApi.injectEndpoints({
+  endpoints: (builder) => ({
+    getMessages: builder.query({
+      query: () => "messages",
+      providesTags: ["Messages"],
+    }),
+
+    getMessage: builder.query({
+      query: (id) => `messages/${id}`,
+      providesTags: (result, error, id) => [{ type: "Messages", id }],
+    }),
+
+    createMessage: builder.mutation({
+      query: (message) => ({
+        url: "messages",
+        method: "POST",
+        body: message,
+      }),
+      invalidatesTags: ["Messages"],
+    }),
+
+    updateMessage: builder.mutation({
+      query: ({ id, ...update }) => ({
+        url: `messages/${id}`,
+        method: "PUT",
+        body: update,
+      }),
+      invalidatesTags: (result, error, { id }) => [{ type: "Messages", id }],
+    }),
+
+    deleteMessage: builder.mutation({
+      query: (id) => ({
+        url: `messages/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Messages"],
+    }),
+  }),
+});
+
+export const {
+  useGetMessagesQuery,
+  useGetMessageQuery,
+  useCreateMessageMutation,
+  useUpdateMessageMutation,
+  useDeleteMessageMutation,
+} = messageApi;
