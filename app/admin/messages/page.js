@@ -10,6 +10,7 @@ import { FaEye } from "react-icons/fa6";
 import { CiEdit } from "react-icons/ci";
 import { useGetAdminMessagesQuery } from "@/app/store/api/messageApi";
 import CustomPagingTable from "@/app/Components/SharedComponent/CustomPagingTable";
+import { format } from "date-fns";
 
 export default function MessagesPage() {
   const router = useRouter();
@@ -42,7 +43,17 @@ export default function MessagesPage() {
     { label: "Views", accessor: "views" },
     { label: "Pay", accessor: "pay" },
     { label: "Email ", accessor: "email" },
-    { label: "Time Posted", accessor: "time_posted" },
+    {
+      label: "Time Posted",
+      accessor: "time_posted",
+      customCell: (row) => {
+        try {
+          return format(new Date(row.time_posted), "dd MMMM yyyy");
+        } catch (error) {
+          return row.time_posted;
+        }
+      },
+    },
     {
       label: "Action",
       accessor: "action",
