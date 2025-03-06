@@ -8,11 +8,13 @@ import { messageData } from "../data";
 import { useRouter } from "next/navigation";
 import { FaEye } from "react-icons/fa6";
 import { CiEdit } from "react-icons/ci";
+import { useGetAdminMessagesQuery } from "@/app/store/api/messageApi";
 
 export default function MessagesPage() {
   const router = useRouter();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
+  const { data: messages, isLoading, error } = useGetAdminMessagesQuery();
 
   const handleDelete = (message) => {
     setSelectedMessage(message);
@@ -27,13 +29,13 @@ export default function MessagesPage() {
   };
 
   const messageColumns = [
-    { label: "P No", accessor: "pNo" },
-    { label: "Message content", accessor: "messageContent" },
-    { label: "Posted by", accessor: "postedBy" },
+    { label: "P No", accessor: "message_number" },
+    { label: "Message content", accessor: "message_content" },
+    { label: "Posted by", accessor: "posted_by" },
     { label: "Views", accessor: "views" },
     { label: "Pay", accessor: "pay" },
     { label: "Email ", accessor: "email" },
-    { label: "Time Posted", accessor: "timePosted" },
+    { label: "Time Posted", accessor: "time_posted" },
     {
       label: "Action",
       accessor: "action",
@@ -60,7 +62,7 @@ export default function MessagesPage() {
     <div>
       <CustomTable
         columns={messageColumns}
-        data={messageData}
+        data={messages?.data}
         title="Messages"
         subtitle="Your report payroll sofar"
         pagination={true}

@@ -37,6 +37,10 @@ export const messageApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Messages"],
     }),
+    getAdminMessages: builder.query({
+      query: ({ page }) => "admin/message-menagement",
+      providesTags: ["Messages"],
+    }),
   }),
 });
 
@@ -46,4 +50,5 @@ export const {
   useCreateMessageMutation,
   useUpdateMessageMutation,
   useDeleteMessageMutation,
+  useGetAdminMessagesQuery,
 } = messageApi;

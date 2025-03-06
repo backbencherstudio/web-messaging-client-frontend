@@ -27,6 +27,7 @@ export default function CustomTable({
   pagination = false,
   search = false,
   filter = false,
+  onPageChange,
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
@@ -150,7 +151,10 @@ export default function CustomTable({
                   ) : (
                     <PaginationItem key={pageNum}>
                       <PaginationLink
-                        onClick={() => setCurrentPage(pageNum)}
+                        onClick={() => {
+                          setCurrentPage(pageNum);
+                          onPageChange(pageNum);
+                        }}
                         isActive={currentPage === pageNum}
                         className="cursor-pointer"
                       >
