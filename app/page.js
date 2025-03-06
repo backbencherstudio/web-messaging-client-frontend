@@ -30,6 +30,7 @@ import { useState } from "react";
 import SuccessModal from "./Components/SharedComponent/SuccessModal";
 import CookieBanner from "./Components/SharedComponent/Cookies";
 import { useGetLeaderboardQuery } from "./store/api/leaderboardApi";
+import { useGetFaqQuery } from "./store/api/faqApi";
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
@@ -42,6 +43,8 @@ export default function Home() {
       element.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  // const { data: faqData } = useGetFaqQuery();
 
   const messageColumns = [
     { label: "Ranking", accessor: "ranking" },
@@ -208,7 +211,7 @@ export default function Home() {
               Frequently Asked Questions (FAQ)
             </h1>
             <Accordion type="single" collapsible className="mt-8">
-              {faqData.map((item, index) => (
+              {faqData?.map((item, index) => (
                 <AccordionItem
                   key={index}
                   value={`item-${index}`}
