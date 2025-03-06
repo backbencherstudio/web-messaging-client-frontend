@@ -9,12 +9,19 @@ import { useRouter } from "next/navigation";
 import { FaEye } from "react-icons/fa6";
 import { CiEdit } from "react-icons/ci";
 import { useGetAdminMessagesQuery } from "@/app/store/api/messageApi";
+import CustomPagingTable from "@/app/Components/SharedComponent/CustomPagingTable";
 
 export default function MessagesPage() {
   const router = useRouter();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
-  const { data: messages, isLoading, error } = useGetAdminMessagesQuery();
+  const [currentPage, setCurrentPage] = useState(1);
+  const {
+    data: messages,
+    isLoading,
+    error,
+  } = useGetAdminMessagesQuery(currentPage);
+  console.log(messages);
 
   const handleDelete = (message) => {
     setSelectedMessage(message);
@@ -58,15 +65,25 @@ export default function MessagesPage() {
     },
   ];
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div>
-      <CustomTable
+      <CustomPagingTable
         columns={messageColumns}
         data={messages?.data}
         title="Messages"
         subtitle="Your report payroll sofar"
         pagination={true}
         search={true}
+        paginationData={{
+          currentPage: messages?.pagination.current_page || 1,
+          totalPages: messages?.pagination.total_pages || 1,
+          totalItems: messages?.pagination.total_items || 0,
+        }}
+        onPageChange={handlePageChange}
       />
 
       <DeleteModal
