@@ -98,18 +98,24 @@ export default function CustomPagingTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map((row, index) => (
-            <TableRow key={index}>
-              {columns.map((col) => (
-                <TableCell
-                  key={col.accessor}
-                  className="p-4 border-b border-[#f6f6f6]"
-                >
-                  {col.customCell ? col.customCell(row) : row[col.accessor]}
-                </TableCell>
+          {data.length === 0 ? (
+            <div>No data </div>
+          ) : (
+            <div>
+              {data.map((row, index) => (
+                <TableRow key={index}>
+                  {columns.map((col) => (
+                    <TableCell
+                      key={col.accessor}
+                      className="p-4 border-b border-[#f6f6f6]"
+                    >
+                      {col.customCell ? col.customCell(row) : row[col.accessor]}
+                    </TableCell>
+                  ))}
+                </TableRow>
               ))}
-            </TableRow>
-          ))}
+            </div>
+          )}
         </TableBody>
       </Table>
 

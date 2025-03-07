@@ -3,7 +3,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://192.168.40.25:4000/api",
+    baseUrl:
+      process.env.NEXT_PUBLIC_API_URL || "http://192.168.50.128:4000/api",
     credentials: "include",
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("token");
@@ -72,6 +73,13 @@ export const authApi = createApi({
         }
       },
     }),
+    getUser: builder.query({
+      query: () => ({
+        url: "/admin/user",
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
   }),
 });
 
@@ -81,4 +89,5 @@ export const {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useLogoutMutation,
+  useGetUserQuery,
 } = authApi;

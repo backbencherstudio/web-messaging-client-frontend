@@ -2,16 +2,17 @@
 import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FaAngleLeft, FaAngleRight, FaCircleUser } from "react-icons/fa6";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import CustomTable from "@/app/Components/SharedComponent/CustomTable";
 import { messageData } from "../../data";
 import { RiDeleteBin5Line } from "react-icons/ri";
+import { useGetUserByIdQuery } from "@/app/store/api/userApi";
+import CustomPagingTable from "@/app/Components/SharedComponent/CustomPagingTable";
 const ContentPage = () => {
   const router = useRouter();
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newQuestion, setNewQuestion] = useState("");
-  const [newAnswer, setNewAnswer] = useState("");
+  const { id } = useParams();
+  const { data: user, isLoading, error } = useGetUserByIdQuery(id);
+  const [currentPage, setCurrentPage] = useState(1);
   const messageColumns = [
     { label: "P No", accessor: "pNo" },
     { label: "Message content", accessor: "messageContent" },
@@ -41,19 +42,9 @@ const ContentPage = () => {
       ),
     },
   ];
-  // Function to handle FAQ submission
-  const handleSubmitFaq = () => {
-    if (newQuestion && newAnswer) {
-      setFaqs([...faqs, { question: newQuestion, answer: newAnswer }]);
-      setNewQuestion("");
-      setNewAnswer("");
-      setIsModalOpen(false);
-    }
-  };
 
-  // Add delete function
-  const handleDeleteFaq = (indexToDelete) => {
-    setFaqs(faqs.filter((_, index) => index !== indexToDelete));
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -75,34 +66,46 @@ const ContentPage = () => {
           <div className="flex items-center gap-6">
             <FaCircleUser size={64} color="#c9ccd8" />
             <p className=" text-gray-500 flex flex-col">
-              <span className="font-bold text-[#082B2E]">John Doe</span>
+              <span className="font-bold text-[#082B2E]">
+                {user?.data?.user_name}
+              </span>
               <span className="text-gray-400">
-                <span className=" text-[12px]">john@gmail.com</span>
+                <span className=" text-[12px]">{user?.data?.email}</span>
               </span>
             </p>
           </div>
           <div>
             <p className="text-gray-400 text-[12px]">Country</p>
-            <p className="text-[#082B2E] ">United States</p>
+            <p className="text-[#082B2E] ">
+              {user?.data?.location ? user?.data?.location : "N/A"}
+            </p>
           </div>
           <div>
             <p className="text-gray-400 text-[12px]">Total Posts</p>
-            <p className="text-[#082B2E] ">100</p>
+            <p className="text-[#082B2E] ">{user?.data?.total_posts}</p>
           </div>
           <div>
             <p className="text-gray-400 text-[12px]">Total Views</p>
-            <p className="text-[#082B2E] ">10000</p>
+            <p className="text-[#082B2E] ">{user?.data?.total_views}</p>
           </div>
         </div>
       </div>
 
       <div className="mt-6">
         {" "}
-        <CustomTable
+        <CustomPagingTable
           columns={messageColumns}
-          data={messageData}
-          title={"User Message List"}
+          data={user?.data?.posts}
+          title="User Message List"
+          subtitle="Your report payroll sofar"
+          pagination={true}
           search={true}
+          paginationData={{
+            currentPage: user?.pagination.current_page || 1,
+            totalPages: user?.pagination.total_pages || 1,
+            totalItems: user?.pagination.total_items || 0,
+          }}
+          onPageChange={handlePageChange}
         />
       </div>
     </div>

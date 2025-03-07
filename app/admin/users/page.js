@@ -11,10 +11,15 @@ import DeleteModal from "@/app/Components/SharedComponent/DeleteModal";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { IoEyeOutline } from "react-icons/io5";
 import { useRouter } from "next/navigation";
+import { useGetUsersQuery } from "@/app/store/api/userApi";
+import CustomPagingTable from "@/app/Components/SharedComponent/CustomPagingTable";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 export default function UsersPage() {
   const router = useRouter();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data: users, isLoading, error } = useGetUsersQuery(currentPage);
 
   const handleDelete = (user) => {
     setSelectedUser(user);
@@ -29,12 +34,12 @@ export default function UsersPage() {
   };
 
   const userColumns = [
-    { label: "P No", accessor: "pNo" },
-    { label: "User Name", accessor: "userName" },
+    // { label: "S/N", accessor: "pNo" },
+    { label: "User Name", accessor: "user_name" },
     { label: "Email", accessor: "email" },
-    { label: "Total Messages", accessor: "totalMessages" },
-    { label: "Total views", accessor: "totalViews" },
-    { label: "Last Message", accessor: "lastMessage" },
+    { label: "Total Messages", accessor: "total_message" },
+    { label: "Total views", accessor: "total_views" },
+    // { label: "Last Message", accessor: "last_message" },
     {
       label: "Action",
       accessor: "action",
@@ -56,18 +61,37 @@ export default function UsersPage() {
       ),
     },
   ];
-
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+  if (isLoading) {
+    return (
+      <div>
+        {" "}
+        <SkeletonTheme baseColor="#202020" highlightColor="#444">
+          <p>
+            <Skeleton count={3} />
+          </p>
+        </SkeletonTheme>
+      </div>
+    );
+  }
   return (
     <div>
-      <CustomTable
+      <CustomPagingTable
         columns={userColumns}
-        data={userData}
+        data={users?.data}
         title="All Users"
         subtitle="Your report payroll sofar"
         pagination={true}
         search={true}
+        paginationData={{
+          currentPage: users?.pagination.current_page || 1,
+          totalPages: users?.pagination.total_pages || 1,
+          totalItems: users?.pagination.total_items || 0,
+        }}
+        onPageChange={handlePageChange}
       />
-
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
