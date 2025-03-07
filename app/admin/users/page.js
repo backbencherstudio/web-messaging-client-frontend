@@ -64,18 +64,6 @@ export default function UsersPage() {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-  if (isLoading) {
-    return (
-      <div>
-        {" "}
-        <SkeletonTheme baseColor="#202020" highlightColor="#444">
-          <p>
-            <Skeleton count={3} />
-          </p>
-        </SkeletonTheme>
-      </div>
-    );
-  }
   return (
     <div>
       <CustomPagingTable
