@@ -6,21 +6,36 @@ import { useParams, useRouter } from "next/navigation";
 import CustomTable from "@/app/Components/SharedComponent/CustomTable";
 import { messageData } from "../../data";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import { useGetUserByIdQuery } from "@/app/store/api/userApi";
+import {
+  useDeleteUserMessageMutation,
+  useGetUserByIdQuery,
+} from "@/app/store/api/userApi";
 import CustomPagingTable from "@/app/Components/SharedComponent/CustomPagingTable";
+import { format } from "date-fns";
+import DeleteModal from "@/app/Components/SharedComponent/DeleteModal";
 const ContentPage = () => {
   const router = useRouter();
   const { id } = useParams();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { data: user, isLoading, error } = useGetUserByIdQuery(id);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [deleteUserMessage, { isLoading: isDeleting }] =
+    useDeleteUserMessageMutation();
   const messageColumns = [
-    { label: "P No", accessor: "pNo" },
-    { label: "Message content", accessor: "messageContent" },
-    { label: "Posted by", accessor: "postedBy" },
+    { label: "Message content", accessor: "message_content" },
     { label: "Views", accessor: "views" },
-    { label: "Pay", accessor: "pay" },
-    { label: "Email ", accessor: "email" },
-    { label: "Time Posted", accessor: "timePosted" },
+    {
+      label: "Time Posted",
+      accessor: "time_posted",
+      customCell: (row) => {
+        try {
+          return format(new Date(row.time_posted), "dd MMMM yyyy");
+        } catch (error) {
+          return row.time_posted;
+        }
+      },
+    },
     {
       label: "Action",
       accessor: "action",
@@ -42,7 +57,14 @@ const ContentPage = () => {
       ),
     },
   ];
-
+  const handleDelete = (user) => {
+    setSelectedUser(user);
+    setIsDeleteModalOpen(true);
+  };
+  const confirmDelete = () => {
+    deleteUserMessage(selectedUser.id);
+    setIsDeleteModalOpen(false);
+  };
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -95,7 +117,7 @@ const ContentPage = () => {
         {" "}
         <CustomPagingTable
           columns={messageColumns}
-          data={user?.data?.posts}
+          data={user?.posts}
           title="User Message List"
           subtitle="Your report payroll sofar"
           pagination={true}
@@ -106,6 +128,13 @@ const ContentPage = () => {
             totalItems: user?.pagination.total_items || 0,
           }}
           onPageChange={handlePageChange}
+        />
+        <DeleteModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          onConfirm={confirmDelete}
+          title="Delete Message"
+          message={`Are you sure you want to delete the message?`}
         />
       </div>
     </div>

@@ -32,7 +32,7 @@ export const messageApi = baseApi.injectEndpoints({
 
     deleteMessage: builder.mutation({
       query: (id) => ({
-        url: `messages/${id}`,
+        url: `admin/message-management/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Messages"],

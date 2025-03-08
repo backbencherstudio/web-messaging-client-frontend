@@ -1,21 +1,27 @@
 "use client";
 
-import CustomTable from "@/app/Components/SharedComponent/CustomTable";
-import { contactData } from "../data";
 import { useState } from "react";
-import { FaTrash } from "react-icons/fa";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import DeleteModal from "@/app/Components/SharedComponent/DeleteModal";
-import { CiEdit } from "react-icons/ci";
 import { useRouter } from "next/navigation";
+import {
+  useDeleteContactMutation,
+  useGetContactsQuery,
+} from "@/app/store/api/contactApi";
+import CustomPagingTable from "@/app/Components/SharedComponent/CustomPagingTable";
+import toast from "react-hot-toast";
+import { IoEyeOutline } from "react-icons/io5";
 
 export default function ContactsPage() {
   const router = useRouter();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data: contacts, isLoading, error } = useGetContactsQuery(currentPage);
+  const [deleteContact, { isLoading: isDeleting }] = useDeleteContactMutation();
   const contactColumns = [
-    { label: "P No", accessor: "pNo" },
     { label: "Name", accessor: "name" },
+    { label: "Phone No", accessor: "phone_number" },
     { label: "Email", accessor: "email" },
     { label: "Subject", accessor: "subject" },
     { label: "Message", accessor: "message" },
@@ -25,10 +31,10 @@ export default function ContactsPage() {
       customCell: (row) => (
         <div className="flex gap-2">
           <button
-            onClick={() => router.push(`/admin/contacts/issue/messageDetails`)}
+            onClick={() => router.push(`/admin/contacts/${row.id}`)}
             className="bg-gray-100 hover:bg-gray-200 rounded-xl p-2"
           >
-            <CiEdit size={20} />
+            <IoEyeOutline size={20} />
           </button>
           <button
             onClick={() => handleDelete(row)}
@@ -46,20 +52,29 @@ export default function ContactsPage() {
   };
 
   const confirmDelete = () => {
-    // Implement your delete logic here
-    console.log("Deleting contact:", selectedContact);
+    deleteContact(selectedContact.id);
     setShowDeleteModal(false);
+    toast.success("Contact deleted successfully");
   };
-
+  console.log(contacts);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
   return (
     <div>
-      <CustomTable
+      <CustomPagingTable
         columns={contactColumns}
-        data={contactData}
-        title="Contact Us Info"
+        data={contacts?.data}
+        title="All Contacts"
         subtitle="Your report payroll sofar"
         pagination={true}
         search={true}
+        paginationData={{
+          currentPage: contacts?.pagination.current_page || 1,
+          totalPages: contacts?.pagination.total_pages || 1,
+          totalItems: contacts?.pagination.total_items || 0,
+        }}
+        onPageChange={handlePageChange}
       />
       <DeleteModal
         isOpen={showDeleteModal}

@@ -8,9 +8,13 @@ import { messageData } from "../data";
 import { useRouter } from "next/navigation";
 import { FaEye } from "react-icons/fa6";
 import { CiEdit } from "react-icons/ci";
-import { useGetAdminMessagesQuery } from "@/app/store/api/messageApi";
+import {
+  useDeleteMessageMutation,
+  useGetAdminMessagesQuery,
+} from "@/app/store/api/messageApi";
 import CustomPagingTable from "@/app/Components/SharedComponent/CustomPagingTable";
 import { format } from "date-fns";
+import toast from "react-hot-toast";
 
 export default function MessagesPage() {
   const router = useRouter();
@@ -22,20 +26,7 @@ export default function MessagesPage() {
     isLoading,
     error,
   } = useGetAdminMessagesQuery(currentPage);
-  console.log(messages);
-
-  const handleDelete = (message) => {
-    setSelectedMessage(message);
-    setIsDeleteModalOpen(true);
-  };
-
-  const confirmDelete = () => {
-    // Implement your delete logic here
-    console.log("Deleting message:", selectedMessage);
-    setIsDeleteModalOpen(false);
-    setSelectedMessage(null);
-  };
-
+  const [deleteMessage, { isLoading: isDeleting }] = useDeleteMessageMutation();
   const messageColumns = [
     { label: "P No", accessor: "message_number" },
     { label: "Message content", accessor: "message_content" },
@@ -75,6 +66,17 @@ export default function MessagesPage() {
       ),
     },
   ];
+  const handleDelete = (message) => {
+    setSelectedMessage(message);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    deleteMessage(selectedMessage.id);
+    setIsDeleteModalOpen(false);
+    setSelectedMessage(null);
+    toast.success("Message deleted successfully");
+  };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);

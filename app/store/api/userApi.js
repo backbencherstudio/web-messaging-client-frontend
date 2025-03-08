@@ -11,6 +11,13 @@ export const userApi = baseApi.injectEndpoints({
       query: (id) => `admin/user/${id}`,
       providesTags: (result, error, id) => [{ type: "User", id }],
     }),
+    deleteUser: builder.mutation({
+      query: (id) => ({
+        url: `admin/user/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["User"],
+    }),
 
     createUser: builder.mutation({
       query: (user) => ({
@@ -30,9 +37,9 @@ export const userApi = baseApi.injectEndpoints({
       invalidatesTags: (result, error, { id }) => [{ type: "Messages", id }],
     }),
 
-    deleteMessage: builder.mutation({
+    deleteUserMessage: builder.mutation({
       query: (id) => ({
-        url: `admin/user/${id}`,
+        url: `admin/user/post/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["User"],
@@ -49,4 +56,6 @@ export const {
   useGetUserByIdQuery,
   useCreateUserMutation,
   useGetAdminMessagesQuery,
+  useDeleteUserMutation,
+  useDeleteUserMessageMutation,
 } = userApi;

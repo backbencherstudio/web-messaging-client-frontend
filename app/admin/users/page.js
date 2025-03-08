@@ -11,28 +11,20 @@ import DeleteModal from "@/app/Components/SharedComponent/DeleteModal";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { IoEyeOutline } from "react-icons/io5";
 import { useRouter } from "next/navigation";
-import { useGetUsersQuery } from "@/app/store/api/userApi";
+import {
+  useDeleteUserMutation,
+  useGetUsersQuery,
+} from "@/app/store/api/userApi";
 import CustomPagingTable from "@/app/Components/SharedComponent/CustomPagingTable";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import toast from "react-hot-toast";
 export default function UsersPage() {
   const router = useRouter();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const { data: users, isLoading, error } = useGetUsersQuery(currentPage);
-
-  const handleDelete = (user) => {
-    setSelectedUser(user);
-    setIsDeleteModalOpen(true);
-  };
-
-  const confirmDelete = () => {
-    // Implement your delete logic here
-    console.log("Deleting user:", selectedUser);
-    setIsDeleteModalOpen(false);
-    setSelectedUser(null);
-  };
-
+  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
   const userColumns = [
     // { label: "S/N", accessor: "pNo" },
     { label: "User Name", accessor: "user_name" },
@@ -61,6 +53,18 @@ export default function UsersPage() {
       ),
     },
   ];
+  const handleDelete = (user) => {
+    setSelectedUser(user);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    deleteUser(selectedUser.id);
+    setIsDeleteModalOpen(false);
+    setSelectedUser(null);
+    toast.success("User deleted successfully");
+  };
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
