@@ -76,7 +76,7 @@ export default function UsersPage() {
         title="All Users"
         subtitle="Your report payroll sofar"
         pagination={true}
-        search={true}
+        search={false}
         paginationData={{
           currentPage: users?.pagination.current_page || 1,
           totalPages: users?.pagination.total_pages || 1,

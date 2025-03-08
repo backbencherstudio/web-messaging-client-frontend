@@ -6,7 +6,12 @@ export const leaderboardApi = baseApi.injectEndpoints({
       query: () => "leader-board",
       providesTags: ["Leaderboard"],
     }),
+    getDashboardData: builder.query({
+      query: () => "admin/dashboard",
+      providesTags: ["Dashboard"],
+    }),
   }),
 });
 
-export const { useGetLeaderboardQuery } = leaderboardApi;
+export const { useGetLeaderboardQuery, useGetDashboardDataQuery } =
+  leaderboardApi;

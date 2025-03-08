@@ -90,7 +90,7 @@ export default function MessagesPage() {
         title="Messages"
         subtitle="Your report payroll sofar"
         pagination={true}
-        search={true}
+        search={false}
         paginationData={{
           currentPage: messages?.pagination.current_page || 1,
           totalPages: messages?.pagination.total_pages || 1,

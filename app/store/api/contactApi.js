@@ -3,7 +3,7 @@ import { baseApi } from "./baseApi";
 export const contactApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getContacts: builder.query({
-      query: (page = 1) => `/contacts?page=${page}`,
+      query: (page = 1) => `admin/contact?page=${page}`,
       providesTags: ["Contacts"],
     }),
 

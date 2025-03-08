@@ -56,7 +56,6 @@ export default function ContactsPage() {
     setShowDeleteModal(false);
     toast.success("Contact deleted successfully");
   };
-  console.log(contacts);
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -70,9 +69,9 @@ export default function ContactsPage() {
         pagination={true}
         search={true}
         paginationData={{
-          currentPage: contacts?.pagination.current_page || 1,
-          totalPages: contacts?.pagination.total_pages || 1,
-          totalItems: contacts?.pagination.total_items || 0,
+          currentPage: contacts?.pagination?.current_page || 1,
+          totalPages: contacts?.pagination?.total_pages || 1,
+          totalItems: contacts?.pagination?.total_items || 0,
         }}
         onPageChange={handlePageChange}
       />
