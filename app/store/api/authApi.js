@@ -1,19 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { baseApi } from "./baseApi";
 
-export const authApi = createApi({
-  reducerPath: "authApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl:
-      process.env.NEXT_PUBLIC_API_URL || "http://192.168.50.128:4000/api",
-    credentials: "include",
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        headers.set("authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // Signup endpoint
     signup: builder.mutation({
@@ -25,7 +13,7 @@ export const authApi = createApi({
     }),
 
     // Login endpoint
-    login: builder.mutation({
+    signin: builder.mutation({
       query: (credentials) => ({
         url: "/auth/login",
         method: "POST",
@@ -33,8 +21,8 @@ export const authApi = createApi({
       }),
       transformResponse: (response) => {
         // Store the token in localStorage
-        if (response.token) {
-          localStorage.setItem("token", response.token);
+        if (response.authorization.token) {
+          localStorage.setItem("token", response.authorization.token);
         }
         return response;
       },
@@ -57,22 +45,6 @@ export const authApi = createApi({
         body: { token, newPassword },
       }),
     }),
-
-    // Logout endpoint
-    logout: builder.mutation({
-      query: () => ({
-        url: "/auth/logout",
-        method: "POST",
-      }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-        try {
-          await queryFulfilled;
-          localStorage.removeItem("token");
-        } catch (error) {
-          console.error("Logout failed:", error);
-        }
-      },
-    }),
     getUser: builder.query({
       query: () => ({
         url: "/admin/user",
@@ -85,7 +57,7 @@ export const authApi = createApi({
 
 export const {
   useSignupMutation,
-  useLoginMutation,
+  useSigninMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useLogoutMutation,

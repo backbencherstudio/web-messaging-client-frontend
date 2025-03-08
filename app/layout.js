@@ -26,17 +26,17 @@ export default function RootLayout({ children }) {
                 },
                 success: {
                   style: {
-                    background: "green",
+                    background: "#379d00",
                   },
                 },
                 error: {
                   style: {
-                    background: "tomato",
+                    background: "#d81a1a",
                   },
                 },
                 warning: {
                   style: {
-                    background: "#f1c40f",
+                    background: "#ffc500",
                     color: "#333",
                   },
                 },

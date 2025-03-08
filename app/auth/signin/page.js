@@ -1,9 +1,9 @@
-import SignIn from "./SignIn";
+import SigninForm from "./SignInForm";
 
 export default function SignInPage() {
     return (
       <div className="">
-        <SignIn></SignIn>
+        <SigninForm/>
       </div>
     );
   }

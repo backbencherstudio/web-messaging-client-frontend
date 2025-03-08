@@ -8,8 +8,12 @@ import { TbMessage2 } from "react-icons/tb";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { PiNoteLight } from "react-icons/pi";
 import { IoIosLogOut } from "react-icons/io";
+import { useRouter } from "next/navigation";
+import withAuth from "./withAuth";
+
 const AdminNavBar = () => {
   const pathname = usePathname();
+  const router = useRouter();
 
   const navItems = [
     { label: "Dashboard", path: "/admin", icon: <RxDashboard /> },
@@ -34,6 +38,11 @@ const AdminNavBar = () => {
       icon: <PiNoteLight size={18} />,
     },
   ];
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/auth/signin");
+  };
 
   return (
     <div className="max-w-[250px] h-screen bg-white dark:bg-gray-800 border-r dark:border-gray-700 p-4 py-6">
@@ -60,7 +69,10 @@ const AdminNavBar = () => {
           </Link>
         ))}
       </nav>
-      <div className=" flex items-center gap-2 mt-8 absolute bottom-6 left-6 cursor-pointer hover:scale-105 transition-all duration-300">
+      <div
+        onClick={handleLogout}
+        className=" flex items-center gap-2 mt-8 absolute bottom-6 left-6 cursor-pointer hover:scale-105 transition-all duration-300"
+      >
         <IoIosLogOut size={18} />
         <p className="text-red-500">Logout</p>
       </div>
@@ -68,4 +80,4 @@ const AdminNavBar = () => {
   );
 };
 
-export default AdminNavBar;
+export default withAuth(AdminNavBar);
