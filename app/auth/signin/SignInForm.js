@@ -7,7 +7,6 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { useSigninMutation, useSignupMutation } from "@/app/store/api/authApi";
-import { countries } from "@/app/data/countries";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
@@ -240,7 +239,7 @@ export default function SignInForm({
                   {accountExist}
                   <span className="font-medium text-[#070707]">
                     <Link
-                      href="/auth/signin"
+                      href="/auth/signup"
                       className="border-b border-[#070707] dark:text-[#FDFEFF] dark:border-[#A8AAB4]"
                     >
                       {logs}
