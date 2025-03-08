@@ -30,12 +30,14 @@ import { useState } from "react";
 import SuccessModal from "./Components/SharedComponent/SuccessModal";
 import CookieBanner from "./Components/SharedComponent/Cookies";
 import { useGetLeaderboardQuery } from "./store/api/leaderboardApi";
-import { useGetFaqQuery } from "./store/api/faqApi";
+import { useGetAboutUsQuery, useGetAllFaqQuery } from "./store/api/faqApi";
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
 
   const { data: leaderboardData } = useGetLeaderboardQuery();
+  const { data: faqs } = useGetAllFaqQuery();
+  const { data: about } = useGetAboutUsQuery();
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -44,8 +46,6 @@ export default function Home() {
     }
   };
 
-  // const { data: faqData } = useGetFaqQuery();
-
   const messageColumns = [
     { label: "Ranking", accessor: "ranking" },
     { label: "Message content", accessor: "message_content" },
@@ -53,28 +53,7 @@ export default function Home() {
     { label: "Views", accessor: "view_count" },
     { label: "Time Posted", accessor: "time" },
   ];
-  const faqData = [
-    {
-      question: "How does SayThat.sh work?",
-      answer:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    },
-    {
-      question: "Can I post a message without paying?",
-      answer:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum..",
-    },
-    {
-      question: "How is the message price determined?",
-      answer:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    },
-    {
-      question: "What payment methods do you accept?",
-      answer:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    },
-  ];
+
   return (
     <div id="home">
       <PaymentModal
@@ -211,7 +190,7 @@ export default function Home() {
               Frequently Asked Questions (FAQ)
             </h1>
             <Accordion type="single" collapsible className="mt-8">
-              {faqData?.map((item, index) => (
+              {faqs?.data?.map((item, index) => (
                 <AccordionItem
                   key={index}
                   value={`item-${index}`}
@@ -238,22 +217,7 @@ export default function Home() {
               About SayThat
             </h1>
             <p className="text-[clamp(1rem,2vw,1rem)] mt-9 text-[#393C44] dark:text-white">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
-            <p className="text-[clamp(1rem,2vw,1rem)] mt-4 text-[#393C44] dark:text-white">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
+              {about?.data?.about_us}
             </p>
           </div>
         </div>
