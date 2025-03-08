@@ -15,6 +15,7 @@ import {
 import CustomPagingTable from "@/app/Components/SharedComponent/CustomPagingTable";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
+import { SkeletonLoading } from "@/app/Components/SharedComponent/SkeletonLoading";
 
 export default function MessagesPage() {
   const router = useRouter();
@@ -81,6 +82,9 @@ export default function MessagesPage() {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+  if (isLoading) {
+    return <SkeletonLoading />;
+  }
 
   return (
     <div>

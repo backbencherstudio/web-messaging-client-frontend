@@ -11,6 +11,7 @@ import {
 import CustomPagingTable from "@/app/Components/SharedComponent/CustomPagingTable";
 import toast from "react-hot-toast";
 import { IoEyeOutline } from "react-icons/io5";
+import { SkeletonLoading } from "@/app/Components/SharedComponent/SkeletonLoading";
 
 export default function ContactsPage() {
   const router = useRouter();
@@ -50,7 +51,6 @@ export default function ContactsPage() {
     setSelectedContact(contact);
     setShowDeleteModal(true);
   };
-
   const confirmDelete = () => {
     deleteContact(selectedContact.id);
     setShowDeleteModal(false);
@@ -59,6 +59,9 @@ export default function ContactsPage() {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+  if (isLoading) {
+    return <SkeletonLoading />;
+  }
   return (
     <div>
       <CustomPagingTable
