@@ -31,13 +31,17 @@ import SuccessModal from "./Components/SharedComponent/SuccessModal";
 import CookieBanner from "./Components/SharedComponent/Cookies";
 import { useGetLeaderboardQuery } from "./store/api/leaderboardApi";
 import { useGetAboutUsQuery, useGetAllFaqQuery } from "./store/api/faqApi";
+import { useCreateMessageMutation } from "./store/api/messageApi";
+import toast from "react-hot-toast";
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
-
+  const [name, setName] = useState("");
+  const [message, setMessage] = useState("");
   const { data: leaderboardData } = useGetLeaderboardQuery();
   const { data: faqs } = useGetAllFaqQuery();
   const { data: about } = useGetAboutUsQuery();
+  const [createMessage, { isLoading }] = useCreateMessageMutation();
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -53,6 +57,23 @@ export default function Home() {
     { label: "Views", accessor: "view_count" },
     { label: "Time Posted", accessor: "time" },
   ];
+
+  const handleSubmit = () => {
+    const data = {
+      name: name,
+      status: message,
+    };
+    createMessage(data)
+      .unwrap()
+      .then((res) => {
+        setName("");
+        setMessage("");
+        toast.success("Message submitted successfully");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <div id="home">
@@ -119,14 +140,22 @@ export default function Home() {
             <div className="border rounded-lg md:p-6 p-4 mt-4 dark:bg-custom-gradient">
               <Input
                 placeholder="Who are you?"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 className="py-8 px-6  md:placeholder:text-[18px] placeholder:text-[16px]"
               />
               <Textarea
                 placeholder="What's your message?"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
                 className="py-8 px-6 my-6 min-h-[274px] md:placeholder:text-[18px] placeholder:text-[16px] "
               />
               <div className="flex flex-col lg:flex-row justify-between gap-4">
-                <Button className="w-full py-6 rounded-full text-[18px]">
+                <Button
+                  onClick={handleSubmit}
+                  disabled={!name || !message}
+                  className="w-full py-6 rounded-full text-[18px] cursor-pointer"
+                >
                   Submit Free Message
                 </Button>
                 <Button

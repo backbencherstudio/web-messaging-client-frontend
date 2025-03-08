@@ -4,7 +4,7 @@ export const leaderboardApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getLeaderboard: builder.query({
       query: () => "leader-board",
-      providesTags: ["Leaderboard"],
+      providesTags: ["Leaderboard", "Messages"],
     }),
     getDashboardData: builder.query({
       query: () => "admin/dashboard",

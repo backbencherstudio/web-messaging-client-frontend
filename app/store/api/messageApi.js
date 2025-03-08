@@ -14,7 +14,7 @@ export const messageApi = baseApi.injectEndpoints({
 
     createMessage: builder.mutation({
       query: (message) => ({
-        url: "messages",
+        url: "post-status/status",
         method: "POST",
         body: message,
       }),
