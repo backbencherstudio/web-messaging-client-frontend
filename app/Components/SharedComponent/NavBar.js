@@ -2,15 +2,17 @@
 import ThemeToggle from "../context/ThemeToggle";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { IoNotifications } from "react-icons/io5";
 import { RiArrowDownSLine } from "react-icons/ri";
 import { LuUserRoundPen } from "react-icons/lu";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
+import { toast } from "react-hot-toast";
 
 const NavBar = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const isAdminRoute = pathname?.startsWith("/auth");
   const isUserRoute = pathname?.startsWith("/user");
 
@@ -47,6 +49,27 @@ const NavBar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // Check if user is logged in
+  const isLoggedIn = () => {
+    const token = localStorage.getItem("token");
+    return !!token;
+  };
+
+  const handleLogout = () => {
+    // Clear all auth-related items
+    localStorage.removeItem("token");
+    localStorage.removeItem("type");
+
+    // Optional: Clear any other user-related data
+    // localStorage.clear(); // Be careful with this as it clears everything
+
+    // Redirect to signin page
+    router.push("/auth/signin");
+
+    // Optional: Add a success message
+    toast.success("Successfully logged out");
+  };
 
   return (
     <div className="px-[6px] 2xl:px-0 ">
@@ -203,8 +226,16 @@ const NavBar = () => {
                       </div>
                     </div>
                   </div>
+                ) : isLoggedIn() ? (
+                  // Show logout button when logged in
+                  <button
+                    onClick={handleLogout}
+                    className="bg-[#070707] border border-[#070707] dark:bg-[#ffffff] text-white  dark:text-[#000000] lg:px-6 md:px-[10px] lg:py-[10px] md:py-[6px] text-base font-medium lg:rounded-[99px] md:rounded-[50px] hidden md:block dark:hover:bg-[#e4e4e4] hover:bg-[#2a2c31] transition-colors duration-300"
+                  >
+                    Logout
+                  </button>
                 ) : pathname === "/" ? (
-                  // Show both buttons on home page
+                  // Show both buttons on home page when not logged in
                   <div className="flex items-center gap-3">
                     <Link
                       href="/auth/signup"

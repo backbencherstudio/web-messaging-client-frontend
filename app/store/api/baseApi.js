@@ -9,11 +9,10 @@ export const baseApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl,
     prepareHeaders: (headers, { getState }) => {
-      // Get token from cookies or state if needed
-      headers.set(
-        "authorization",
-        `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRhbnZpckBhZG1pbi5jb20iLCJzdWIiOiJjbTd0d290Z2EwMDAwdHZodzNhYnBqaWo4IiwiaWF0IjoxNzQxMzE5NDM5LCJleHAiOjE3NDE0MDU4Mzl9.ZP6DJpz0jSMFBcy-6cOwsfmDcydk_jKs43WVpWpeZ9k`
-      );
+      const token = localStorage.getItem("token");
+      if (token) {
+        headers.set("authorization", `Bearer ${token}`);
+      }
       return headers;
     },
   }),

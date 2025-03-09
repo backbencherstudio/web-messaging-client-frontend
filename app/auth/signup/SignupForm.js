@@ -54,7 +54,7 @@ export default function SignupForm({
     { id: 2, value: false }, // for confirm password
   ]);
 
-  const [check, setCheck] = useState(false);
+  const [check, setCheck] = useState(true);
 
   const adminLogin = formTitle === "Admin Log In";
   const signInStyle = accountExist === "Don't have an account? ";
@@ -162,6 +162,10 @@ export default function SignupForm({
 
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
+      return;
+    }
+    if (check) {
+      toast.error("Please agree to the terms and conditions");
       return;
     }
     try {
@@ -422,7 +426,13 @@ export default function SignupForm({
             </div>
 
             <div className="mt-6 flex md:items-center items-start gap-[18px]">
-              <button onClick={() => setCheck(!check)}>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setCheck(!check);
+                }}
+              >
                 <div>
                   {check ? (
                     <MdOutlineCheckBoxOutlineBlank
@@ -571,7 +581,7 @@ export default function SignupForm({
                       </p>
                     </section>
                   </div>
-                  <div className="flex justify-end mt-6 pt-4 border-t">
+                  <div className="flex justify-end pt-4 border-t">
                     <Button onClick={() => setTermsOpen(false)}>Close</Button>
                   </div>
                 </DialogContent>

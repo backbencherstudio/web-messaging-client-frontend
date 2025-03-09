@@ -1,5 +1,5 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseApi } from "./baseApi";
+import { encryptData } from "@/app/utils/encryption";
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -22,7 +22,10 @@ export const authApi = baseApi.injectEndpoints({
       transformResponse: (response) => {
         // Store the token in localStorage
         if (response.authorization.token) {
+          const encryptedType = encryptData(response.type);
+
           localStorage.setItem("token", response.authorization.token);
+          localStorage.setItem("type", encryptedType);
         }
         return response;
       },
@@ -36,13 +39,19 @@ export const authApi = baseApi.injectEndpoints({
         body: { email },
       }),
     }),
-
+    verifyOtp: builder.mutation({
+      query: ({ email, token }) => ({
+        url: "/auth/verify-email",
+        method: "POST",
+        body: { email, token },
+      }),
+    }),
     // Reset password endpoint
     resetPassword: builder.mutation({
-      query: ({ token, newPassword }) => ({
+      query: ({ email, token, newPassword }) => ({
         url: "/auth/reset-password",
         method: "POST",
-        body: { token, newPassword },
+        body: { email, token, newPassword },
       }),
     }),
     getUser: builder.query({
@@ -60,6 +69,6 @@ export const {
   useSigninMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
-  useLogoutMutation,
   useGetUserQuery,
+  useVerifyOtpMutation,
 } = authApi;
