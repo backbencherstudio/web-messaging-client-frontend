@@ -10,17 +10,20 @@ import { FaEye } from "react-icons/fa6";
 import { CiEdit } from "react-icons/ci";
 import {
   useDeleteMessageMutation,
+  useDeleteMultipleMessagesMutation,
   useGetAdminMessagesQuery,
 } from "@/app/store/api/messageApi";
 import CustomPagingTable from "@/app/Components/SharedComponent/CustomPagingTable";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
 import { SkeletonLoading } from "@/app/Components/SharedComponent/SkeletonLoading";
+import { MdDeleteSweep } from "react-icons/md";
 
 export default function MessagesPage() {
   const router = useRouter();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
+  const [selectedMessages, setSelectedMessages] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const {
     data: messages,
@@ -28,7 +31,28 @@ export default function MessagesPage() {
     error,
   } = useGetAdminMessagesQuery(currentPage);
   const [deleteMessage, { isLoading: isDeleting }] = useDeleteMessageMutation();
+  const [deleteMultipleMessages, { isLoading: isDeletingMultiple }] =
+    useDeleteMultipleMessagesMutation();
   const messageColumns = [
+    {
+      label: (
+        <input
+          type="checkbox"
+          checked={selectedMessages.length === messages?.data?.length}
+          onChange={() => handleSelectAll(messages?.data)} // messages should be your data array
+          className="w-4 h-4 rounded border-gray-300 cursor-pointer checked:bg-orange-500 checked:border-orange-500"
+        />
+      ),
+      accessor: "select",
+      customCell: (row) => (
+        <input
+          type="checkbox"
+          checked={selectedMessages.includes(row.id)}
+          onChange={() => handleSelect(row.id)}
+          className="w-4 h-4 rounded border-gray-300 cursor-pointer"
+        />
+      ),
+    },
     { label: "P No", accessor: "message_number" },
     { label: "Message content", accessor: "message_content" },
     { label: "Posted by", accessor: "posted_by" },
@@ -82,12 +106,67 @@ export default function MessagesPage() {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+  const handleSelect = (messageId) => {
+    setSelectedMessages((prev) =>
+      prev.includes(messageId)
+        ? prev.filter((id) => id !== messageId)
+        : [...prev, messageId]
+    );
+  };
+  const handleSelectAll = (messages) => {
+    if (selectedMessages.length === messages.length) {
+      setSelectedMessages([]);
+    } else {
+      setSelectedMessages(messages?.map((msg) => msg.id));
+    }
+  };
+  const handleBulkDelete = async () => {
+    if (!selectedMessages.length) return;
+
+    if (
+      confirm(
+        `Are you sure you want to delete ${selectedMessages.length} messages?`
+      )
+    ) {
+      try {
+        console.log(selectedMessages);
+        deleteMultipleMessages(selectedMessages)
+          .unwrap()
+          .then((res) => {
+            toast.success(
+              `Successfully deleted ${selectedMessages.length} messages`
+            );
+            setSelectedMessages([]); // Clear selection
+            // Refresh your data here
+          });
+      } catch (error) {
+        toast.error("Failed to delete messages");
+      }
+    }
+  };
   if (isLoading) {
     return <SkeletonLoading />;
   }
 
   return (
-    <div>
+    <div className="relative ">
+      {selectedMessages.length > 0 && (
+        <div className="mb-4 flex justify-between items-center absolute top-5 right-10 ">
+          <div className="flex flex-col lg:flex-row items-center gap-2">
+            <span className="text-gray-600">
+              {selectedMessages.length} message
+              {selectedMessages.length > 1 ? "s" : ""} selected
+            </span>
+            <button
+              onClick={handleBulkDelete}
+              className="flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-700 px-3 py-2 rounded-lg transition-colors duration-200"
+            >
+              <MdDeleteSweep size={20} />
+              <span>Delete Selected</span>
+            </button>
+          </div>
+        </div>
+      )}
       <CustomPagingTable
         columns={messageColumns}
         data={messages?.data}

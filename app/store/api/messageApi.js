@@ -37,9 +37,21 @@ export const messageApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Messages"],
     }),
+    deleteMultipleMessages: builder.mutation({
+      query: (ids) => ({
+        url: `admin/message-management`,
+        method: "DELETE",
+        body: { ids },
+      }),
+      invalidatesTags: ["Messages"],
+    }),
     getAdminMessages: builder.query({
       query: (page = 1) => `admin/message-management?page=${page}`,
       providesTags: ["Messages"],
+    }),
+    getMessageById: builder.query({
+      query: (id) => `admin/message-management/${id}`,
+      providesTags: (result, error, id) => [{ type: "Messages", id }],
     }),
   }),
 });
@@ -51,4 +63,6 @@ export const {
   useUpdateMessageMutation,
   useDeleteMessageMutation,
   useGetAdminMessagesQuery,
+  useDeleteMultipleMessagesMutation,
+  useGetMessageByIdQuery,
 } = messageApi;

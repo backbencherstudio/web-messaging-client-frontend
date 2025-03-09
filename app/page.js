@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import Footer from "./Components/SharedComponent/Footer";
 import PaymentModal from "./Components/SharedComponent/PaymentModal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SuccessModal from "./Components/SharedComponent/SuccessModal";
 import CookieBanner from "./Components/SharedComponent/Cookies";
 import {
@@ -37,16 +37,30 @@ import { useGetAboutUsQuery, useGetAllFaqQuery } from "./store/api/faqApi";
 import { useCreateMessageMutation } from "./store/api/messageApi";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
+import { useCreateContactMutation } from "./store/api/contactApi";
+
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactSubject, setContactSubject] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
   const { data: leaderboardData } = useGetLeaderboardQuery();
   const { data: faqs } = useGetAllFaqQuery();
   const { data: about } = useGetAboutUsQuery();
   const [createMessage, { isLoading }] = useCreateMessageMutation();
   const { data: lastMessage } = useGetLastMessageQuery();
+  const [isClient, setIsClient] = useState(false);
+  const [createContact, { isLoading: isLoadingContact }] =
+    useCreateContactMutation();
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -78,6 +92,74 @@ export default function Home() {
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  const handleSubmitContactUs = () => {
+    if (
+      !contactName.trim() ||
+      !contactEmail.trim() ||
+      !contactSubject.trim() ||
+      !contactPhone.trim() ||
+      !contactMessage.trim()
+    ) {
+      toast.error("Please fill all the fields");
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!contactEmail.trim() || !emailRegex.test(contactEmail)) {
+      toast.error("Please enter a valid email address");
+      return false;
+    }
+    const data = {
+      first_name: contactName,
+      email: contactEmail,
+      subject: contactSubject,
+      message: contactMessage,
+      phone: contactPhone,
+    };
+    createContact(data)
+      .unwrap()
+      .then((res) => {
+        setContactName("");
+        setContactEmail("");
+        setContactSubject("");
+        setContactMessage("");
+        setContactPhone("");
+        toast.success("Submitted successfully");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const formattedDate = lastMessage?.data?.created_at
+    ? isClient
+      ? format(new Date(lastMessage.data.created_at), "dd MMM yyyy")
+      : "Loading..."
+    : "N/A";
+
+  const renderLeaderboard = () => {
+    if (!isClient) {
+      return (
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-32 mb-4"></div>
+          <div className="space-y-3">
+            <div className="h-4 bg-gray-200 rounded w-full"></div>
+            <div className="h-4 bg-gray-200 rounded w-full"></div>
+            <div className="h-4 bg-gray-200 rounded w-full"></div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <CustomTable
+        title="Top 100 Most Viewed Messages"
+        data={leaderboardData?.data || []}
+        columns={messageColumns}
+        pagination={true}
+      />
+    );
   };
 
   return (
@@ -131,8 +213,7 @@ export default function Home() {
                 </p>
                 <p className="">
                   <span className="opacity-70">Last Update:</span>{" "}
-                  {format(lastMessage?.data?.created_at, "dd MMM yyyy") ||
-                    "N/A"}
+                  {formattedDate}
                 </p>
               </div>
             </div>
@@ -207,14 +288,7 @@ export default function Home() {
             <h1 className="text-[clamp(32px,2vw,42px)] font-medium pt-[26px] md:pt-[46px] lg:pt-[62px] md:pb-8 pb-6">
               Leaderboard
             </h1>
-            {typeof window !== "undefined" && (
-              <CustomTable
-                title="Top 100 Most Viewed Messages"
-                data={leaderboardData?.data || []}
-                columns={messageColumns}
-                pagination={true}
-              />
-            )}
+            {renderLeaderboard()}
           </div>
         </div>
         {/* faq  */}
@@ -270,13 +344,29 @@ export default function Home() {
             <div className="border rounded-lg p-6 mt-8 dark:bg-custom-gradient">
               <Input
                 placeholder="Name"
+                value={contactName}
+                onChange={(e) => setContactName(e.target.value)}
                 className="py-8 px-6 placeholder:text-[16px] md:placeholder:text-[18px] dark:bg-[#0B0B0C]"
               />
               <Input
                 placeholder="Email"
+                value={contactEmail}
+                onChange={(e) => setContactEmail(e.target.value)}
                 className="py-8 px-6 mt-6 placeholder:text-[16px] md:placeholder:text-[18px] dark:bg-[#0B0B0C]"
               />
-              <Select>
+              <Input
+                placeholder="Phone"
+                value={contactPhone}
+                onChange={(e) => setContactPhone(e.target.value)}
+                className="py-8 px-6 mt-6 placeholder:text-[16px] md:placeholder:text-[18px] dark:bg-[#0B0B0C]"
+              />
+              <Input
+                placeholder="Subject"
+                value={contactSubject}
+                onChange={(e) => setContactSubject(e.target.value)}
+                className="py-8 px-6 mt-6 placeholder:text-[16px] text-xl md:placeholder:text-[18px] dark:bg-[#0B0B0C]"
+              />
+              {/* <Select>
                 <SelectTrigger className="py-8 px-6 mt-6 text-[16px] md:text-[18px] dark:bg-[#0B0B0C]">
                   <SelectValue placeholder="Subject" />
                 </SelectTrigger>
@@ -300,13 +390,18 @@ export default function Home() {
                     System
                   </SelectItem>
                 </SelectContent>
-              </Select>
+              </Select> */}
 
               <Textarea
                 placeholder="Message"
+                value={contactMessage}
+                onChange={(e) => setContactMessage(e.target.value)}
                 className="py-8 px-6 my-6 min-h-[274px] placeholder:text-[16px] md:placeholder:text-[18px] dark:bg-[#0B0B0C]  "
               />
-              <Button className="bg-[#F3F6FE] hover:bg-[#070707] hover:text-white border border-[#070707] text-[#070707] py-[24px] px-[64px] rounded-[99px] text-[18px] font-medium">
+              <Button
+                onClick={handleSubmitContactUs}
+                className="bg-[#F3F6FE] hover:bg-[#070707] hover:text-white border border-[#070707] text-[#070707] py-[24px] px-[64px] rounded-[99px] text-[18px] font-medium"
+              >
                 Submit
               </Button>
             </div>
