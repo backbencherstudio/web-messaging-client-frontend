@@ -20,16 +20,6 @@ export const messageApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Messages"],
     }),
-
-    updateMessage: builder.mutation({
-      query: ({ id, ...update }) => ({
-        url: `messages/${id}`,
-        method: "PUT",
-        body: update,
-      }),
-      invalidatesTags: (result, error, { id }) => [{ type: "Messages", id }],
-    }),
-
     deleteMessage: builder.mutation({
       query: (id) => ({
         url: `admin/message-management/${id}`,
@@ -52,6 +42,13 @@ export const messageApi = baseApi.injectEndpoints({
     getMessageById: builder.query({
       query: (id) => `admin/message-management/${id}`,
       providesTags: (result, error, id) => [{ type: "Messages", id }],
+    }),
+    updateMessage: builder.mutation({
+      query: ({ id, ...update }) => ({
+        url: `admin/message-management/${id}`,
+        method: "PATCH",
+        body: update,
+      }),
     }),
   }),
 });

@@ -1,42 +1,48 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { CiEdit } from "react-icons/ci";
 import { FaAngleLeft, FaAngleRight, FaCircleUser } from "react-icons/fa6";
 import { useRouter, useParams } from "next/navigation";
-import { useGetContactQuery } from "@/app/store/api/contactApi";
-import { useGetMessageByIdQuery } from "@/app/store/api/messageApi";
+import {
+  useGetMessageByIdQuery,
+  useUpdateMessageMutation,
+} from "@/app/store/api/messageApi";
+import { format } from "date-fns";
 
 const ContentPage = () => {
   const { id } = useParams();
-  const { data: contact, isLoading, error } = useGetContactQuery(id);
   const {
     data: messageById,
     isLoading: isLoadingMessageById,
     error: errorMessageById,
   } = useGetMessageByIdQuery(id);
+  const [updateMessage, { isLoading: isUpdatingMessage }] =
+    useUpdateMessageMutation();
   const router = useRouter();
 
   // Replace hardcoded content with state from messageById
-  const [content, setContent] = useState(messageById?.message || "");
-  const [subject, setSubject] = useState(messageById?.subject || "");
+  const [content, setContent] = useState(
+    messageById?.data?.message_content || ""
+  );
 
   // Add useEffect to update state when data is loaded
   useEffect(() => {
     if (messageById) {
-      setContent(messageById.message);
-      setSubject(messageById.subject);
+      setContent(messageById.data.message_content);
     }
   }, [messageById]);
 
   // Add save handler
-  // const handleSave = async () => {
-  //   try {
-  //     await updateMessage(id, { message: content, subject });
-  //     router.push("/admin/messages"); // Redirect after save
-  //   } catch (error) {
-  //     console.error("Failed to update message:", error);
-  //   }
-  // };
+  const handleSave = async () => {
+    try {
+      await updateMessage({ id, message_content: content });
+      router.push("/admin/messages");
+    } catch (error) {
+      console.error("Failed to update message:", error);
+    }
+  };
+  if (isLoadingMessageById) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
@@ -54,7 +60,10 @@ const ContentPage = () => {
           </h1>
 
           <div className="flex gap-4">
-            <button className="bg-primary text-white px-4 py-2 rounded-full hover:bg-primary/90">
+            <button
+              onClick={handleSave}
+              className="bg-primary text-white px-4 py-2 rounded-full hover:bg-primary/90"
+            >
               Save Changes
             </button>
             <button className="bg-red-100 text-red-600 px-4 py-2 rounded-full hover:bg-red-200">
@@ -74,9 +83,11 @@ const ContentPage = () => {
           <div className="flex items-center gap-6">
             <FaCircleUser size={64} color="#c9ccd8" />
             <p className=" text-gray-500 flex flex-col">
-              <span className="font-bold text-[#082B2E]">Beginner Roay</span>
+              <span className="font-bold text-[#082B2E]">
+                {messageById?.data?.posted_by}
+              </span>
               <span className="text-gray-400">
-                <span className=" text-[12px]">deanna.curtis@example.com</span>
+                <span className=" text-[12px]">{messageById?.data?.email}</span>
               </span>
             </p>
           </div>
@@ -84,11 +95,25 @@ const ContentPage = () => {
           <div className="flex items-center justify-center gap-20">
             <div>
               <p className="text-gray-400 text-[12px]">Time Posted</p>
-              <p className="text-[#082B2E] ">April 28 , 2025</p>
+              <p className="text-[#082B2E] ">
+                {messageById?.data?.time_posted
+                  ? (() => {
+                      try {
+                        return format(
+                          new Date(messageById.data.time_posted),
+                          "MMM d, yyyy HH:mm"
+                        );
+                      } catch (error) {
+                        console.error("Date formatting error:", error);
+                        return "Invalid date";
+                      }
+                    })()
+                  : "No date available"}
+              </p>
             </div>
             <div>
               <p className="text-gray-400 text-[12px]">Views</p>
-              <p className="text-[#082B2E] ">10,000</p>
+              <p className="text-[#082B2E] ">{messageById?.data?.views}</p>
             </div>
           </div>
         </div>
