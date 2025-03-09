@@ -36,6 +36,7 @@ import {
 import { useGetAboutUsQuery, useGetAllFaqQuery } from "./store/api/faqApi";
 import { useCreateMessageMutation } from "./store/api/messageApi";
 import toast from "react-hot-toast";
+import { format } from "date-fns";
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
@@ -115,7 +116,7 @@ export default function Home() {
                   . This issue continues to impact millions of lives, and addressing
                   it requires collective effort, innovation, and commitment. */}
                   <span>
-                    {about?.data?.about_us ||
+                    {lastMessage?.data?.body ||
                       "Seems like you're first! Got something to say?"}
                   </span>
                 </p>
@@ -123,14 +124,15 @@ export default function Home() {
               <div className="flex md:flex-row flex-col justify-between border  bg-[#f7f9ff] dark:bg-[#070707] lg:x-8 lg:py-8 md:px-4 md:py-6 px-3 py-5 m-4 rounded-lg lg:text-lg text-base font-medium gap-4 md:gap-2 lg:gap-0">
                 <p className="">
                   <span className="opacity-70">Message #:</span>{" "}
-                  {lastMessage?.data?.postCount || 0}
+                  {lastMessage?.postCount || 0}
                 </p>
                 <p className="">
                   <span className="opacity-70">Current Value:</span> $ 0.50
                 </p>
                 <p className="">
                   <span className="opacity-70">Last Update:</span>{" "}
-                  {lastMessage?.data?.updatedAt || "N/A"}
+                  {format(lastMessage?.data?.created_at, "dd MMM yyyy") ||
+                    "N/A"}
                 </p>
               </div>
             </div>
