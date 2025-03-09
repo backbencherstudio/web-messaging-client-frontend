@@ -29,7 +29,10 @@ import PaymentModal from "./Components/SharedComponent/PaymentModal";
 import { useState } from "react";
 import SuccessModal from "./Components/SharedComponent/SuccessModal";
 import CookieBanner from "./Components/SharedComponent/Cookies";
-import { useGetLeaderboardQuery } from "./store/api/leaderboardApi";
+import {
+  useGetLastMessageQuery,
+  useGetLeaderboardQuery,
+} from "./store/api/leaderboardApi";
 import { useGetAboutUsQuery, useGetAllFaqQuery } from "./store/api/faqApi";
 import { useCreateMessageMutation } from "./store/api/messageApi";
 import toast from "react-hot-toast";
@@ -42,6 +45,7 @@ export default function Home() {
   const { data: faqs } = useGetAllFaqQuery();
   const { data: about } = useGetAboutUsQuery();
   const [createMessage, { isLoading }] = useCreateMessageMutation();
+  const { data: lastMessage } = useGetLastMessageQuery();
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -111,20 +115,22 @@ export default function Home() {
                   . This issue continues to impact millions of lives, and addressing
                   it requires collective effort, innovation, and commitment. */}
                   <span>
-                    Seems like you&apos;re first! Got something to say?
+                    {about?.data?.about_us ||
+                      "Seems like you're first! Got something to say?"}
                   </span>
                 </p>
               </div>
               <div className="flex md:flex-row flex-col justify-between border  bg-[#f7f9ff] dark:bg-[#070707] lg:x-8 lg:py-8 md:px-4 md:py-6 px-3 py-5 m-4 rounded-lg lg:text-lg text-base font-medium gap-4 md:gap-2 lg:gap-0">
                 <p className="">
-                  <span className="opacity-70">Message #:</span> 32
+                  <span className="opacity-70">Message #:</span>{" "}
+                  {lastMessage?.data?.postCount || 0}
                 </p>
                 <p className="">
                   <span className="opacity-70">Current Value:</span> $ 0.50
                 </p>
                 <p className="">
-                  <span className="opacity-70">Last Update:</span> 5:OOPM EST
-                  (02/04/2025)
+                  <span className="opacity-70">Last Update:</span>{" "}
+                  {lastMessage?.data?.updatedAt || "N/A"}
                 </p>
               </div>
             </div>

@@ -10,8 +10,15 @@ export const leaderboardApi = baseApi.injectEndpoints({
       query: () => "admin/dashboard",
       providesTags: ["Dashboard"],
     }),
+    getLastMessage: builder.query({
+      query: () => "post-status/recent-status",
+      providesTags: ["Messages"],
+    }),
   }),
 });
 
-export const { useGetLeaderboardQuery, useGetDashboardDataQuery } =
-  leaderboardApi;
+export const {
+  useGetLeaderboardQuery,
+  useGetDashboardDataQuery,
+  useGetLastMessageQuery,
+} = leaderboardApi;
