@@ -1,28 +1,26 @@
-'use client';
+"use client";
 
-
-import React, { useState, useEffect } from 'react';
-import { User, Eye, EyeOff } from 'lucide-react';
-import { ChevronDown } from 'lucide-react';
-
+import React, { useState, useEffect } from "react";
+import { User, Eye, EyeOff } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 const dummyUsers = {
-  "user123": {
+  user123: {
     id: "user123",
     name: "M Mansur",
     email: "deanna.curtis@example.com",
     location: "Dhaka, Bangladesh",
     password: "secretpassword123",
-    avatar: null 
+    avatar: null,
   },
-  "user456": {
+  user456: {
     id: "user456",
     name: "John Doe",
     email: "john.doe@example.com",
     location: "New York, USA",
     password: "password456",
-    avatar: null
-  }
+    avatar: null,
+  },
 };
 
 const countries = [
@@ -35,25 +33,22 @@ const countries = [
   { value: "FR", label: "France" },
 ];
 
-
 const EditProfile = () => {
- 
-  const userId = "user123"; 
-  
+  const userId = "user123";
+
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    location: '',
-    password: ''
+    name: "",
+    email: "",
+    location: "",
+    password: "",
   });
   const [isLoading, setIsLoading] = useState(true);
 
-  
   useEffect(() => {
     const fetchUserData = () => {
       setIsLoading(true);
-     
+
       setTimeout(() => {
         const userData = dummyUsers[userId];
         if (userData) {
@@ -61,7 +56,7 @@ const EditProfile = () => {
             name: userData.name,
             email: userData.email,
             location: userData.location,
-            password: userData.password
+            password: userData.password,
           });
         }
         setIsLoading(false);
@@ -73,24 +68,24 @@ const EditProfile = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    console.log('Saving changes:', formData);
-   
-    alert('Profile updated successfully!');
+
+    alert("Profile updated successfully!");
   };
 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen dark:bg-[url('/bg.png')]">
-        <div className="text-xl text-gray-600 dark:text-gray-300">Loading...</div>
+        <div className="text-xl text-gray-600 dark:text-gray-300">
+          Loading...
+        </div>
       </div>
     );
   }
@@ -124,7 +119,9 @@ const EditProfile = () => {
           </div>
           <div>
             <h2 className="text-lg font-medium">{formData.name}</h2>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">{formData.email}</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">
+              {formData.email}
+            </p>
           </div>
         </div>
 
@@ -158,30 +155,30 @@ const EditProfile = () => {
 
           {/* Location Field */}
           <div className="flex flex-col gap-3">
-                  <label htmlFor="location" className=" dark:text-[#ECF0FE]">
-                    Country
-                  </label>
-                  <div className="relative">
-                    <select
-                      id="location"
-                      name="location"
-                      value={formData.location}
-                      onChange={handleChange}
-                      className="border border-[#DFE1E7] dark:border-[#393C44] rounded-[8px] md:p-6 px-6 py-5 bg-white dark:bg-[#2A2A2A]  dark:text-[#ECF0FE] appearance-none cursor-pointer w-full"
-                    >
-                      {countries.map((country) => (
-                        <option
-                          key={country.value}
-                          value={country.value}
-                          className="py-2 bg-white dark:bg-[#0B0B0C]  dark:text-[#ECF0FE]"
-                        >
-                          {country.label}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#878991] dark:text-[#ECF0FE] pointer-events-none" />
-                  </div>
-                </div>
+            <label htmlFor="location" className=" dark:text-[#ECF0FE]">
+              Country
+            </label>
+            <div className="relative">
+              <select
+                id="location"
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                className="border border-[#DFE1E7] dark:border-[#393C44] rounded-[8px] md:p-6 px-6 py-5 bg-white dark:bg-[#2A2A2A]  dark:text-[#ECF0FE] appearance-none cursor-pointer w-full"
+              >
+                {countries.map((country) => (
+                  <option
+                    key={country.value}
+                    value={country.value}
+                    className="py-2 bg-white dark:bg-[#0B0B0C]  dark:text-[#ECF0FE]"
+                  >
+                    {country.label}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#878991] dark:text-[#ECF0FE] pointer-events-none" />
+            </div>
+          </div>
 
           {/* Password Field */}
           <div>

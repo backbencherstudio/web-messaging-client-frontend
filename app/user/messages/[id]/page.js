@@ -111,7 +111,6 @@ const messagesData = [
 
 export default async function MessageDetail({ params }) {
   const { id } = await params;
-  // console.log(id);
   const message = messagesData.find((msg) => msg.id.toString() === id);
 
   if (!message) return notFound();

@@ -129,7 +129,6 @@ export default function MessagesPage() {
       )
     ) {
       try {
-        console.log(selectedMessages);
         deleteMultipleMessages(selectedMessages)
           .unwrap()
           .then((res) => {
