@@ -16,7 +16,6 @@ import {
   useGetUsersQuery,
 } from "@/app/store/api/userApi";
 import CustomPagingTable from "@/app/Components/SharedComponent/CustomPagingTable";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import toast from "react-hot-toast";
 import { SkeletonLoading } from "@/app/Components/SharedComponent/SkeletonLoading";
 export default function UsersPage() {

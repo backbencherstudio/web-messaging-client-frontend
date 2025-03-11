@@ -99,7 +99,7 @@ const EditProfile = () => {
   };
 
   return (
-    <div className="flex justify-center pt-[121px] md:pt-[156px] lg:pt-[188px] bg-cover bg-no-repeat dark:bg-[url('/bg.png')] pb-[100px] ">
+    <div className="flex justify-center pt-[100px] lg:pt-[120px] bg-cover bg-no-repeat dark:bg-[url('/bg.png')] pb-[100px] ">
       <div className="m-4 border dark:border-[#545460] bg-white dark:bg-[#1E1E1E] text-[#070707] dark:text-[#FDFEFF] rounded-lg shadow-lg max-w-[942px] w-full px-6 py-6 md:px-10 md:py-8">
         {/* Header */}
         <h1 className="text-2xl font-semibold mb-8">Edit Profile</h1>

@@ -1,4 +1,5 @@
 "use client";
+import { useGetProfileQuery } from "@/app/store/api/authApi";
 import React, { useState } from "react";
 import { MdDoneOutline } from "react-icons/md";
 import { PiUserCirclePlusDuotone, PiUserCirclePlusLight } from "react-icons/pi";
@@ -7,9 +8,11 @@ import { TbPencil } from "react-icons/tb";
 const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editField, setEditField] = useState(""); // Can be "name", "email", or "password"
+  const { data: profile, isLoading, error } = useGetProfileQuery();
+
   const [formData, setFormData] = useState({
-    name: "SayThat.sh",
-    email: "saythat.sh@gmail.com",
+    name: profile?.data?.name,
+    email: profile?.data?.email,
     password: "",
   });
 
@@ -31,14 +34,18 @@ const Page = () => {
         <div className="flex items-center gap-6">
           <PiUserCirclePlusDuotone className="h-24 w-24 text-gray-400" />
           <div>
-            <h1 className="text-2xl font-medium text-gray-700">SayThat.sh</h1>
-            <p className="text-gray-400">Admin</p>
+            <h1 className="text-2xl font-medium text-gray-700">
+              {profile?.data?.name}
+            </h1>
+            <p className="text-gray-400"> {profile?.data?.type}</p>
           </div>
         </div>
         <div className="mt-14 mx-3 border-b pb-5">
           <p className="text-gray-400 text-xs">Name</p>
           <div className="flex justify-between items-center gap-2">
-            <h1 className="text-gray-800 border-r pr-10">{formData.name}</h1>
+            <h1 className="text-gray-800 border-r pr-10">
+              {profile?.data?.name}
+            </h1>
             <div
               className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center cursor-pointer"
               onClick={() => handleEdit("name")}
@@ -50,7 +57,7 @@ const Page = () => {
         <div className="mt-4 mx-3 border-b pb-5">
           <p className="text-gray-400 text-xs">Email</p>
           <div className="flex justify-between items-center gap-2">
-            <h1 className="text-gray-800">{formData.email}</h1>
+            <h1 className="text-gray-800">{profile?.data?.email}</h1>
             <div
               className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer"
               onClick={() => handleEdit("email")}

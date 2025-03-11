@@ -9,14 +9,15 @@ import { LuUserRoundPen } from "react-icons/lu";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
 import { toast } from "react-hot-toast";
+import { useGetProfileQuery } from "@/app/store/api/authApi";
 
 const NavBar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const isAdminRoute = pathname?.startsWith("/auth");
   const isUserRoute = pathname?.startsWith("/user");
-
   const [showDropdown, setShowDropdown] = useState(false);
+  const { data: profile, isLoading, error } = useGetProfileQuery();
   const handleNavigation = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -194,10 +195,10 @@ const NavBar = () => {
                           </svg>
                           <div className="flex flex-col gap-1">
                             <h2 className="text-base leading-[130%] text-[#082B2E] dark:text-[#D1D7E5]">
-                              M Mansur
+                              {profile?.data?.name}
                             </h2>
                             <p className="text-[12px] leading-[150%] text-[#777980] dark:text-[#A5A5AB]">
-                              mansurbb02@gmail.com
+                              {profile?.data?.email}
                             </p>
                           </div>
                         </div>
