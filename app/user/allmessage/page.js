@@ -8,9 +8,11 @@ import { useState } from "react";
 import {
   useDeleteMessageMutation,
   useDeleteMultipleMessagesMutation,
-  useGetAdminMessagesQuery,
+  useGetUserMessagesQuery,
 } from "@/app/store/api/messageApi";
 import DeleteModal from "@/app/Components/SharedComponent/DeleteModal";
+import { useGetProfileQuery } from "@/app/store/api/authApi";
+import CustomTable from "@/app/Components/SharedComponent/CustomTable";
 
 export default function Allmessage() {
   const router = useRouter();
@@ -18,11 +20,12 @@ export default function Allmessage() {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [selectedMessages, setSelectedMessages] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const { data: user } = useGetProfileQuery();
   const {
     data: messages,
     isLoading,
     error,
-  } = useGetAdminMessagesQuery(currentPage);
+  } = useGetUserMessagesQuery(user?.data?.id);
   const [deleteMessage, { isLoading: isDeleting }] = useDeleteMessageMutation();
   const [deleteMultipleMessages, { isLoading: isDeletingMultiple }] =
     useDeleteMultipleMessagesMutation();
@@ -151,7 +154,7 @@ export default function Allmessage() {
   }
   return (
     <div className="mt-28 max-w-[1080px] mx-auto">
-      <CustomPagingTable
+      {/* <CustomPagingTable
         columns={messageColumns}
         data={messages?.data}
         title="Messages"
@@ -164,6 +167,13 @@ export default function Allmessage() {
           totalItems: messages?.pagination.total_items || 0,
         }}
         onPageChange={handlePageChange}
+      /> */}
+      <CustomTable
+        columns={messageColumns}
+        data={messages?.data}
+        title="Messages"
+        subtitle="Your report payroll sofar"
+        pagination={true}
       />
       <DeleteModal
         isOpen={isDeleteModalOpen}
