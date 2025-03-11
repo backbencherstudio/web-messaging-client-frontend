@@ -3,25 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { User, Eye, EyeOff } from "lucide-react";
 import { ChevronDown } from "lucide-react";
-
-const dummyUsers = {
-  user123: {
-    id: "user123",
-    name: "M Mansur",
-    email: "deanna.curtis@example.com",
-    location: "Dhaka, Bangladesh",
-    password: "secretpassword123",
-    avatar: null,
-  },
-  user456: {
-    id: "user456",
-    name: "John Doe",
-    email: "john.doe@example.com",
-    location: "New York, USA",
-    password: "password456",
-    avatar: null,
-  },
-};
+import { useGetProfileQuery } from "@/app/store/api/authApi";
 
 const countries = [
   { value: "", label: "Select a country" },
@@ -34,23 +16,19 @@ const countries = [
 ];
 
 const EditProfile = () => {
-  const userId = "user123";
-
+  const { data: profile, isLoading, error } = useGetProfileQuery();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    location: "",
-    password: "",
+    name: profile?.data?.name,
+    email: profile?.data?.email,
+    location: profile?.data?.location,
+    password: profile?.data?.password,
   });
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserData = () => {
-      setIsLoading(true);
-
       setTimeout(() => {
-        const userData = dummyUsers[userId];
+        const userData = profile?.data;
         if (userData) {
           setFormData({
             name: userData.name,
@@ -59,12 +37,11 @@ const EditProfile = () => {
             password: userData.password,
           });
         }
-        setIsLoading(false);
       }, 500);
     };
 
     fetchUserData();
-  }, [userId]);
+  }, [profile?.data]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -118,9 +95,9 @@ const EditProfile = () => {
             </button> */}
           </div>
           <div>
-            <h2 className="text-lg font-medium">{formData.name}</h2>
+            <h2 className="text-lg font-medium">{profile?.data?.name}</h2>
             <p className="text-gray-500 dark:text-gray-400 text-sm">
-              {formData.email}
+              {profile?.data?.email}
             </p>
           </div>
         </div>
@@ -146,10 +123,11 @@ const EditProfile = () => {
             <input
               type="email"
               name="email"
+              disabled
               value={formData.email}
               onChange={handleInputChange}
               placeholder="info@mail.com"
-              className="w-full px-4 py-3 rounded-lg border dark:border-[#545460] bg-white dark:bg-[#2A2A2A] focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-[#545460]"
+              className="w-full px-4 py-3 rounded-lg border dark:border-[#545460] text-gray-500 bg-gray-200 dark:bg-[#2A2A2A] focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-[#545460] cursor-not-allowed"
             />
           </div>
 

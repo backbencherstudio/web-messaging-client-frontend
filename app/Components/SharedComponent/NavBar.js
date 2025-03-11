@@ -10,6 +10,7 @@ import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import { useGetProfileQuery } from "@/app/store/api/authApi";
+import { FaUserCircle } from "react-icons/fa";
 
 const NavBar = () => {
   const pathname = usePathname();
@@ -78,10 +79,10 @@ const NavBar = () => {
           showNavbar ? "translate-y-00" : "-translate-y-fulll"
         }  ${isAtTop ? "mt-0" : "mt-6"} `}
       >
-        <div className="max-w-[1552px] mx-auto md:py-6 py-[14px] 2xl:px-[96px] xl:px-[56px]  px-[14px] rounded-[12px] bg-nav-gradient backdrop-blur-3xl dark:bg-nav-dark-gradient flex  items-center">
+        <div className="max-w-[1552px] bg-black mx-auto md:py-6 py-[14px] 2xl:px-[96px] xl:px-[56px]  px-[14px] rounded-[12px] bg-nav-gradient backdrop-blur-3xl dark:bg-nav-dark-gradient flex  items-center">
           <div
             className={`${
-              isUserRoute ? "max-w-[1080px] mx-auto w-full" : ""
+              isUserRoute ? "max-w-[1080px] mx-auto w-full relative" : ""
             } flex items-center justify-between w-full`}
           >
             <Link href="/">
@@ -171,75 +172,66 @@ const NavBar = () => {
                     </button>
 
                     <div
-                      className={`duration-700 w-[290px] dark:box-shadow ${
-                        showDropdown ? "opacity-100 " : "opacity-0"
-                      } absolute z-50 top-full 2xl:right-[15%] xl:right-[12.5%] right-0   bg-white shadow-lg rounded-[8px] dark:border dark:bg-custom-gradient dark:border-[#070707] transition-opacity duration-500`}
+                      className={`duration-300 w-[290px] ${
+                        showDropdown
+                          ? "opacity-100 visible"
+                          : "opacity-0 invisible"
+                      } absolute top-[150%] right-0 lg:right-1 bg-white dark:bg-[#0e0e0f] shadow-[0px_8px_24px_0px_rgba(0,0,0,0.15)] dark:shadow-[0px_8px_24px_0px_rgba(0,0,0,0.40)] rounded-[12px] dark:border dark:border-[#2A2A2A] transition-all `}
                     >
-                      <div className="p-4 pb-[46px]">
-                        <div className="flex items-center gap-3 py-4 px-3 bg-[#F6F8FA] dark:bg-[#191A1C] rounded-[12px]">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="46"
-                            height="46"
-                            viewBox="0 0 36 36"
-                            fill="none"
-                          >
-                            <path
-                              d="M18 36C27.9411 36 36 27.9411 36 18C36 8.05887 27.9411 0 18 0C8.05887 0 0 8.05887 0 18C0 27.9411 8.05887 36 18 36Z"
-                              fill="white"
-                            />
-                            <path
-                              d="M31.0975 28.5255C30.3145 27.9068 29.3605 27.4613 28.3255 27.2453L23.3912 26.2552C22.8737 26.1562 22.5002 25.6927 22.5002 25.1528V24.021C22.8175 23.5755 23.1167 22.9837 23.4295 22.365C23.6725 21.8857 24.0392 21.1635 24.2215 20.9767C25.2205 19.9732 26.1857 18.846 26.485 17.3925C26.764 16.029 26.4895 15.3135 26.1677 14.7375C26.1677 13.2998 26.1227 11.4997 25.783 10.1902C25.7425 8.41725 25.4207 7.4205 24.6107 6.5475C24.0392 5.92875 23.1977 5.78475 22.5205 5.67C22.255 5.625 21.8882 5.562 21.7532 5.49C20.554 4.842 19.3682 4.52475 17.953 4.5C14.9897 4.6215 11.347 6.507 10.1275 9.8685C9.74949 10.8923 9.78774 12.573 9.81924 13.923L9.78999 14.7352C9.49974 15.3022 9.21399 16.0223 9.49524 17.3903C9.79224 18.846 10.7575 19.9755 11.7745 20.9925C11.941 21.1635 12.3167 21.8925 12.5642 22.374C12.8815 22.9905 13.183 23.58 13.5002 24.0233V25.155C13.5002 25.6928 13.1245 26.1562 12.6047 26.2575L7.66599 27.2475C6.63774 27.4657 5.68374 27.9068 4.90299 28.5255C4.65999 28.7213 4.50699 29.007 4.48224 29.3175C4.45749 29.628 4.56099 29.9318 4.77024 30.1635C8.13174 33.8715 12.9535 36 18.0002 36C23.047 36 27.871 33.8738 31.2302 30.1635C31.4395 29.9318 31.5452 29.6258 31.5182 29.3153C31.5059 29.1618 31.4622 29.0126 31.3898 28.8767C31.3174 28.7409 31.2179 28.6213 31.0975 28.5255Z"
-                              fill="#C9CCD8"
-                            />
-                          </svg>
-                          <div className="flex flex-col gap-1">
-                            <h2 className="text-base leading-[130%] text-[#082B2E] dark:text-[#D1D7E5]">
-                              {profile?.data?.name}
+                      <div className="p-4">
+                        {/* Profile Section */}
+                        <div className="flex items-center gap-3 p-3 bg-[#F6F8FA] dark:bg-[#191A1C] rounded-[12px] mb-4">
+                          <div className="w-[46px] h-[46px] rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                            {profile?.data?.avatar ? (
+                              <img
+                                src={profile.data.avatar}
+                                alt="Profile"
+                                className="w-full h-full rounded-full object-cover"
+                              />
+                            ) : (
+                              <FaUserCircle className="w-10 h-10 text-gray-400 dark:text-gray-300" />
+                            )}
+                          </div>
+                          <div className="flex flex-col">
+                            <h2 className="text-base font-medium text-[#082B2E] dark:text-[#D1D7E5]">
+                              {profile?.data?.name || "User Name"}
                             </h2>
-                            <p className="text-[12px] leading-[150%] text-[#777980] dark:text-[#A5A5AB]">
-                              {profile?.data?.email}
+                            <p className="text-sm text-[#777980] dark:text-[#A5A5AB]">
+                              {profile?.data?.email || "email@example.com"}
                             </p>
                           </div>
                         </div>
-                        <div className="flex flex-col gap-[6px] pt-4 leading-[160%] text-[14px] tracking-[.123px] dark:text-[#C9CCD8] text-[#6A6C72]">
+
+                        {/* Menu Items */}
+                        <div className="flex flex-col text-[14px] text-[#6A6C72] dark:text-[#C9CCD8]">
                           <Link
-                            onClick={() => {
-                              setShowDropdown(false);
-                            }}
                             href="/user/editprofile"
+                            onClick={() => setShowDropdown(false)}
+                            className="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F8FA] dark:hover:bg-[#191A1C] rounded-lg transition-colors"
                           >
-                            <div className="flex items-center gap-[10px] py-[11px]">
-                              <LuUserRoundPen className="text-xl" />
-                              <p>Edit Profile</p>
-                            </div>
+                            <LuUserRoundPen className="text-xl" />
+                            <span>Edit Profile</span>
                           </Link>
 
                           <Link
-                            onClick={() => {
-                              setShowDropdown(false);
-                            }}
                             href="/user/allmessage"
+                            onClick={() => setShowDropdown(false)}
+                            className="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F8FA] dark:hover:bg-[#191A1C] rounded-lg transition-colors border-b dark:border-[#2A2A2A]"
                           >
-                            <div className="flex items-center gap-[10px] py-[11px] pb-[23px] border-b dark:border-[#4A4C56] border-[#DFE1E7] ">
-                              <IoDocumentTextOutline className="text-xl" />
-                              <p>My Messages</p>
-                            </div>
+                            <IoDocumentTextOutline className="text-xl" />
+                            <span>My Messages</span>
                           </Link>
-                          <Link
+
+                          <button
                             onClick={() => {
+                              handleLogout();
                               setShowDropdown(false);
                             }}
-                            href="/auth/signin"
+                            className="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F8FA] dark:hover:bg-[#191A1C] rounded-lg transition-colors text-[#EB3D4D] mt-2"
                           >
-                            <div
-                              onClick={handleLogout}
-                              className="flex items-center gap-[10px] py-[11px] pt-[23px] "
-                            >
-                              <MdOutlineLogout className="text-xl " />
-                              <p className="text-[#EB3D4D]">Log out</p>
-                            </div>
-                          </Link>
+                            <MdOutlineLogout className="text-xl" />
+                            <span>Log out</span>
+                          </button>
                         </div>
                       </div>
                     </div>

@@ -163,7 +163,10 @@ export default function MessageList() {
               Most Views
               <ChevronDown size={16} />
             </button>
-            <button className="px-5 py-3 text-sm bg-black text-white dark:bg-[#FDFEFF] dark:text-black rounded-md hidden md:block">
+            <button
+              onClick={() => router.push("/user/newmessage")}
+              className="px-5 py-3 text-sm bg-black text-white dark:bg-[#FDFEFF] dark:text-black rounded-md hidden md:block cursor-pointer"
+            >
               New Message +
             </button>
             <button className="px-5 py-3 text-sm bg-black text-white dark:bg-[#FDFEFF] dark:text-black rounded-md block md:hidden">
