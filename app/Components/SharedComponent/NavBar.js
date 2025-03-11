@@ -60,7 +60,6 @@ const NavBar = () => {
     // Clear all auth-related items
     localStorage.removeItem("token");
     localStorage.removeItem("type");
-
     // Optional: Clear any other user-related data
     // localStorage.clear(); // Be careful with this as it clears everything
 
@@ -129,11 +128,11 @@ const NavBar = () => {
               <div className="flex items-center justify-end w-full lg:space-x-6 md:space-x-2">
                 <ThemeToggle></ThemeToggle>
 
-                {isUserRoute ? (
+                {isLoggedIn() ? (
                   // Render profile and notification links on /users/allmessage
                   <div className="flex items-center gap-3">
                     <Link
-                      href="./notification"
+                      href="/user/notification"
                       className="text-base font-medium"
                     >
                       <span className="md:w-[36px] md:h-[36px] w-[26px] h-[26px] flex items-center justify-center rounded-full bg-white dark:bg-[#080808]">
@@ -141,7 +140,7 @@ const NavBar = () => {
                       </span>
                     </Link>
                     <Link
-                      href="./editprofile"
+                      href="/user/editprofile"
                       className="text-base font-medium "
                     >
                       <svg
@@ -203,21 +202,39 @@ const NavBar = () => {
                           </div>
                         </div>
                         <div className="flex flex-col gap-[6px] pt-4 leading-[160%] text-[14px] tracking-[.123px] dark:text-[#C9CCD8] text-[#6A6C72]">
-                          <Link href="./editprofile">
+                          <Link
+                            onClick={() => {
+                              setShowDropdown(false);
+                            }}
+                            href="/user/editprofile"
+                          >
                             <div className="flex items-center gap-[10px] py-[11px]">
                               <LuUserRoundPen className="text-xl" />
                               <p>Edit Profile</p>
                             </div>
                           </Link>
 
-                          <Link href="./allmessage">
+                          <Link
+                            onClick={() => {
+                              setShowDropdown(false);
+                            }}
+                            href="/user/allmessage"
+                          >
                             <div className="flex items-center gap-[10px] py-[11px] pb-[23px] border-b dark:border-[#4A4C56] border-[#DFE1E7] ">
                               <IoDocumentTextOutline className="text-xl" />
                               <p>My Messages</p>
                             </div>
                           </Link>
-                          <Link href="/auth/signin">
-                            <div className="flex items-center gap-[10px] py-[11px] pt-[23px] ">
+                          <Link
+                            onClick={() => {
+                              setShowDropdown(false);
+                            }}
+                            href="/auth/signin"
+                          >
+                            <div
+                              onClick={handleLogout}
+                              className="flex items-center gap-[10px] py-[11px] pt-[23px] "
+                            >
                               <MdOutlineLogout className="text-xl " />
                               <p className="text-[#EB3D4D]">Log out</p>
                             </div>
