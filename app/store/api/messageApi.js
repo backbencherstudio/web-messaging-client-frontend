@@ -53,6 +53,7 @@ export const messageApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: update,
       }),
+      invalidatesTags: ["Messages"],
     }),
   }),
 });

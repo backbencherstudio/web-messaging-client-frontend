@@ -7,6 +7,7 @@ import {
   useUpdateMessageMutation,
 } from "@/app/store/api/messageApi";
 import { format } from "date-fns";
+import toast from "react-hot-toast";
 
 const ContentPage = () => {
   const { id } = useParams();
@@ -34,7 +35,8 @@ const ContentPage = () => {
   // Add save handler
   const handleSave = async () => {
     try {
-      await updateMessage({ id, message_content: content });
+      await updateMessage({ id, message_content: content }).unwrap();
+      toast.success("Message updated successfully");
       router.push("/admin/messages");
     } catch (error) {
       console.error("Failed to update message:", error);
