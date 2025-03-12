@@ -1,215 +1,170 @@
 "use client";
 
+import { useCreatePaymentMutation } from "@/app/store/api/paymentApi";
+import { loadStripe } from "@stripe/stripe-js";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
+import { Elements } from "@stripe/react-stripe-js";
+import {
+  CardElement,
+  useStripe,
+  useElements,
+  CardNumberElement,
+  CardExpiryElement,
+  CardCvcElement,
+} from "@stripe/react-stripe-js";
+import { useGetProfileQuery } from "@/app/store/api/authApi";
 
-const PaymentModal = ({ open, onClose, setOpenSuccess }) => {   
-  const [termsOpen, setTermsOpen] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
-  const handleSuccess = () => {
-    setOpenSuccess(true);
-    onClose();
+// Initialize Stripe (put your publishable key here)
+const stripePromise = loadStripe(
+  "pk_test_51Nokq8C8szXM8fPRu5jOPBoutxbXYDbnV7IpDIyNOG1HcLiI8XYA9xPbooHLoho7uAplF3wO5MtPfc3VadQcALN900Td6TrGBL"
+);
+
+const PaymentForm = ({ onSuccess, onClose, name, message }) => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [loading, setLoading] = useState(false);
+  const [amount, setAmount] = useState("");
+  const { data: profile } = useGetProfileQuery();
+  const [createPayment, { isLoading }] = useCreatePaymentMutation();
+  console.log(profile);
+
+  const stripeElementStyle = {
+    style: {
+      base: {
+        fontSize: "16px",
+        color: "#0F172A",
+        "::placeholder": {
+          color: "#64748B",
+        },
+        padding: "16px",
+      },
+    },
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!stripe || !elements) {
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      console.log(name, message, amount);
+
+      // First create payment intent with your API
+      const paymentResponse = await createPayment({
+        name: name,
+        status: message,
+        bidAmount: parseFloat(amount), // Convert to cents
+      }).unwrap();
+
+      if (!paymentResponse.success) {
+        throw new Error(paymentResponse.message);
+      }
+
+      const { clientSecret } = paymentResponse.data;
+
+      // Confirm the payment
+      const { error, paymentIntent } = await stripe.confirmCardPayment(
+        clientSecret,
+        {
+          payment_method: {
+            card: elements.getElement(CardNumberElement),
+            billing_details: {
+              email: profile?.data?.email,
+            },
+          },
+        }
+      );
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (paymentIntent.status === "succeeded") {
+        toast.success("Payment successful!");
+        onSuccess();
+        onClose();
+      }
+    } catch (error) {
+      console.error("Payment failed:", error);
+      toast.error(error.message || "Payment failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <>
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="text-lg p-4 md:p-6 pt-16 md:pt-[80px] pb-[40px] md:pb-[70px] rounded-lg md:max-w-[1080px] w-[95%] md:w-[90%]">
-        <DialogHeader>
-          <DialogTitle className="text-2xl">Payment</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4">
-          <Input
-            placeholder="Email"
-            className="text-base md:text-lg p-6 md:p-8"
-          />
-          <Input
-            placeholder="Amount ($)"
-            className="text-base md:text-lg p-6 md:p-8"
-          />
-          <div className="flex flex-wrap gap-2">
-            <Button
-              variant="outline"
-              className="text-base md:text-lg p-6 md:p-8 flex-1"
-            >
-              Card
-            </Button>
-            <Button
-              variant="outline"
-              className="text-base md:text-lg p-6 md:p-8 flex-1"
-            >
-              EPS
-            </Button>
-            <Button
-              variant="outline"
-              className="text-base md:text-lg p-6 md:p-8 flex-1"
-            >
-              Giropay
-            </Button>
-          </div>
-          <Input
-            placeholder="Card number"
-            className="text-base md:text-lg p-6 md:p-8"
-          />
-          <div className="flex flex-col md:flex-row gap-2">
-            <Input
-              placeholder="MM / YY"
-              className="text-base md:text-lg p-6 md:p-8"
-            />
-            <Input
-              placeholder="CVC"
-              className="text-base md:text-lg p-6 md:p-8"
-            />
-          </div>
-          <div className="flex flex-col md:flex-row gap-2">
-            <Select>
-              <SelectTrigger className="text-base md:text-lg p-6 md:p-8">
-                <SelectValue placeholder="Country" />
-              </SelectTrigger>
-              <SelectContent className="text-base md:text-lg">
-                <SelectItem value="us">United States</SelectItem>
-                <SelectItem value="ca">Canada</SelectItem>
-              </SelectContent>
-            </Select>
-            <Input
-              placeholder="Postal code"
-              className="text-base md:text-lg p-6 md:p-8"
-            />
-          </div>
-          <div className="flex items-start md:items-center gap-2">
-            <input
-              type="checkbox"
-              id="terms"
-              checked={isChecked}
-              className="h-4 w-4 md:h-5 md:w-5 mt-1 md:mt-0"
-              onChange={(e) => {
-                if (!isChecked) {
-                  setTermsOpen(true);
-                }
-                setIsChecked(e.target.checked);
-              }}
-            />
-            <label htmlFor="terms" className="text-sm md:text-base">
-              By agreeing to this, you accept the <span className="text-blue-500 cursor-pointer underline" >terms</span>.
-            </label>
-          </div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <Input
+        disabled
+        value={profile?.data?.email}
+        className="text-base md:text-lg p-6 bg-gray-200"
+        required
+      />
 
-          {/* Terms and Condition pop up box */}
+      <Input
+        type="number"
+        placeholder="Amount ($)"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+        className="text-base md:text-lg p-6"
+        required
+      />
 
-          <Dialog open={termsOpen} onOpenChange={setTermsOpen}>
-          <DialogContent className="max-h-[80vh]">
-              <DialogHeader>
-                <DialogTitle className="text-2xl font-bold">Terms and Conditions</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-6 overflow-y-auto max-h-[60vh] pr-4">
-                <section>
-                  <h3 className="text-lg font-semibold mb-2">1. Introduction</h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    These Terms and Conditions govern your use of our service and website. By accessing or using our service, you agree to be bound by these terms.
-                  </p>
-                </section>
+      <div className="border rounded-lg p-4 bg-white">
+        <CardNumberElement options={stripeElementStyle} />
+      </div>
 
-                <section>
-                  <h3 className="text-lg font-semibold mb-2">2. Definitions</h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    "Service" refers to the website, platform, and all related services.
-                    "User" refers to any individual or entity using our Service.
-                    "Content" refers to all materials, information, and data available through our Service.
-                  </p>
-                </section>
-
-                <section>
-                  <h3 className="text-lg font-semibold mb-2">3. User Accounts</h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    Users are responsible for maintaining the confidentiality of their account credentials.
-                    You must immediately notify us of any unauthorized use of your account.
-                    We reserve the right to terminate accounts that violate our terms.
-                  </p>
-                </section>
-
-                <section>
-                  <h3 className="text-lg font-semibold mb-2">4. Privacy Policy</h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    Our Privacy Policy describes how we collect, use, and protect your personal information.
-                    By using our Service, you consent to our data practices as described in our Privacy Policy.
-                    We implement various security measures to protect your personal information.
-                  </p>
-                </section>
-
-                <section>
-                  <h3 className="text-lg font-semibold mb-2">5. Payment Terms</h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    All payments are processed securely through our payment providers.
-                    Fees are non-refundable unless otherwise specified.
-                    We reserve the right to modify our pricing with appropriate notice.
-                  </p>
-                </section>
-
-                <section>
-                  <h3 className="text-lg font-semibold mb-2">6. Intellectual Property</h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    All content, features, and functionality are owned by us and protected by international copyright laws.
-                    Users may not copy, modify, or distribute our content without permission.
-                  </p>
-                </section>
-
-                <section>
-                  <h3 className="text-lg font-semibold mb-2">7. Limitation of Liability</h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    We shall not be liable for any indirect, incidental, special, consequential, or punitive damages.
-                    Our liability is limited to the amount paid for our services.
-                  </p>
-                </section>
-
-                <section>
-                  <h3 className="text-lg font-semibold mb-2">8. Changes to Terms</h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    We reserve the right to modify these terms at any time.
-                    Continued use of the Service after changes constitutes acceptance of new terms.
-                    Users will be notified of significant changes.
-                  </p>
-                </section>
-
-                <section>
-                  <h3 className="text-lg font-semibold mb-2">9. Contact Information</h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    For questions about these Terms, please contact us at support@example.com
-                  </p>
-                </section>
-              </div>
-              <div className="flex justify-end mt-6 pt-4 border-t">
-                <Button onClick={() => setTermsOpen(false)}>Close</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-
-          {/* Payment Button */}  
-          <Button
-            onClick={handleSuccess}
-            className="w-full md:w-[234px] py-4 md:py-6 px-8 md:px-12 text-base md:text-lg rounded-full"
-            disabled={!isChecked}
-          >
-            Submit
-          </Button>
+      <div className="flex gap-2">
+        <div className="border rounded-lg p-4 bg-white flex-1">
+          <CardExpiryElement options={stripeElementStyle} />
         </div>
+        <div className="border rounded-lg p-4 bg-white flex-1">
+          <CardCvcElement options={stripeElementStyle} />
+        </div>
+      </div>
+
+      <Button
+        type="submit"
+        disabled={!stripe || loading}
+        className="w-full py-4 md:py-6 px-8 md:px-12 text-base md:text-lg rounded-full"
+      >
+        {loading ? "Processing..." : "Pay Now"}
+      </Button>
+    </form>
+  );
+};
+
+const PaymentModal = ({ open, onClose, setOpenSuccess, name, message }) => {
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="text-lg p-4 px-10 md:pt-[80px] pb-[40px] md:pb-[70px] rounded-lg md:max-w-[600px] w-[95%] md:w-[90%]">
+        <DialogHeader>
+          <DialogTitle className="text-2xl">Payment Details</DialogTitle>
+        </DialogHeader>
+
+        <Elements stripe={stripePromise}>
+          <PaymentForm
+            onSuccess={() => setOpenSuccess(true)}
+            onClose={onClose}
+            name={name}
+            message={message}
+          />
+        </Elements>
       </DialogContent>
-      </Dialog>
-      
-    </>
+    </Dialog>
   );
 };
 

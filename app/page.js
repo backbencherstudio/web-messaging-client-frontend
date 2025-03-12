@@ -17,13 +17,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import Footer from "./Components/SharedComponent/Footer";
 import PaymentModal from "./Components/SharedComponent/PaymentModal";
 import { useState, useEffect } from "react";
@@ -38,8 +32,10 @@ import { useCreateMessageMutation } from "./store/api/messageApi";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
 import { useCreateContactMutation } from "./store/api/contactApi";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
   const [name, setName] = useState("");
@@ -52,8 +48,8 @@ export default function Home() {
   const { data: leaderboardData } = useGetLeaderboardQuery();
   const { data: faqs } = useGetAllFaqQuery();
   const { data: about } = useGetAboutUsQuery();
-  const [createMessage, { isLoading }] = useCreateMessageMutation();
   const { data: lastMessage } = useGetLastMessageQuery();
+  const [createMessage, { isLoading }] = useCreateMessageMutation();
   const [isClient, setIsClient] = useState(false);
   const [createContact, { isLoading: isLoadingContact }] =
     useCreateContactMutation();
@@ -161,17 +157,23 @@ export default function Home() {
       />
     );
   };
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setName("");
+    setMessage("");
+  };
 
   return (
     <div id="home">
       <PaymentModal
         open={showModal}
-        onClose={() => setShowModal(false)}
+        onClose={handleCloseModal}
         onCloseSuccess={() => setOpenSuccess(false)}
         setOpenSuccess={setOpenSuccess}
+        name={name}
+        message={message}
       />
       <SuccessModal open={openSuccess} onClose={() => setOpenSuccess(false)} />
-
       <div>
         {/* about section  */}
         <div className="dark:bg-[url('/bg.png')] dark:bg-cover dark:bg-no-repeat ">
@@ -242,13 +244,25 @@ export default function Home() {
               <div className="flex flex-col lg:flex-row justify-between gap-4">
                 <Button
                   onClick={handleSubmit}
-                  disabled={!name || !message}
+                  disabled={
+                    !name || !message || leaderboardData?.data?.length >= 50
+                  }
                   className="w-full py-6 rounded-full text-[18px] cursor-pointer"
                 >
-                  Submit Free Message
+                  {leaderboardData?.data?.length >= 50
+                    ? "Free Messages Limit Reached"
+                    : "Send Free Message"}
                 </Button>
                 <Button
-                  onClick={() => setShowModal(true)}
+                  onClick={() => {
+                    const token = localStorage.getItem("token");
+                    if (token) {
+                      setShowModal(true);
+                    } else {
+                      router.push("/auth/signin");
+                    }
+                  }}
+                  disabled={!name || !message}
                   className="w-full py-6 hover:bg-gray-200 rounded-full bg-[#eff3fe] text-black dark:bg-[#1a1a1a] dark:text-white text-[18px]"
                 >
                   Submit Message
