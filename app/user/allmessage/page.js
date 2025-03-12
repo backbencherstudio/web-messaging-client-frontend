@@ -13,7 +13,8 @@ import {
 import DeleteModal from "@/app/Components/SharedComponent/DeleteModal";
 import { useGetProfileQuery } from "@/app/store/api/authApi";
 import CustomTable from "@/app/Components/SharedComponent/CustomTable";
-
+import { format } from "date-fns";
+import { IoEyeOutline } from "react-icons/io5";
 export default function Allmessage() {
   const router = useRouter();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -49,26 +50,25 @@ export default function Allmessage() {
     //     />
     //   ),
     // },
-    { label: "P No", accessor: "message_number" },
+    { label: "P No", accessor: "post_number" },
     {
       label: "Message content",
-      accessor: "message_content",
+      accessor: "body",
       customCell: (row) => {
-        return <div className="lg:w-[300px]">{row.message_content}</div>;
+        return <div className="lg:w-[300px]">{row.body}</div>;
       },
     },
     // { label: "Posted by", accessor: "posted_by" },
     { label: "Views", accessor: "views" },
-    { label: "Pay", accessor: "pay" },
-    { label: "Email ", accessor: "email" },
+    // { label: "Pay", accessor: "pay" },
     {
       label: "Time Posted",
-      accessor: "time_posted",
+      accessor: "created_at",
       customCell: (row) => {
         try {
-          return format(new Date(row.time_posted), "dd MMMM yyyy");
+          return format(new Date(row.created_at), "dd MMMM yyyy");
         } catch (error) {
-          return row.time_posted;
+          return row.created_at;
         }
       },
     },
@@ -78,10 +78,10 @@ export default function Allmessage() {
       customCell: (row) => (
         <div className="flex gap-2">
           <button
-            onClick={() => router.push(`/messages/${row.id}`)}
+            onClick={() => router.push(`/user/allmessage/${row.id}`)}
             className="bg-gray-100 hover:bg-gray-200 dark:bg-[#111827] dark:hover:bg-gray-700 rounded-xl p-2"
           >
-            <CiEdit size={20} />
+            <IoEyeOutline size={20} />
           </button>
           <button
             onClick={() => handleDelete(row)}
@@ -170,7 +170,7 @@ export default function Allmessage() {
       /> */}
       <CustomTable
         columns={messageColumns}
-        data={messages?.data}
+        data={messages}
         title="Messages"
         subtitle="Your report payroll sofar"
         pagination={true}

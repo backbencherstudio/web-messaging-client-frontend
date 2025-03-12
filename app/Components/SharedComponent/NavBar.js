@@ -141,9 +141,10 @@ const NavBar = () => {
                         <IoNotifications className="text-2xl" />
                       </span>
                     </Link>
-                    <Link
-                      href="/user/editprofile"
-                      className="text-base font-medium "
+
+                    <button
+                      className="flex items-center gap-1"
+                      onClick={() => setShowDropdown(!showDropdown)}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -162,8 +163,6 @@ const NavBar = () => {
                           fill="#C9CCD8"
                         />
                       </svg>
-                    </Link>
-                    <button onClick={() => setShowDropdown(!showDropdown)}>
                       <RiArrowDownSLine
                         className={`text-xl dark:text-[#D1D7E6] duration-500 ${
                           showDropdown ? "rotate-180 " : ""
@@ -176,7 +175,7 @@ const NavBar = () => {
                         showDropdown
                           ? "opacity-100 visible"
                           : "opacity-0 invisible"
-                      } absolute top-[150%] right-0 lg:right-1 bg-white dark:bg-[#0e0e0f] shadow-[0px_8px_24px_0px_rgba(0,0,0,0.15)] dark:shadow-[0px_8px_24px_0px_rgba(0,0,0,0.40)] rounded-[12px] dark:border dark:border-[#2A2A2A] transition-all `}
+                      } absolute top-[10vh] right-0 lg:right-1 bg-white dark:bg-[#0e0e0f] shadow-[0px_8px_24px_0px_rgba(0,0,0,0.15)] dark:shadow-[0px_8px_24px_0px_rgba(0,0,0,0.40)] rounded-[12px] dark:border dark:border-[#2A2A2A] transition-all `}
                     >
                       <div className="p-4">
                         {/* Profile Section */}

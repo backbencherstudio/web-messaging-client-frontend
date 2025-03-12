@@ -3,44 +3,31 @@
 import React, { useState, useEffect } from "react";
 import { User, Eye, EyeOff } from "lucide-react";
 import { ChevronDown } from "lucide-react";
-import { useGetProfileQuery } from "@/app/store/api/authApi";
-
-const countries = [
-  { value: "", label: "Select a country" },
-  { value: "US", label: "United States" },
-  { value: "UK", label: "United Kingdom" },
-  { value: "CA", label: "Canada" },
-  { value: "AU", label: "Australia" },
-  { value: "DE", label: "Germany" },
-  { value: "FR", label: "France" },
-];
-
+import {
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+} from "@/app/store/api/authApi";
+import { countries } from "@/app/data/countries";
 const EditProfile = () => {
   const { data: profile, isLoading, error } = useGetProfileQuery();
+  const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    name: profile?.data?.name,
-    email: profile?.data?.email,
-    location: profile?.data?.location,
-    password: profile?.data?.password,
+    name: "",
+    email: "",
+    address: "",
+    password: "",
   });
 
   useEffect(() => {
-    const fetchUserData = () => {
-      setTimeout(() => {
-        const userData = profile?.data;
-        if (userData) {
-          setFormData({
-            name: userData.name,
-            email: userData.email,
-            location: userData.location,
-            password: userData.password,
-          });
-        }
-      }, 500);
-    };
-
-    fetchUserData();
+    if (profile?.data) {
+      setFormData({
+        name: profile.data.name || "",
+        email: profile.data.email || "",
+        address: profile.data.address || "",
+        password: profile.data.password || "",
+      });
+    }
   }, [profile?.data]);
 
   const handleInputChange = (e) => {
@@ -51,10 +38,29 @@ const EditProfile = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    alert("Profile updated successfully!");
+    try {
+      // Password validation
+      if (formData.password && formData.password.length < 8) {
+        alert("Password must be at least 8 characters long");
+        return;
+      }
+
+      // Only send the fields that can be updated
+      const updateData = {
+        name: formData.name,
+        country: formData.address,
+        // Only include password if it's been changed
+        ...(formData.password && { password: formData.password }),
+      };
+
+      await updateProfile(updateData).unwrap();
+      alert("Profile updated successfully!");
+    } catch (error) {
+      alert(error?.data?.message || "Failed to update profile");
+    }
   };
 
   if (isLoading) {
@@ -133,22 +139,23 @@ const EditProfile = () => {
 
           {/* Location Field */}
           <div className="flex flex-col gap-3">
-            <label htmlFor="location" className=" dark:text-[#ECF0FE]">
+            <label htmlFor="address" className="dark:text-[#ECF0FE]">
               Country
             </label>
             <div className="relative">
               <select
-                id="location"
-                name="location"
-                value={formData.location}
+                id="address"
+                name="address"
+                value={formData.address || ""}
                 onChange={handleChange}
-                className="border border-[#DFE1E7] dark:border-[#393C44] rounded-[8px] md:p-6 px-6 py-5 bg-white dark:bg-[#2A2A2A]  dark:text-[#ECF0FE] appearance-none cursor-pointer w-full"
+                className="border border-[#DFE1E7] dark:border-[#393C44] rounded-[8px] md:p-6 px-6 py-5 bg-white dark:bg-[#2A2A2A] dark:text-[#ECF0FE] appearance-none cursor-pointer w-full"
               >
+                <option value="">Select a country</option>
                 {countries.map((country) => (
                   <option
                     key={country.value}
-                    value={country.value}
-                    className="py-2 bg-white dark:bg-[#0B0B0C]  dark:text-[#ECF0FE]"
+                    value={country.label}
+                    className="py-2 bg-white dark:bg-[#0B0B0C] dark:text-[#ECF0FE]"
                   >
                     {country.label}
                   </option>
@@ -178,14 +185,18 @@ const EditProfile = () => {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              Password must be at least 8 characters long
+            </p>
           </div>
 
           {/* Save Button */}
           <button
             type="submit"
-            className="w-fit px-6 py-3 bg-black dark:bg-[#FDFEFF] text-white dark:text-black rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
+            disabled={isUpdating}
+            className="w-fit px-6 py-3 bg-black dark:bg-[#FDFEFF] text-white dark:text-black rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Save Changes
+            {isUpdating ? "Saving..." : "Save Changes"}
           </button>
         </form>
       </div>

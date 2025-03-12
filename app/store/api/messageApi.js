@@ -14,7 +14,7 @@ export const messageApi = baseApi.injectEndpoints({
 
     createMessage: builder.mutation({
       query: (message) => ({
-        url: "post-status/status",
+        url: "post-status/free",
         method: "POST",
         body: message,
       }),
@@ -36,7 +36,7 @@ export const messageApi = baseApi.injectEndpoints({
       invalidatesTags: ["Messages"],
     }),
     getUserMessages: builder.query({
-      query: (id) => `message-list/user/cm81695na0008ua84onvslcwy`,
+      query: (id) => `message-list/user/${id}`,
       providesTags: ["Messages"],
     }),
     getAdminMessages: builder.query({
