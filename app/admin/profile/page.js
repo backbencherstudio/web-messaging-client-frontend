@@ -1,30 +1,62 @@
 "use client";
-import { useGetProfileQuery } from "@/app/store/api/authApi";
+import {
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+} from "@/app/store/api/authApi";
 import React, { useState } from "react";
+import { toast } from "react-hot-toast";
 import { MdDoneOutline } from "react-icons/md";
 import { PiUserCirclePlusDuotone, PiUserCirclePlusLight } from "react-icons/pi";
 import { TbPencil } from "react-icons/tb";
 
 const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editField, setEditField] = useState(""); // Can be "name", "email", or "password"
+  const [editField, setEditField] = useState("");
   const { data: profile, isLoading, error } = useGetProfileQuery();
+  const [updateProfile] = useUpdateProfileMutation();
 
   const [formData, setFormData] = useState({
-    name: profile?.data?.name,
-    email: profile?.data?.email,
+    name: "",
     password: "",
   });
 
   const handleEdit = (field) => {
     setEditField(field);
+    setFormData({
+      ...formData,
+      [field]: field === "name" ? profile?.data?.name : "", // Pre-fill name, but not password
+    });
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add your update logic here
-    setIsModalOpen(false);
+    try {
+      let updateData = {};
+
+      // Only include the field being edited
+      if (editField === "name") {
+        updateData = { name: formData.name };
+      } else if (editField === "password") {
+        updateData = { password: formData.password };
+      }
+
+      await updateProfile(updateData).unwrap();
+      toast.success(
+        `${
+          editField.charAt(0).toUpperCase() + editField.slice(1)
+        } updated successfully`
+      );
+      setIsModalOpen(false);
+
+      // Clear the form data
+      setFormData({
+        name: "",
+        password: "",
+      });
+    } catch (error) {
+      toast.error(`Failed to update ${editField}`);
+    }
   };
 
   return (
@@ -58,12 +90,12 @@ const Page = () => {
           <p className="text-gray-400 text-xs">Email</p>
           <div className="flex justify-between items-center gap-2">
             <h1 className="text-gray-800">{profile?.data?.email}</h1>
-            <div
+            {/* <div
               className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer"
               onClick={() => handleEdit("email")}
             >
               <TbPencil className="text-gray-500" />
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="mt-4 mx-3 border-b pb-5">
@@ -82,7 +114,7 @@ const Page = () => {
 
       {/* Edit Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg w-96">
             <h2 className="text-xl font-medium mb-4">
               Edit {editField.charAt(0).toUpperCase() + editField.slice(1)}
@@ -96,11 +128,21 @@ const Page = () => {
                 }
                 className="w-full border rounded-lg px-3 py-2 mb-4"
                 placeholder={`Enter new ${editField}`}
+                required
+                minLength={editField === "password" ? 8 : 2}
               />
+              {editField === "password" && (
+                <p className="text-sm text-gray-500 mb-4">
+                  Password must be at least 8 characters long
+                </p>
+              )}
               <div className="flex justify-end gap-2">
                 <button
                   type="button"
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setFormData({ name: "", password: "" });
+                  }}
                   className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
                 >
                   Cancel
