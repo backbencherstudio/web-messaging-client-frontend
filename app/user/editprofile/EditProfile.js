@@ -8,6 +8,7 @@ import {
   useUpdateProfileMutation,
 } from "@/app/store/api/authApi";
 import { countries } from "@/app/data/countries";
+import toast from "react-hot-toast";
 const EditProfile = () => {
   const { data: profile, isLoading, error } = useGetProfileQuery();
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
@@ -15,7 +16,7 @@ const EditProfile = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    address: "",
+    country: "",
     password: "",
   });
 
@@ -24,7 +25,7 @@ const EditProfile = () => {
       setFormData({
         name: profile.data.name || "",
         email: profile.data.email || "",
-        address: profile.data.address || "",
+        country: profile?.data?.country || "",
         password: profile.data.password || "",
       });
     }
@@ -51,15 +52,15 @@ const EditProfile = () => {
       // Only send the fields that can be updated
       const updateData = {
         name: formData.name,
-        country: formData.address,
+        country: formData.country,
         // Only include password if it's been changed
         ...(formData.password && { password: formData.password }),
       };
 
       await updateProfile(updateData).unwrap();
-      alert("Profile updated successfully!");
+      toast.success("Profile updated successfully!");
     } catch (error) {
-      alert(error?.data?.message || "Failed to update profile");
+      toast.error(error?.data?.message || "Failed to update profile");
     }
   };
 
@@ -139,14 +140,14 @@ const EditProfile = () => {
 
           {/* Location Field */}
           <div className="flex flex-col gap-3">
-            <label htmlFor="address" className="dark:text-[#ECF0FE]">
+            <label htmlFor="country" className="dark:text-[#ECF0FE]">
               Country
             </label>
             <div className="relative">
               <select
-                id="address"
-                name="address"
-                value={formData.address || ""}
+                id="country"
+                name="country"
+                value={formData.country || ""}
                 onChange={handleChange}
                 className="border border-[#DFE1E7] dark:border-[#393C44] rounded-[8px] md:p-6 px-6 py-5 bg-white dark:bg-[#2A2A2A] dark:text-[#ECF0FE] appearance-none cursor-pointer w-full"
               >

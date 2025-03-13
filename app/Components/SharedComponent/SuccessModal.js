@@ -1,19 +1,4 @@
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import Image from "next/image";
 import React from "react";
 
@@ -38,14 +23,14 @@ const SuccessModal = ({ open, onClose }) => {
                 className="text-[#393C44] dark:text-[#A8AAB4] leading-[160%]  text-base font-normal text-center max-w-[24ch] md:max-w-full 
                "
               >
-                Your payment's been processed and your message was posted!
+                Your payment&apos;s been processed and your message was posted!
               </p>
               <div className="my-6 md:my-[26px] w-full px-2">
                 <div className="border-b border border-dashed border-[#C9CCD8] w-full "></div>
               </div>
               <p className="text-[#393C44] dark:text-[#C9CCD8] leading-[160%]  text-sm md:text-base font-medium  max-w-[29ch] md:max-w-full  ">
-                Let's see how many views it gets before someone decides theirs
-                is more valuable.
+                Let&apos;s see how many views it gets before someone decides
+                theirs is more valuable.
               </p>
               <p className="text-[#393C44] dark:text-[#C9CCD8] leading-[160%]  text-sm md:text-base font-medium max-w-[29ch] md:max-w-full   mt-2">
                 Register now to claim ownership over your message and track its
