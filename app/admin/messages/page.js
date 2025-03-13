@@ -33,6 +33,7 @@ export default function MessagesPage() {
   const [deleteMessage, { isLoading: isDeleting }] = useDeleteMessageMutation();
   const [deleteMultipleMessages, { isLoading: isDeletingMultiple }] =
     useDeleteMultipleMessagesMutation();
+  const [isMultiDeleteModalOpen, setIsMultiDeleteModalOpen] = useState(false);
   const messageColumns = [
     {
       label: (
@@ -120,27 +121,18 @@ export default function MessagesPage() {
       setSelectedMessages(messages?.map((msg) => msg.id));
     }
   };
-  const handleBulkDelete = async () => {
+  const handleBulkDelete = () => {
     if (!selectedMessages.length) return;
-
-    if (
-      confirm(
-        `Are you sure you want to delete ${selectedMessages.length} messages?`
-      )
-    ) {
-      try {
-        deleteMultipleMessages(selectedMessages)
-          .unwrap()
-          .then((res) => {
-            toast.success(
-              `Successfully deleted ${selectedMessages.length} messages`
-            );
-            setSelectedMessages([]); // Clear selection
-            // Refresh your data here
-          });
-      } catch (error) {
-        toast.error("Failed to delete messages");
-      }
+    setIsMultiDeleteModalOpen(true);
+  };
+  const confirmBulkDelete = async () => {
+    try {
+      await deleteMultipleMessages(selectedMessages).unwrap();
+      toast.success(`Successfully deleted ${selectedMessages.length} messages`);
+      setSelectedMessages([]); // Clear selection
+      setIsMultiDeleteModalOpen(false);
+    } catch (error) {
+      toast.error("Failed to delete messages");
     }
   };
   if (isLoading) {
@@ -187,6 +179,16 @@ export default function MessagesPage() {
         onConfirm={confirmDelete}
         title="Delete Message"
         message="Are you sure you want to delete this message?"
+      />
+
+      <DeleteModal
+        isOpen={isMultiDeleteModalOpen}
+        onClose={() => setIsMultiDeleteModalOpen(false)}
+        onConfirm={confirmBulkDelete}
+        title="Delete Multiple Messages"
+        message={`Are you sure you want to delete ${
+          selectedMessages.length
+        } message${selectedMessages.length > 1 ? "s" : ""}?`}
       />
     </div>
   );
