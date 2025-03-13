@@ -195,7 +195,7 @@ const NavBar = () => {
                             <h2 className="text-base font-medium text-[#082B2E] dark:text-[#D1D7E5]">
                               {profile?.data?.name || "User Name"}
                             </h2>
-                            <p className="text-sm text-[#777980] dark:text-[#A5A5AB]">
+                            <p className="text-sm text-[#777980] dark:text-[#A5A5AB] text-ellipsis overflow-hidden whitespace-nowrap max-w-[150px]">
                               {profile?.data?.email || "email@example.com"}
                             </p>
                           </div>

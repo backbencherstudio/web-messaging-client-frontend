@@ -70,7 +70,7 @@ export default function ContactsPage() {
         title="All Contacts"
         subtitle="Your report payroll sofar"
         pagination={true}
-        search={true}
+        search={false}
         paginationData={{
           currentPage: contacts?.pagination?.current_page || 1,
           totalPages: contacts?.pagination?.total_pages || 1,

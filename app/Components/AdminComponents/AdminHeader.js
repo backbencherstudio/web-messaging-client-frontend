@@ -8,14 +8,14 @@ const AdminHeader = () => {
 
   return (
     <div className="bg-white px-8 py-4 shadow-sm flex justify-end items-center gap-4">
-      <div className="relative w-[50%] lg:w-full lg:max-w-[315px]">
+      {/* <div className="relative w-[50%] lg:w-full lg:max-w-[315px]">
         <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
         <input
           type="text"
           placeholder="Search Anything"
           className=" w-full border bg-[#f9fafb] border-[#EAF1FF] rounded-lg p-2 pl-10"
         />
-      </div>
+      </div> */}
 
       <div
         onClick={() => router.push("/admin/notification")}
