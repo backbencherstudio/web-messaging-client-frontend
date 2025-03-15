@@ -5,7 +5,7 @@ import { User } from "lucide-react";
 import { io } from "socket.io-client";
 import { format } from "date-fns";
 
-const socket = io("http://192.168.1.100:4000", {
+const socket = io("http://192.168.50.128:4000", {
   autoConnect: false,
   reconnection: true,
   reconnectionAttempts: 5,
@@ -55,7 +55,7 @@ const NotificationPage = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://192.168.1.100:4000/api/notifications?page=${page}&limit=${itemsPerPage}`,
+        `http://192.168.50.128:4000/api/notifications?page=${page}&limit=${itemsPerPage}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -100,7 +100,7 @@ const NotificationPage = () => {
   const markAsRead = async (id) => {
     try {
       const response = await fetch(
-        `http://192.168.1.100:4000/api/notifications/${id}/read`,
+        `http://192.168.50.128:4000/api/notifications/${id}/read`,
         {
           method: "PATCH",
           headers: {
@@ -124,7 +124,7 @@ const NotificationPage = () => {
   };
 
   return (
-    <div className="flex justify-center pt-24 lg:pt-[120px] bg-cover bg-no-repeat dark:bg-[url('/bg.png')] pb-[500px]">
+    <div className="flex justify-center  bg-cover bg-no-repeat dark:bg-[url('/bg.png')] pb-[500px]">
       <div className="m-4 border dark:border-[#545460] bg-white dark:bg-[#1E1E1E] text-[#070707] dark:text-[#FDFEFF] rounded-lg shadow-lg max-w-[1080px] w-full px-6 py-6 md:px-10 md:py-8 leading-[130%]">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-semibold">Notifications</h1>

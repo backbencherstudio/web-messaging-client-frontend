@@ -3,11 +3,13 @@ import React, { useState, useEffect } from "react";
 import { FaAngleLeft, FaAngleRight, FaCircleUser } from "react-icons/fa6";
 import { useRouter, useParams } from "next/navigation";
 import {
+  useDeleteMessageMutation,
   useGetMessageByIdQuery,
   useUpdateMessageMutation,
 } from "@/app/store/api/messageApi";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
+import DeleteModal from "@/app/Components/SharedComponent/DeleteModal";
 
 const ContentPage = () => {
   const { id } = useParams();
@@ -18,7 +20,10 @@ const ContentPage = () => {
   } = useGetMessageByIdQuery(id);
   const [updateMessage, { isLoading: isUpdatingMessage }] =
     useUpdateMessageMutation();
+  const [deleteMessage, { isLoading: isDeletingMessage }] =
+    useDeleteMessageMutation();
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
 
   // Replace hardcoded content with state from messageById
   const [content, setContent] = useState(
@@ -42,6 +47,17 @@ const ContentPage = () => {
       console.error("Failed to update message:", error);
     }
   };
+
+  const handleDelete = async () => {
+    try {
+      await deleteMessage({ id }).unwrap();
+      toast.success("Message deleted successfully");
+      router.push("/admin/messages");
+    } catch (error) {
+      console.error("Failed to delete message:", error);
+    }
+  };
+
   if (isLoadingMessageById) {
     return <div>Loading...</div>;
   }
@@ -62,13 +78,16 @@ const ContentPage = () => {
           </h1>
 
           <div className="flex gap-4">
-            <button
+            {/* <button
               onClick={handleSave}
               className="bg-primary text-white px-4 py-2 rounded-full hover:bg-primary/90"
             >
               Save Changes
-            </button>
-            <button className="bg-red-100 text-red-600 px-4 py-2 rounded-full hover:bg-red-200">
+            </button> */}
+            <button
+              onClick={() => setIsOpen(true)}
+              className="bg-red-100 text-red-600 px-4 py-2 rounded-full hover:bg-red-200"
+            >
               Delete
             </button>
           </div>
@@ -78,6 +97,7 @@ const ContentPage = () => {
             className="w-full h-44 p-4 border border-gray-300 rounded-lg mt-6"
             placeholder="Write your content here..."
             value={content}
+            disabled
             onChange={(e) => setContent(e.target.value)}
           ></textarea>
         </>
@@ -120,6 +140,12 @@ const ContentPage = () => {
           </div>
         </div>
       </div>
+      <DeleteModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={handleDelete}
+        isLoading={isDeletingMessage}
+      />
     </div>
   );
 };
