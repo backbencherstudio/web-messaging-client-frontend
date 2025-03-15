@@ -185,26 +185,7 @@ export default function SignInForm({
 
   const handleOtpVerification = async (e) => {
     e.preventDefault();
-    setIsOtpLoading(true);
-    try {
-      await toast.promise(verifyOtp({ email: email, token: otp }).unwrap(), {
-        loading: "Verifying OTP...",
-        success: (response) => {
-          {
-            response.success
-              ? setModalStep("password")
-              : toast.error(response.message);
-          }
-        },
-        error: (err) => {
-          return err?.data?.message || "Invalid OTP";
-        },
-      });
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setIsOtpLoading(false);
-    }
+    setModalStep("password");
   };
 
   const handlePasswordUpdate = async (e) => {
@@ -218,23 +199,28 @@ export default function SignInForm({
       return;
     }
     setIsPasswordLoading(true);
+
+    // Create payload object with all required fields
+    const payload = {
+      email: email.trim(),
+      token: otp.trim(),
+      password: newPassword.trim(),
+    };
+
     try {
-      await toast.promise(
-        resetPassword({ email, token: otp, newPassword }).unwrap(),
-        {
-          loading: "Updating password...",
-          success: (response) => {
+      await resetPassword(payload)
+        .unwrap()
+        .then((res) => {
+          if (res?.success) {
+            toast.success("Password updated successfully");
             setIsModalOpen(false);
             resetForm();
-            return "Password updated successfully";
-          },
-          error: (err) => {
-            return err?.data?.message || "Failed to update password";
-          },
-        }
-      );
+          } else {
+            toast.error(res?.message || "Failed to update password");
+          }
+        });
     } catch (error) {
-      console.error("Error:", error);
+      toast.error(error?.data?.message || "Failed to update password");
     } finally {
       setIsPasswordLoading(false);
     }

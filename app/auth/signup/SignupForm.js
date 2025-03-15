@@ -17,7 +17,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useSignupMutation } from "@/app/store/api/authApi";
+import {
+  useSignupMutation,
+  useVerifyOtpMutation,
+} from "@/app/store/api/authApi";
 import { countries } from "@/app/data/countries";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -58,7 +61,7 @@ export default function SignupForm({
 
   const adminLogin = formTitle === "Admin Log In";
   const signInStyle = accountExist === "Don't have an account? ";
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [termsOpen, setTermsOpen] = useState(false);
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -69,11 +72,13 @@ export default function SignupForm({
     confirmPassword: "",
     agreed: false,
   });
-
+  const [isOtpLoading, setIsOtpLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [signup, { isLoading: isSignupLoading, error: signupError }] =
     useSignupMutation();
+  const [verifyOtp, { error: otpError }] = useVerifyOtpMutation();
+  const [otp, setOtp] = useState("");
 
   useEffect(() => {
     setIsLoading(false);
@@ -176,17 +181,15 @@ export default function SignupForm({
         address: formData.location,
         password: formData.password,
       };
-      await signup(data).unwrap();
-      toast.success("Signup successful! Redirecting to login...");
-      setFormData({
-        name: "",
-        last_name: "",
-        email: "",
-        address: "",
-        password: "",
-        confirmPassword: "",
-      });
-      router.push("/auth/signin");
+      await signup(data)
+        .unwrap()
+        .then((res) => {
+          if (res?.success) {
+            setIsModalOpen(true);
+          } else {
+            toast.error(res?.message || "Failed to signup");
+          }
+        });
     } catch (err) {
       if (err.status === 409) {
         toast.error("Email already exists. Please use a different email.");
@@ -198,6 +201,49 @@ export default function SignupForm({
         toast.error("An error occurred. Please try again later.");
       }
       console.error("Signup error:", err);
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      email: "",
+      location: "",
+      password: "",
+      confirmPassword: "",
+      agreed: false,
+    });
+    setOtp("");
+  };
+
+  const handleOtpVerification = async (e) => {
+    e.preventDefault();
+    if (!otp) {
+      toast.error("Please enter OTP");
+      return;
+    }
+    setIsOtpLoading(true);
+    try {
+      const data = {
+        email: formData.email,
+        otp: otp.trim(),
+      };
+
+      await verifyOtp(data)
+        .unwrap()
+        .then((res) => {
+          if (res?.success) {
+            toast.success("Email verified successfully");
+            setIsModalOpen(false);
+            router.push("/auth/signin");
+          } else {
+            toast.error(res?.message || "Failed to verify OTP");
+          }
+        });
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to verify OTP");
+    } finally {
+      setIsOtpLoading(false);
     }
   };
 
@@ -654,6 +700,57 @@ export default function SignupForm({
           </form>
         </div>
       </div>
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div
+            className="bg-white dark:bg-gray-800 p-8 rounded-lg w-[400px] relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                setIsModalOpen(false);
+                resetForm();
+              }}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              ✕
+            </button>
+            <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
+              Enter OTP
+            </h2>
+            <form onSubmit={handleOtpVerification}>
+              <div className="mb-6">
+                <label className="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">
+                  OTP Code
+                </label>
+                <input
+                  type="text"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  placeholder="Enter OTP"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-[#101013] text-white py-2 rounded-lg hover:bg-[#2a2c31] transition-colors duration-300 relative"
+                disabled={isOtpLoading}
+              >
+                {isOtpLoading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    <span>Verifying...</span>
+                  </div>
+                ) : (
+                  "Verify OTP"
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
