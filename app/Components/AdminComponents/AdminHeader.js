@@ -1,10 +1,14 @@
 import React from "react";
-import { FaBell, FaSearch } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
+import { useGetNotificationsQuery } from "@/app/store/api/notificationApi";
+import { IoNotifications } from "react-icons/io5";
 
 const AdminHeader = () => {
   const router = useRouter();
+  const { data: notifications, isLoading: notificationsLoading } =
+    useGetNotificationsQuery({ page: 1, limit: 50 });
 
   return (
     <div className="bg-white px-8 py-4 shadow-sm flex justify-end items-center gap-4">
@@ -19,9 +23,16 @@ const AdminHeader = () => {
 
       <div
         onClick={() => router.push("/admin/notification")}
-        className="w-10 h-10 border border-[#EAF1FF] rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-50"
+        className="relative w-10 h-10 border border-[#EAF1FF] rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-50"
       >
-        <FaBell />
+        <IoNotifications className="text-2xl" />
+        {notifications?.data?.length > 0 && (
+          <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+            <span className="text-xs text-white">
+              {notifications?.data?.length}
+            </span>
+          </span>
+        )}
       </div>
       <div
         onClick={() => router.push("/admin/profile")}

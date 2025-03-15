@@ -11,6 +11,7 @@ import { MdOutlineLogout } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import { useGetProfileQuery } from "@/app/store/api/authApi";
 import { FaUserCircle } from "react-icons/fa";
+import { useGetNotificationsQuery } from "@/app/store/api/notificationApi";
 
 const NavBar = () => {
   const pathname = usePathname();
@@ -19,6 +20,8 @@ const NavBar = () => {
   const isUserRoute = pathname?.startsWith("/user");
   const [showDropdown, setShowDropdown] = useState(false);
   const { data: profile, isLoading, error } = useGetProfileQuery();
+  const { data: notifications, isLoading: notificationsLoading } =
+    useGetNotificationsQuery({});
   const handleNavigation = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -137,8 +140,15 @@ const NavBar = () => {
                       href="/user/notification"
                       className="text-base font-medium"
                     >
-                      <span className="md:w-[36px] md:h-[36px] w-[26px] h-[26px] flex items-center justify-center rounded-full bg-white dark:bg-[#080808]">
+                      <span className="relative md:w-[36px] md:h-[36px] w-[26px] h-[26px] flex items-center justify-center rounded-full bg-white dark:bg-[#080808]">
                         <IoNotifications className="text-2xl" />
+                        {notifications?.data?.length > 0 && (
+                          <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                            <span className="text-xs text-white">
+                              {notifications?.data?.length}
+                            </span>
+                          </span>
+                        )}
                       </span>
                     </Link>
 

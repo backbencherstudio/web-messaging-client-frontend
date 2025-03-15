@@ -17,7 +17,7 @@ export const baseApi = createApi({
     },
   }),
   endpoints: () => ({}),
-  tagTypes: ["Messages", "User", "Leaderboard"], // Add your tag types here
+  tagTypes: ["Messages", "User", "Leaderboard", "Notifications"], // Added Notifications tag
 });
 
 // Export hooks for usage in components
