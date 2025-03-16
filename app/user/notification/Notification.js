@@ -9,7 +9,7 @@ import {
   useMarkNotificationAsReadMutation,
 } from "@/app/store/api/notificationApi";
 
-const socket = io("http://192.168.50.128:4000", {
+const socket = io("http://3.10.58.182:4000", {
   autoConnect: false,
   reconnection: true,
   reconnectionAttempts: 5,
