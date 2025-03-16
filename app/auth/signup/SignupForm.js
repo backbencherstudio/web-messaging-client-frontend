@@ -24,6 +24,7 @@ import {
 import { countries } from "@/app/data/countries";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import ForgotPasswordModal from "@/app/Components/SharedComponent/ForgotPasswordModal";
 
 export default function SignupForm({
   bgImage, // Background image URL
@@ -75,6 +76,7 @@ export default function SignupForm({
   const [isOtpLoading, setIsOtpLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
+  const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
   const [signup, { isLoading: isSignupLoading, error: signupError }] =
     useSignupMutation();
   const [verifyOtp, { error: otpError }] = useVerifyOtpMutation();
@@ -671,16 +673,12 @@ export default function SignupForm({
               </button>
             </div>
             <div>
-              {forget && (
-                <div>
-                  <a
-                    href="#"
-                    className="text-[#393C44] dark:text-[#ECF0FE] text-base font-medium"
-                  >
-                    {forget}
-                  </a>
-                </div>
-              )}
+              <div>
+                <a
+                  href="#"
+                  className="text-[#393C44] dark:text-[#ECF0FE] text-base font-medium mb-2"
+                ></a>
+              </div>
               <h2
                 className={`text-c2 leading-[160%] dark:text-[#A8AAB4] text-base ${
                   signInStyle ? "pt-2" : ""
@@ -690,10 +688,22 @@ export default function SignupForm({
                 <span className="font-medium text-[#070707]">
                   <Link
                     href="/auth/signin"
-                    className="border-b border-[#070707] dark:text-[#FDFEFF] dark:border-[#A8AAB4]"
+                    className="hover:underline dark:text-[#FDFEFF] dark:border-[#A8AAB4]"
                   >
                     {logs}
                   </Link>
+                  <span className="mx-1">/</span>
+                  <button
+                    className="hover:underline dark:text-[#FDFEFF] dark:border-[#A8AAB4]"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsVerifyModalOpen(true);
+                    }}
+                  >
+                    {" "}
+                    Verify Email
+                  </button>
                 </span>
               </h2>
             </div>
@@ -751,6 +761,11 @@ export default function SignupForm({
           </div>
         </div>
       )}
+      <ForgotPasswordModal
+        isOpen={isVerifyModalOpen}
+        onClose={() => setIsVerifyModalOpen(false)}
+        title="Verify Email"
+      />
     </div>
   );
 }

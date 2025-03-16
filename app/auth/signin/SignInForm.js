@@ -6,15 +6,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import {
-  useForgotPasswordMutation,
-  useResetPasswordMutation,
-  useSigninMutation,
-  useSignupMutation,
-  useVerifyOtpMutation,
-} from "@/app/store/api/authApi";
+import { useSigninMutation, useSignupMutation } from "@/app/store/api/authApi";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import ForgotPasswordModal from "@/app/Components/SharedComponent/ForgotPasswordModal";
 
 // Create a client-side only effect hook
 function useClientEffect(effect, deps) {
@@ -61,28 +56,6 @@ export default function SignInForm({
     useSigninMutation();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalStep, setModalStep] = useState("email"); // 'email', 'otp', 'password'
-  const [email, setEmail] = useState("");
-  const [otp, setOtp] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const [
-    forgotPassword,
-    { isLoading: isForgotPasswordLoading, error: forgotPasswordError },
-  ] = useForgotPasswordMutation();
-
-  const [verifyOtp, { isLoading: isVerifyOtpLoading, error: verifyOtpError }] =
-    useVerifyOtpMutation();
-
-  const [
-    resetPassword,
-    { isLoading: isResetPasswordLoading, error: resetPasswordError },
-  ] = useResetPasswordMutation();
-
-  const [isEmailLoading, setIsEmailLoading] = useState(false);
-  const [isOtpLoading, setIsOtpLoading] = useState(false);
-  const [isPasswordLoading, setIsPasswordLoading] = useState(false);
 
   useClientEffect(() => {
     setIsLoading(false);
@@ -160,78 +133,6 @@ export default function SignInForm({
           : item
       )
     );
-  };
-
-  const handleForgotPassword = async (e) => {
-    e.preventDefault();
-    setIsEmailLoading(true);
-    try {
-      await toast.promise(forgotPassword(email).unwrap(), {
-        loading: "Sending reset link...",
-        success: (response) => {
-          setModalStep("otp");
-          return "OTP sent to your email";
-        },
-        error: (err) => {
-          return err?.data?.message || "Failed to send reset link";
-        },
-      });
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setIsEmailLoading(false);
-    }
-  };
-
-  const handleOtpVerification = async (e) => {
-    e.preventDefault();
-    setModalStep("password");
-  };
-
-  const handlePasswordUpdate = async (e) => {
-    e.preventDefault();
-    if (newPassword.length < 8) {
-      toast.error("Password must be at least 8 characters long");
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
-    setIsPasswordLoading(true);
-
-    // Create payload object with all required fields
-    const payload = {
-      email: email.trim(),
-      token: otp.trim(),
-      password: newPassword.trim(),
-    };
-
-    try {
-      await resetPassword(payload)
-        .unwrap()
-        .then((res) => {
-          if (res?.success) {
-            toast.success("Password updated successfully");
-            setIsModalOpen(false);
-            resetForm();
-          } else {
-            toast.error(res?.message || "Failed to update password");
-          }
-        });
-    } catch (error) {
-      toast.error(error?.data?.message || "Failed to update password");
-    } finally {
-      setIsPasswordLoading(false);
-    }
-  };
-
-  const resetForm = () => {
-    setEmail("");
-    setOtp("");
-    setNewPassword("");
-    setConfirmPassword("");
-    setModalStep("email");
   };
 
   return (
@@ -359,7 +260,7 @@ export default function SignInForm({
                   <span className="font-medium text-[#070707]">
                     <Link
                       href="/auth/signup"
-                      className="border-b border-[#070707] dark:text-[#FDFEFF] dark:border-[#A8AAB4]"
+                      className=" hover:underline border-[#070707] dark:text-[#FDFEFF] dark:border-[#A8AAB4]"
                     >
                       {logs}
                     </Link>
@@ -371,152 +272,11 @@ export default function SignInForm({
         </div>
       )}
 
-      {/* Forgot Password Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div
-            className="bg-white dark:bg-gray-800 p-8 rounded-lg w-[400px] relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              onClick={() => {
-                setIsModalOpen(false);
-                resetForm();
-              }}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-            >
-              ✕
-            </button>
-
-            {modalStep === "email" && (
-              <>
-                <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
-                  Reset Password
-                </h2>
-                <form onSubmit={handleForgotPassword}>
-                  <div className="mb-6">
-                    <label className="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                      placeholder="Enter your email"
-                      required
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full bg-[#101013] text-white py-2 rounded-lg hover:bg-[#2a2c31] transition-colors duration-300 relative"
-                    disabled={isEmailLoading}
-                  >
-                    {isEmailLoading ? (
-                      <div className="flex items-center justify-center">
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                        <span>Sending...</span>
-                      </div>
-                    ) : (
-                      "Send OTP"
-                    )}
-                  </button>
-                </form>
-              </>
-            )}
-
-            {modalStep === "otp" && (
-              <>
-                <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
-                  Enter OTP
-                </h2>
-                <form onSubmit={handleOtpVerification}>
-                  <div className="mb-6">
-                    <label className="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">
-                      OTP Code
-                    </label>
-                    <input
-                      type="text"
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value)}
-                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                      placeholder="Enter OTP"
-                      required
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full bg-[#101013] text-white py-2 rounded-lg hover:bg-[#2a2c31] transition-colors duration-300 relative"
-                    disabled={isOtpLoading}
-                  >
-                    {isOtpLoading ? (
-                      <div className="flex items-center justify-center">
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                        <span>Verifying...</span>
-                      </div>
-                    ) : (
-                      "Verify OTP"
-                    )}
-                  </button>
-                </form>
-              </>
-            )}
-
-            {modalStep === "password" && (
-              <>
-                <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
-                  Set New Password
-                </h2>
-                <form onSubmit={handlePasswordUpdate}>
-                  <div className="mb-4">
-                    <label className="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">
-                      New Password
-                    </label>
-                    <input
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                      placeholder="Enter new password"
-                      required
-                      disabled={isPasswordLoading}
-                    />
-                  </div>
-                  <div className="mb-6">
-                    <label className="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">
-                      Confirm Password
-                    </label>
-                    <input
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                      placeholder="Confirm new password"
-                      required
-                      disabled={isPasswordLoading}
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full bg-[#101013] text-white py-2 rounded-lg hover:bg-[#2a2c31] transition-colors duration-300 relative"
-                    disabled={isPasswordLoading}
-                  >
-                    {isPasswordLoading ? (
-                      <div className="flex items-center justify-center">
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                        <span>Updating...</span>
-                      </div>
-                    ) : (
-                      "Update Password"
-                    )}
-                  </button>
-                </form>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      <ForgotPasswordModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Forgot Password"
+      />
     </>
   );
 }
