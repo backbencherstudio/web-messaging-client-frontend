@@ -145,7 +145,7 @@ const NavBar = () => {
                         {notifications?.data?.length > 0 && (
                           <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
                             <span className="text-xs text-white">
-                              {notifications?.data?.length}
+                              {notifications?.meta?.total}
                             </span>
                           </span>
                         )}

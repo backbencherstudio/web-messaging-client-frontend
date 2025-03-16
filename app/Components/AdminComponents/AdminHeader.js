@@ -8,7 +8,7 @@ import { IoNotifications } from "react-icons/io5";
 const AdminHeader = () => {
   const router = useRouter();
   const { data: notifications, isLoading: notificationsLoading } =
-    useGetNotificationsQuery({ page: 1, limit: 50 });
+    useGetNotificationsQuery({ page: 1, limit: 5 });
 
   return (
     <div className="bg-white px-8 py-4 shadow-sm flex justify-end items-center gap-4">
@@ -29,7 +29,7 @@ const AdminHeader = () => {
         {notifications?.data?.length > 0 && (
           <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
             <span className="text-xs text-white">
-              {notifications?.data?.length}
+              {notifications?.meta?.total}
             </span>
           </span>
         )}
