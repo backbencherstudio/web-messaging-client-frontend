@@ -112,7 +112,7 @@ export default function Home() {
       email: contactEmail,
       subject: contactSubject,
       message: contactMessage,
-      phone: contactPhone,
+      phone_number: contactPhone,
     };
     createContact(data)
       .unwrap()
@@ -212,7 +212,8 @@ export default function Home() {
                   {lastMessage?.postCount || 0}
                 </p>
                 <p className="">
-                  <span className="opacity-70">Current Value:</span> $ {lastMessage?.minimumBid}
+                  <span className="opacity-70">Current Value:</span> ${" "}
+                  {lastMessage?.minimumBid}
                 </p>
                 <p className="">
                   <span className="opacity-70">Last Update:</span>{" "}

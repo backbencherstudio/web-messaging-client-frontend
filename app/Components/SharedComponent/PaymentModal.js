@@ -29,6 +29,25 @@ const stripePromise = loadStripe(
   "pk_test_51Nokq8C8szXM8fPRu5jOPBoutxbXYDbnV7IpDIyNOG1HcLiI8XYA9xPbooHLoho7uAplF3wO5MtPfc3VadQcALN900Td6TrGBL"
 );
 
+// First, create a dynamic style object based on the postCount
+const getStripeElementStyle = (isDisabled) => ({
+  style: {
+    base: {
+      fontSize: "16px",
+      color: isDisabled ? "#9CA3AF" : "#1F2937",
+      "::placeholder": {
+        color: isDisabled ? "#9CA3AF" : "#6B7280",
+      },
+      backgroundColor: isDisabled ? "#F3F4F6" : "#ffffff",
+    },
+    invalid: {
+      color: "#EF4444",
+      iconColor: "#EF4444",
+    },
+  },
+  disabled: isDisabled,
+});
+
 const PaymentForm = ({ onSuccess, onClose, name, message }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -39,18 +58,7 @@ const PaymentForm = ({ onSuccess, onClose, name, message }) => {
   const [createPayment, { isLoading }] = useCreatePaymentMutation();
   console.log(profile);
 
-  const stripeElementStyle = {
-    style: {
-      base: {
-        fontSize: "16px",
-        color: "#0F172A",
-        "::placeholder": {
-          color: "#64748B",
-        },
-        padding: "16px",
-      },
-    },
-  };
+  const stripeElementStyle = getStripeElementStyle(lastMessage?.postCount < 50);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,7 +87,7 @@ const PaymentForm = ({ onSuccess, onClose, name, message }) => {
 
       // Confirm the payment
       {
-        if (lastMessage?.postCount > 50) {
+        if (lastMessage?.postCount >= 50) {
           const { error, paymentIntent } = await stripe.confirmCardPayment(
             clientSecret,
             {
@@ -120,10 +128,10 @@ const PaymentForm = ({ onSuccess, onClose, name, message }) => {
         disabled
         value={profile?.data?.email}
         className="text-base md:text-lg p-6 bg-gray-200"
-        required
       />
 
       <Input
+        disabled={lastMessage?.postCount < 50}
         type="number"
         placeholder="Amount ($)"
         value={amount}
@@ -137,20 +145,55 @@ const PaymentForm = ({ onSuccess, onClose, name, message }) => {
       </div>
 
       <div className="flex gap-2">
-        <div className="border rounded-lg p-4 bg-white flex-1">
-          <CardExpiryElement options={stripeElementStyle} />
+        <div
+          className={`border rounded-lg p-4 bg-white flex-1 ${
+            lastMessage?.postCount < 50 ? "opacity-60 cursor-not-allowed" : ""
+          }`}
+        >
+          <CardExpiryElement
+            options={stripeElementStyle}
+            disabled={lastMessage?.postCount < 50}
+            onChange={(e) => {
+              if (lastMessage?.postCount < 50) {
+                toast.error("You need at least 50 posts to make a payment");
+              }
+            }}
+          />
         </div>
-        <div className="border rounded-lg p-4 bg-white flex-1">
-          <CardCvcElement options={stripeElementStyle} />
+        <div
+          className={`border rounded-lg p-4 bg-white flex-1 ${
+            lastMessage?.postCount < 50 ? "opacity-60 cursor-not-allowed" : ""
+          }`}
+        >
+          <CardCvcElement
+            options={stripeElementStyle}
+            disabled={lastMessage?.postCount < 50}
+            onChange={(e) => {
+              if (lastMessage?.postCount < 50) {
+                toast.error("You need at least 50 posts to make a payment");
+              }
+            }}
+          />
         </div>
       </div>
+
+      {lastMessage?.postCount < 50 && (
+        <p className="text-sm text-red-500 mt-2">
+          At least 50 posts to make a payment. Current posts:{" "}
+          {lastMessage?.postCount}
+        </p>
+      )}
 
       <Button
         type="submit"
         disabled={!stripe || loading}
         className="w-full py-4 md:py-6 px-8 md:px-12 text-base md:text-lg rounded-full"
       >
-        {loading ? "Processing..." : "Pay Now"}
+        {loading
+          ? "Processing..."
+          : lastMessage?.postCount < 50
+          ? "Pay Now (Free)"
+          : "Pay Now"}
       </Button>
     </form>
   );
