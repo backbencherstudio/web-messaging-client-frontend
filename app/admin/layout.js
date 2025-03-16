@@ -1,14 +1,18 @@
 "use client";
 import AdminHeader from "../Components/AdminComponents/AdminHeader";
 import AdminNavBar from "../Components/AdminComponents/AdminNavBar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
   const hideNavbarRoutes = ["/admin/login"];
-
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Add effect to close sidebar on route change
+  useEffect(() => {
+    setIsSidebarOpen(false);
+  }, [pathname]);
 
   return (
     <div className="flex h-screen bg-[#F9FAFB] dark:bg-gray-900">
@@ -17,6 +21,7 @@ export default function AdminLayout({ children }) {
         <button
           className="lg:hidden fixed z-20 m-4 p-2 rounded-md bg-gray-800 text-white"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          aria-label={isSidebarOpen ? "Close menu" : "Open menu"}
         >
           {isSidebarOpen ? (
             <svg
@@ -46,18 +51,25 @@ export default function AdminLayout({ children }) {
         </button>
       )}
 
-      {/* Sidebar - hidden on mobile by default */}
+      {/* Sidebar with overlay */}
       <div
         className={`fixed inset-0 z-10 lg:relative transform transition-transform duration-300 ease-in-out ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0`}
       >
-        <div
-          className="absolute inset-0 bg-black opacity-50 lg:hidden"
-          onClick={() => setIsSidebarOpen(false)}
-        ></div>
-        <div className="relative z-10">
-          {!hideNavbarRoutes.includes(pathname) && <AdminNavBar />}
+        {/* Overlay - only visible on mobile */}
+        {isSidebarOpen && (
+          <div
+            className="absolute inset-0 bg-black opacity-50 lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
+        {/* Sidebar content */}
+        <div className="relative z-20 h-full max-w-[250px] dark:bg-gray-800">
+          {!hideNavbarRoutes.includes(pathname) && (
+            <AdminNavBar onNavigate={() => setIsSidebarOpen(false)} />
+          )}
         </div>
       </div>
 
