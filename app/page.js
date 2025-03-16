@@ -178,7 +178,7 @@ export default function Home() {
       <div>
         {/* about section  */}
         <div className="dark:bg-[url('/bg.png')] dark:bg-cover dark:bg-no-repeat ">
-          <div className="md:pt-44 pt-24 md:pb-[66px] pb-[26px] max-w-[1080px] mx-auto px-5 2xl:px-0 ">
+          <div className="md:pt-44 pt-28 md:pb-[66px] pb-[26px] max-w-[1080px] mx-auto px-5 2xl:px-0 ">
             <div className="border  rounded-lg dark:bg-custom-gradient">
               <div className="flex rounded-t-lg justify-between items-center bg-[#f7f9ff] px-4 lg:px-16 py-5 dark:bg-[#070707]">
                 <h1 className="text-[clamp(1rem,2vw,2rem)] font-semibold dark:text-[#C9CCD8]">

@@ -154,55 +154,89 @@ export default function CustomTable({
 
       {/* New Pagination Control*/}
       {pagination && shouldPaginate && (
-        <div className="mt-6 flex justify-end">
-          {" "}
-          <div>
-            <Pagination>
-              <PaginationContent>
+        <div className="mt-6 border-t dark:border-gray-700">
+          <div className="py-4 px-2 flex justify-end items-center gap-4">
+            {/* Items per page info */}
+
+            {/* Pagination */}
+            <Pagination className="justify-end">
+              <PaginationContent className="flex items-center gap-2">
                 <PaginationItem>
                   <PaginationPrevious
                     onClick={() =>
                       setCurrentPage((prev) => Math.max(prev - 1, 1))
                     }
-                    className={
+                    className={`whitespace-nowrap transition-colors ${
                       currentPage === 1
                         ? "pointer-events-none opacity-50"
-                        : "cursor-pointer"
-                    }
+                        : "cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+                    }`}
                   />
                 </PaginationItem>
 
-                {getPageNumbers().map((pageNum, index) =>
-                  pageNum === "..." ? (
-                    <PaginationItem key={`ellipsis-${index}`}>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  ) : (
-                    <PaginationItem key={pageNum}>
-                      <PaginationLink
-                        onClick={() => {
-                          setCurrentPage(pageNum);
-                          onPageChange(pageNum);
-                        }}
-                        isActive={currentPage === pageNum}
-                        className="cursor-pointer"
-                      >
-                        {pageNum}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )
-                )}
+                {/* Desktop View */}
+                <div className="hidden sm:flex items-center gap-1">
+                  {getPageNumbers().map((pageNum, index) =>
+                    pageNum === "..." ? (
+                      <PaginationItem key={`ellipsis-${index}`}>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    ) : (
+                      <PaginationItem key={pageNum}>
+                        <PaginationLink
+                          onClick={() => {
+                            setCurrentPage(pageNum);
+                            onPageChange?.(pageNum);
+                          }}
+                          isActive={currentPage === pageNum}
+                          className={`cursor-pointer min-w-[32px] h-8 flex items-center justify-center rounded transition-colors
+                            ${
+                              currentPage === pageNum
+                                ? "bg-primary text-white"
+                                : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                            }`}
+                        >
+                          {pageNum}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )
+                  )}
+                </div>
+
+                {/* Mobile View */}
+                <div className="flex sm:hidden items-center">
+                  <select
+                    value={currentPage}
+                    onChange={(e) => {
+                      const page = Number(e.target.value);
+                      setCurrentPage(page);
+                      onPageChange?.(page);
+                    }}
+                    className="bg-transparent border rounded px-2 py-1 text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary"
+                  >
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (num) => (
+                        <option key={num} value={num}>
+                          {num}
+                        </option>
+                      )
+                    )}
+                  </select>
+                  <span className="mx-2 text-sm text-gray-600 dark:text-gray-400">
+                    of {totalPages}
+                  </span>
+                </div>
 
                 <PaginationItem>
                   <PaginationNext
                     onClick={() =>
                       setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                     }
-                    className={
+                    className={`whitespace-nowrap transition-colors ${
                       currentPage === totalPages
                         ? "pointer-events-none opacity-50"
-                        : "cursor-pointer"
-                    }
+                        : "cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+                    }`}
                   />
                 </PaginationItem>
               </PaginationContent>

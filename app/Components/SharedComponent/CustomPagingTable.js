@@ -150,47 +150,57 @@ export default function CustomPagingTable({
 
       {/* New Pagination Control*/}
       {pagination && totalPages > 1 && (
-        <div className="mt-6 flex justify-end">
-          <div>
-            <Pagination>
-              <PaginationContent>
+        <div className="mt-6 w-full">
+          <div className="flex justify-end">
+            <Pagination className="justify-end">
+              <PaginationContent className="flex flex-nowrap justify-end gap-1">
                 <PaginationItem>
                   <PaginationPrevious
                     onClick={() => onPageChange(currentPage - 1)}
-                    className={
+                    className={`whitespace-nowrap ${
                       currentPage === 1
                         ? "pointer-events-none opacity-50"
                         : "cursor-pointer"
-                    }
+                    }`}
                   />
                 </PaginationItem>
 
-                {getPageNumbers().map((pageNum, index) =>
-                  pageNum === "..." ? (
-                    <PaginationItem key={`ellipsis-${index}`}>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  ) : (
-                    <PaginationItem key={pageNum}>
-                      <PaginationLink
-                        onClick={() => onPageChange(pageNum)}
-                        isActive={currentPage === pageNum}
-                        className="cursor-pointer"
-                      >
-                        {pageNum}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )
-                )}
+                {/* For mobile, show fewer page numbers */}
+                <div className="hidden sm:flex gap-1">
+                  {getPageNumbers().map((pageNum, index) =>
+                    pageNum === "..." ? (
+                      <PaginationItem key={`ellipsis-${index}`}>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    ) : (
+                      <PaginationItem key={pageNum}>
+                        <PaginationLink
+                          onClick={() => onPageChange(pageNum)}
+                          isActive={currentPage === pageNum}
+                          className="cursor-pointer min-w-[32px] flex justify-center"
+                        >
+                          {pageNum}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )
+                  )}
+                </div>
+
+                {/* Simplified mobile view */}
+                <div className="flex sm:hidden items-center mx-2">
+                  <span className="text-sm font-medium">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                </div>
 
                 <PaginationItem>
                   <PaginationNext
                     onClick={() => onPageChange(currentPage + 1)}
-                    className={
+                    className={`whitespace-nowrap ${
                       currentPage === totalPages
                         ? "pointer-events-none opacity-50"
                         : "cursor-pointer"
-                    }
+                    }`}
                   />
                 </PaginationItem>
               </PaginationContent>

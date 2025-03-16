@@ -51,7 +51,6 @@ const AdminNavBar = () => {
           SayThat.sh
         </h1>
       </div>
-
       <nav className="mt-8 text-sm font-medium">
         {navItems.map((item) => (
           <Link key={item.path} href={item.path}>
@@ -75,6 +74,13 @@ const AdminNavBar = () => {
       >
         <IoIosLogOut size={18} />
         <p className="text-red-500">Logout</p>
+      </div>{" "}
+      <div
+        onClick={() => router.push("/")}
+        className=" flex items-center gap-2 mt-8 absolute bottom-6 left-36 cursor-pointer hover:scale-105 transition-all duration-300"
+      >
+        <FaHome size={18} />
+        <p className="">Home</p>
       </div>
     </div>
   );

@@ -12,6 +12,8 @@ import { toast } from "react-hot-toast";
 import { useGetProfileQuery } from "@/app/store/api/authApi";
 import { FaUserCircle } from "react-icons/fa";
 import { useGetNotificationsQuery } from "@/app/store/api/notificationApi";
+import { RxDashboard } from "react-icons/rx";
+import { decryptData } from "@/app/utils/encryption";
 
 const NavBar = () => {
   const pathname = usePathname();
@@ -20,6 +22,8 @@ const NavBar = () => {
   const isUserRoute = pathname?.startsWith("/user");
   const [showDropdown, setShowDropdown] = useState(false);
   const { data: profile, isLoading, error } = useGetProfileQuery();
+  const encryptedType = localStorage.getItem("type");
+  const userType = decryptData(encryptedType);
   const { data: notifications, isLoading: notificationsLoading } =
     useGetNotificationsQuery({});
   const handleNavigation = (sectionId) => {
@@ -130,7 +134,7 @@ const NavBar = () => {
               </div>
 
               {/* Theme Toggle & Sign In Button */}
-              <div className="flex items-center justify-end w-full lg:space-x-6 md:space-x-2">
+              <div className="flex items-center justify-end space-x-2 w-full lg:space-x-6">
                 <ThemeToggle></ThemeToggle>
 
                 {isLoggedIn() ? (
@@ -213,6 +217,16 @@ const NavBar = () => {
 
                         {/* Menu Items */}
                         <div className="flex flex-col text-[14px] text-[#6A6C72] dark:text-[#C9CCD8]">
+                          {userType === "admin" && (
+                            <Link
+                              href="/admin"
+                              onClick={() => setShowDropdown(false)}
+                              className="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F8FA] dark:hover:bg-[#191A1C] rounded-lg transition-colors dark:border-[#2A2A2A]"
+                            >
+                              <RxDashboard className="text-xl" />
+                              <span>Dashboard</span>
+                            </Link>
+                          )}
                           <Link
                             href="/user/editprofile"
                             onClick={() => setShowDropdown(false)}
@@ -245,26 +259,18 @@ const NavBar = () => {
                       </div>
                     </div>
                   </div>
-                ) : isLoggedIn() ? (
-                  // Show logout button when logged in
-                  <button
-                    onClick={handleLogout}
-                    className="bg-[#070707] border border-[#070707] dark:bg-[#ffffff] text-white  dark:text-[#000000] lg:px-6 md:px-[10px] lg:py-[10px] md:py-[6px] text-base font-medium lg:rounded-[99px] md:rounded-[50px] hidden md:block dark:hover:bg-[#e4e4e4] hover:bg-[#2a2c31] transition-colors duration-300"
-                  >
-                    Logout
-                  </button>
                 ) : pathname === "/" ? (
                   // Show both buttons on home page when not logged in
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1 lg:gap-3 ">
                     <Link
                       href="/auth/signup"
-                      className="bg-[#F3F6FE] dark:bg-[#F3F6FE] border border-[#070707] text-[#000] lg:px-6 md:px-[10px] lg:py-[10px] md:py-[6px] text-base font-medium rounded-[99px] hidden md:block"
+                      className="bg-[#F3F6FE] dark:bg-[#F3F6FE] border text-nowrap border-[#070707] text-[#000] lg:px-6 px-2 lg:py-[10px] py-2 text-base font-medium rounded-[99px]"
                     >
                       Sign Up
                     </Link>
                     <Link
                       href="/auth/signin"
-                      className="bg-[#070707] border border-[#070707] text-[#E3E6EF] lg:px-6 md:px-[10px] lg:py-[10px] md:py-[6px] text-base font-medium lg:rounded-[99px] md:rounded-[50px] hidden md:block"
+                      className="bg-[#070707] border border-[#070707] text-nowrap text-[#E3E6EF] lg:px-6 px-2 lg:py-[10px] py-2 text-base font-medium rounded-[99px]"
                     >
                       Sign In
                     </Link>
@@ -273,7 +279,7 @@ const NavBar = () => {
                   // Show only Sign Up on signin page
                   <Link
                     href="/auth/signup"
-                    className="bg-[#F3F6FE] dark:bg-[#F3F6FE] border border-[#070707] text-[#000] lg:px-6 md:px-[10px] lg:py-[10px] md:py-[6px] text-base font-medium rounded-[99px] hidden md:block"
+                    className="bg-[#F3F6FE] dark:bg-[#F3F6FE] border text-nowrap border-[#070707] text-[#000] lg:px-6 px-2 lg:py-[10px] py-2 text-base font-medium rounded-[99px]"
                   >
                     Sign Up
                   </Link>
@@ -281,7 +287,7 @@ const NavBar = () => {
                   // Show only Sign In on other pages
                   <Link
                     href="/auth/signin"
-                    className="bg-[#070707] border border-[#070707] text-[#E3E6EF] lg:px-6 md:px-[10px] lg:py-[10px] md:py-[6px] text-base font-medium lg:rounded-[99px] md:rounded-[50px] hidden md:block"
+                    className="bg-[#070707] border border-[#070707] text-nowrap text-[#E3E6EF] lg:px-6 px-2 lg:py-[10px] py-2 text-base font-medium rounded-[99px]"
                   >
                     Sign In
                   </Link>
