@@ -22,6 +22,7 @@ import {
   CardCvcElement,
 } from "@stripe/react-stripe-js";
 import { useGetProfileQuery } from "@/app/store/api/authApi";
+import { useGetLastMessageQuery } from "@/app/store/api/leaderboardApi";
 
 // Initialize Stripe (put your publishable key here)
 const stripePromise = loadStripe(
@@ -34,6 +35,7 @@ const PaymentForm = ({ onSuccess, onClose, name, message }) => {
   const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState("");
   const { data: profile } = useGetProfileQuery();
+  const { data: lastMessage } = useGetLastMessageQuery();
   const [createPayment, { isLoading }] = useCreatePaymentMutation();
   console.log(profile);
 
@@ -76,26 +78,33 @@ const PaymentForm = ({ onSuccess, onClose, name, message }) => {
       const { clientSecret } = paymentResponse.data;
 
       // Confirm the payment
-      const { error, paymentIntent } = await stripe.confirmCardPayment(
-        clientSecret,
-        {
-          payment_method: {
-            card: elements.getElement(CardNumberElement),
-            billing_details: {
-              email: profile?.data?.email,
-            },
-          },
+      {
+        if (lastMessage?.postCount > 50) {
+          const { error, paymentIntent } = await stripe.confirmCardPayment(
+            clientSecret,
+            {
+              payment_method: {
+                card: elements.getElement(CardNumberElement),
+                billing_details: {
+                  email: profile?.data?.email,
+                },
+              },
+            }
+          );
+          if (error) {
+            throw new Error(error.message);
+          }
+
+          if (paymentIntent.status === "succeeded") {
+            toast.success("Payment successful!");
+            onSuccess();
+            onClose();
+          }
+        } else {
+          toast.success("Your Message is posted Free.");
+          onSuccess();
+          onClose();
         }
-      );
-
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      if (paymentIntent.status === "succeeded") {
-        toast.success("Payment successful!");
-        onSuccess();
-        onClose();
       }
     } catch (error) {
       console.error("Payment failed:", error);

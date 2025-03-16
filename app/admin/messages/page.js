@@ -4,10 +4,7 @@ import CustomTable from "@/app/Components/SharedComponent/CustomTable";
 import DeleteModal from "@/app/Components/SharedComponent/DeleteModal";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { useState } from "react";
-import { messageData } from "../data";
 import { useRouter } from "next/navigation";
-import { FaEye } from "react-icons/fa6";
-import { CiEdit } from "react-icons/ci";
 import {
   useDeleteMessageMutation,
   useDeleteMultipleMessagesMutation,
@@ -18,6 +15,7 @@ import { format } from "date-fns";
 import toast from "react-hot-toast";
 import { SkeletonLoading } from "@/app/Components/SharedComponent/SkeletonLoading";
 import { MdDeleteSweep } from "react-icons/md";
+import { IoEyeOutline } from "react-icons/io5";
 
 export default function MessagesPage() {
   const router = useRouter();
@@ -34,13 +32,24 @@ export default function MessagesPage() {
   const [deleteMultipleMessages, { isLoading: isDeletingMultiple }] =
     useDeleteMultipleMessagesMutation();
   const [isMultiDeleteModalOpen, setIsMultiDeleteModalOpen] = useState(false);
+
+  // Add this style for hoverable rows
+  const rowClassName = (row) => {
+    return `cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200 ${
+      selectedMessages.includes(row.id) ? "bg-blue-50 dark:bg-blue-900/20" : ""
+    }`;
+  };
+
   const messageColumns = [
     {
       label: (
         <input
           type="checkbox"
           checked={selectedMessages.length === messages?.data?.length}
-          onChange={() => handleSelectAll(messages?.data)} // messages should be your data array
+          onChange={(e) => {
+            e.stopPropagation(); // Prevent row click when clicking checkbox
+            handleSelectAll(messages?.data);
+          }}
           className="w-4 h-4 rounded border-gray-300 cursor-pointer checked:bg-orange-500 checked:border-orange-500"
         />
       ),
@@ -49,7 +58,10 @@ export default function MessagesPage() {
         <input
           type="checkbox"
           checked={selectedMessages.includes(row.id)}
-          onChange={() => handleSelect(row.id)}
+          onChange={(e) => {
+            e.stopPropagation(); // Prevent row click when clicking checkbox
+            handleSelect(row.id);
+          }}
           className="w-4 h-4 rounded border-gray-300 cursor-pointer"
         />
       ),
@@ -75,12 +87,12 @@ export default function MessagesPage() {
       label: "Action",
       accessor: "action",
       customCell: (row) => (
-        <div className="flex gap-2">
+        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
           <button
             onClick={() => router.push(`/admin/messages/${row.id}`)}
             className="bg-gray-100 hover:bg-gray-200 rounded-xl p-2"
           >
-            <CiEdit size={20} />
+            <IoEyeOutline size={20} />
           </button>
           <button
             onClick={() => handleDelete(row)}
@@ -92,6 +104,12 @@ export default function MessagesPage() {
       ),
     },
   ];
+
+  // Add this handler for row clicks
+  const handleRowClick = (row) => {
+    handleSelect(row.id);
+  };
+
   const handleDelete = (message) => {
     setSelectedMessage(message);
     setIsDeleteModalOpen(true);
@@ -171,6 +189,8 @@ export default function MessagesPage() {
           totalItems: messages?.pagination.total_items || 0,
         }}
         onPageChange={handlePageChange}
+        onRowClick={handleRowClick}
+        rowClassName={rowClassName}
       />
 
       <DeleteModal

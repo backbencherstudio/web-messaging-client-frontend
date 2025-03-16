@@ -12,7 +12,7 @@ export const paymentApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Payment"],
+      invalidatesTags: ["Payment", "Messages"],
     }),
   }),
 });

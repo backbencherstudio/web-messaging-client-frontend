@@ -51,6 +51,7 @@ export default function ForgotPasswordModal({ isOpen, onClose, title, type }) {
 
   const handleOtpVerification = async (e) => {
     e.preventDefault();
+    setIsOtpLoading(true);
     if (type === "verify") {
       const data = {
         email: email,
@@ -67,6 +68,9 @@ export default function ForgotPasswordModal({ isOpen, onClose, title, type }) {
           } else {
             toast.error(res?.message || "Failed to verify OTP");
           }
+        })
+        .finally(() => {
+          setIsOtpLoading(false);
         });
     } else {
       setModalStep("password");

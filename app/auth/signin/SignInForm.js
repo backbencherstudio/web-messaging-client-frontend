@@ -92,9 +92,9 @@ export default function SignInForm({
           if (response?.success) {
             setFormData({ email: "", password: "" });
             if (response?.type === "admin") {
-              router.push("/admin");
+              window.location.href = "/admin";
             } else {
-              router.push("/");
+              window.location.href = "/";
             }
             return "Successfully signed in!";
           }

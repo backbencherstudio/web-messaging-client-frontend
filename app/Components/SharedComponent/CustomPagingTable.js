@@ -29,6 +29,8 @@ export default function CustomPagingTable({
   filter = false,
   paginationData = {},
   onPageChange,
+  onRowClick,
+  rowClassName,
 }) {
   // Remove the local pagination logic
   const { currentPage, totalPages } = paginationData;
@@ -126,8 +128,12 @@ export default function CustomPagingTable({
               </TableCell>
             </TableRow>
           ) : (
-            data.map((row, index) => (
-              <TableRow key={index}>
+            data.map((row) => (
+              <TableRow
+                key={row.id}
+                onClick={() => onRowClick?.(row)}
+                className={rowClassName?.(row)}
+              >
                 {columns.map((col) => (
                   <TableCell
                     key={col.accessor}

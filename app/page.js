@@ -53,6 +53,7 @@ export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [createContact, { isLoading: isLoadingContact }] =
     useCreateContactMutation();
+  console.log(lastMessage);
 
   useEffect(() => {
     setIsClient(true);
@@ -211,7 +212,7 @@ export default function Home() {
                   {lastMessage?.postCount || 0}
                 </p>
                 <p className="">
-                  <span className="opacity-70">Current Value:</span> $ 0.50
+                  <span className="opacity-70">Current Value:</span> $ {lastMessage?.minimumBid}
                 </p>
                 <p className="">
                   <span className="opacity-70">Last Update:</span>{" "}
@@ -244,12 +245,10 @@ export default function Home() {
               <div className="flex flex-col lg:flex-row justify-between gap-4">
                 <Button
                   onClick={handleSubmit}
-                  disabled={
-                    !name || !message || leaderboardData?.data?.length >= 50
-                  }
+                  disabled={!name || !message || lastMessage?.postCount >= 50}
                   className="w-full py-6 rounded-full text-[18px] cursor-pointer"
                 >
-                  {leaderboardData?.data?.length >= 50
+                  {lastMessage?.postCount >= 50
                     ? "Free Messages Limit Reached"
                     : "Send Free Message"}
                 </Button>
