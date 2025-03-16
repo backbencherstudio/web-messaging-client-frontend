@@ -3,9 +3,10 @@ import toast from "react-hot-toast";
 import {
   useForgotPasswordMutation,
   useResetPasswordMutation,
+  useVerifyEmailMutation,
 } from "@/app/store/api/authApi";
 
-export default function ForgotPasswordModal({ isOpen, onClose, title }) {
+export default function ForgotPasswordModal({ isOpen, onClose, title, type }) {
   const [modalStep, setModalStep] = useState("email");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -14,6 +15,7 @@ export default function ForgotPasswordModal({ isOpen, onClose, title }) {
   const [isEmailLoading, setIsEmailLoading] = useState(false);
   const [isOtpLoading, setIsOtpLoading] = useState(false);
   const [isPasswordLoading, setIsPasswordLoading] = useState(false);
+  const [verifyEmail] = useVerifyEmailMutation();
 
   const [forgotPassword] = useForgotPasswordMutation();
   const [resetPassword] = useResetPasswordMutation();
@@ -30,18 +32,18 @@ export default function ForgotPasswordModal({ isOpen, onClose, title }) {
     e.preventDefault();
     setIsEmailLoading(true);
     try {
-      await toast.promise(forgotPassword(email).unwrap(), {
-        loading: "Sending reset link...",
-        success: (response) => {
-          setModalStep("otp");
-          return "OTP sent to your email";
-        },
-        error: (err) => {
-          return err?.data?.message || "Failed to send reset link";
-        },
-      });
+      await forgotPassword(email)
+        .unwrap()
+        .then((res) => {
+          if (res?.success) {
+            setModalStep("otp");
+            toast.success("OTP sent to your email");
+          } else {
+            toast.error(res?.message || "Failed to send reset link");
+          }
+        });
     } catch (error) {
-      console.error("Error:", error);
+      toast.error(error?.data?.message || "Failed to send reset link");
     } finally {
       setIsEmailLoading(false);
     }
@@ -49,7 +51,26 @@ export default function ForgotPasswordModal({ isOpen, onClose, title }) {
 
   const handleOtpVerification = async (e) => {
     e.preventDefault();
-    setModalStep("password");
+    if (type === "verify") {
+      const data = {
+        email: email,
+        otp: otp,
+      };
+      verifyEmail(data)
+        .unwrap()
+        .then((res) => {
+          if (res?.success) {
+            toast.success("OTP verified successfully");
+            onClose();
+            resetForm();
+            router.push("/auth/signin");
+          } else {
+            toast.error(res?.message || "Failed to verify OTP");
+          }
+        });
+    } else {
+      setModalStep("password");
+    }
   };
 
   const handlePasswordUpdate = async (e) => {

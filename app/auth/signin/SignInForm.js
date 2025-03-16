@@ -276,6 +276,7 @@ export default function SignInForm({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title="Forgot Password"
+        type="forgot"
       />
     </>
   );

@@ -765,6 +765,7 @@ export default function SignupForm({
         isOpen={isVerifyModalOpen}
         onClose={() => setIsVerifyModalOpen(false)}
         title="Verify Email"
+        type="verify"
       />
     </div>
   );
