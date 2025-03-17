@@ -9,12 +9,15 @@ import {
   useMarkNotificationAsReadMutation,
 } from "@/app/store/api/notificationApi";
 
-const socket = io("http://3.10.58.182:4000", {
-  autoConnect: false,
-  reconnection: true,
-  reconnectionAttempts: 5,
-  reconnectionDelay: 1000,
-});
+const socket = io(
+  "https://ti7ccda6vl.execute-api.ap-south-1.amazonaws.com/prod",
+  {
+    autoConnect: false,
+    reconnection: true,
+    reconnectionAttempts: 5,
+    reconnectionDelay: 1000,
+  }
+);
 
 const NotificationPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
