@@ -101,12 +101,14 @@ const PaymentForm = ({ onSuccess, onClose, name, message }) => {
           );
           if (error) {
             throw new Error(error.message);
-          }
-
-          if (paymentIntent.status === "succeeded") {
-            toast.success("Payment successful!");
-            onSuccess();
-            onClose();
+            return;
+          } else {
+            if (paymentIntent.status === "succeeded") {
+              toast.success("Payment successful!");
+              onSuccess();
+              onClose();
+              window.location.reload();
+            }
           }
         } else {
           toast.success("Your Message is posted Free.");

@@ -182,7 +182,7 @@ export default function Home() {
             <div className="border  rounded-lg dark:bg-custom-gradient">
               <div className="flex rounded-t-lg justify-between items-center bg-[#f7f9ff] px-4 lg:px-16 py-5 dark:bg-[#070707]">
                 <h1 className="text-[clamp(1rem,2vw,2rem)] font-semibold dark:text-[#C9CCD8]">
-                  Hey there! :)
+                  {lastMessage?.data?.user_display_name}
                 </h1>
                 <span className="flex">
                   {/* <SiComma size={20} /> */}
@@ -213,7 +213,7 @@ export default function Home() {
                 </p>
                 <p className="">
                   <span className="opacity-70">Current Value:</span> ${" "}
-                  {lastMessage?.minimumBid}
+                  {lastMessage?.data?.current_value || 0}
                 </p>
                 <p className="">
                   <span className="opacity-70">Last Update:</span>{" "}
