@@ -31,6 +31,14 @@ export const authApi = baseApi.injectEndpoints({
       },
     }),
 
+    resendOtp: builder.mutation({
+      query: (email) => ({
+        url: "/auth/resend-2fa-otp",
+        method: "POST",
+        body: { email },
+      }),
+    }),
+
     // Forgot password endpoint
     forgotPassword: builder.mutation({
       query: (email) => ({
@@ -96,4 +104,5 @@ export const {
   useGetProfileQuery,
   useUpdateProfileMutation,
   useVerifyEmailMutation,
+  useResendOtpMutation,
 } = authApi;

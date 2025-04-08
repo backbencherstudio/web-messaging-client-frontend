@@ -10,6 +10,7 @@ import { useSigninMutation, useSignupMutation } from "@/app/store/api/authApi";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import ForgotPasswordModal from "@/app/Components/SharedComponent/ForgotPasswordModal";
+import OtpVerificationModal from "@/app/Components/SharedComponent/OtpVerificationModal";
 
 // Create a client-side only effect hook
 function useClientEffect(effect, deps) {
@@ -51,23 +52,18 @@ export default function SignInForm({
     password: "",
   });
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [signin, { isLoading: isSigninLoading, error: signinError }] =
-    useSigninMutation();
-
+  // Add this with other state declarations at the top of the component
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useClientEffect(() => {
-    setIsLoading(false);
-  }, []);
+  // ... rest of the code ...
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
+  // Add new states for 2FA
+  // Keep this state
+  const [is2FARequired, setIs2FARequired] = useState(false);
+  const [tempCredentials, setTempCredentials] = useState(null);
+
+  // Remove this as it's not needed
+  // const [otpValue, setOtpValue] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -86,35 +82,53 @@ export default function SignInForm({
         email: formData.email,
         password: formData.password,
       };
-      await toast.promise(signin(data).unwrap(), {
-        loading: "Signing in...",
-        success: (response) => {
-          if (response?.success) {
-            setFormData({ email: "", password: "" });
-            if (response?.type === "admin") {
-              window.location.href = "/admin";
-            } else {
-              window.location.href = "/";
-            }
-            return "Successfully signed in!";
-          }
-          throw new Error(
-            typeof response?.message === "string"
-              ? response.message
-              : "Sign in failed"
-          );
-        },
-      });
+      
+      const response = await signin(data).unwrap();
+      
+      if (response?.authorization?.token) {
+        handleLoginSuccess(response);
+      } else {
+        // Store credentials and show OTP modal
+        setTempCredentials(data);
+        setIs2FARequired(true);
+        toast.success("Please check your email for verification code");
+      }
     } catch (err) {
-      const errorMessage =
-        typeof err?.data?.message?.message === "string"
-          ? err.data.message.message
-          : typeof err?.message?.message === "string"
-          ? err.message.message
-          : "Sign in failed. Please try again.";
-
-      toast.error(errorMessage);
+      // Check if this is a 2FA trigger response
+      if (err?.status === 401 && err?.data?.message?.message === "Please check your email for verification code") {
+        setTempCredentials(formData);
+        setIs2FARequired(true);
+        toast.success("Please check your email for verification code");
+      } else {
+        const errorMessage =
+          typeof err?.data?.message?.message === "string"
+            ? err.data.message.message
+            : typeof err?.message?.message === "string"
+            ? err.message.message
+            : "Sign in failed. Please try again.";
+  
+        toast.error(errorMessage);
+      }
     }
+  };
+
+  // Add this function after the state declarations and before handleSubmit
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleLoginSuccess = (response) => {
+    setFormData({ email: "", password: "" });
+    if (response?.type === "admin") {
+      window.location.href = "/admin";
+    } else {
+      window.location.href = "/";
+    }
+    toast.success("Successfully signed in!");
   };
 
   const togglePasswordVisibility = (id) => {
@@ -135,9 +149,46 @@ export default function SignInForm({
     );
   };
 
+  // Add OTP submission handler
+  // Remove the otpValue state since it's not needed here
+  // const [otpValue, setOtpValue] = useState(""); // Remove this line
+
+  // Update the handleOtpSubmit function
+  const handleOtpSubmit = async (otpValue) => {
+    try {
+      const data = {
+        ...tempCredentials,
+        token: otpValue,
+      };
+
+      const response = await signin(data).unwrap();
+
+      if (response?.authorization?.token) {
+        setIs2FARequired(false);
+        handleLoginSuccess(response);
+      } else {
+        toast.error("Invalid verification code");
+      }
+    } catch (err) {
+      toast.error("Verification failed. Please try again.");
+    }
+  };
+
+  // Initialize loading state as false
+  const [isLoading, setIsLoading] = useState(false);
+  const [signin, { isLoading: isSigninLoading, error: signinError }] =
+    useSigninMutation();
+
+  // Remove useClientEffect and use regular useEffect
+  useEffect(() => {
+    // No need to check for window, Next.js handles this
+    setIsLoading(false);
+  }, []);
+
   return (
     <>
-      {isLoading ? (
+      {/* Change the loading condition to check both states */}
+      {isLoading || isSigninLoading ? (
         <div className="h-screen flex items-center justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white"></div>
         </div>
@@ -278,6 +329,17 @@ export default function SignInForm({
         title="Forgot Password"
         type="forgot"
       />
+      <OtpVerificationModal
+        isOpen={is2FARequired}
+        onClose={() => {
+          setIs2FARequired(false);
+          setTempCredentials(null);
+        }}
+        onSubmit={handleOtpSubmit}
+        email={tempCredentials?.email}
+      />
     </>
   );
 }
+
+

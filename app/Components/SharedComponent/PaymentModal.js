@@ -118,7 +118,15 @@ const PaymentForm = ({ onSuccess, onClose, name, message }) => {
       }
     } catch (error) {
       console.error("Payment failed:", error);
-      toast.error(error.message || "Payment failed");
+
+      // Update error handling to show the nested message
+      const errorMessage =
+        error?.data?.message?.message?.[0] ||
+        error?.message?.message?.[0] ||
+        error?.message ||
+        "Payment failed";
+
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
