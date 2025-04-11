@@ -3,12 +3,22 @@ import { baseApi } from "./baseApi";
 export const messageApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getMessages: builder.query({
-      query: () => "messages",
+      query: () => ({
+        url: "messages",
+        headers: {
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        },
+      }),
       providesTags: ["Messages"],
     }),
 
     getMessage: builder.query({
-      query: (id) => `messages/${id}`,
+      query: (id) => ({
+        url: `messages/${id}`,
+        headers: {
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        },
+      }),
       providesTags: (result, error, id) => [{ type: "Messages", id }],
     }),
 
@@ -36,15 +46,30 @@ export const messageApi = baseApi.injectEndpoints({
       invalidatesTags: ["Messages"],
     }),
     getUserMessages: builder.query({
-      query: (id) => `message-list/user/${id}`,
+      query: (id) => ({
+        url: `message-list/user/${id}`,
+        headers: {
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        },
+      }),
       providesTags: ["Messages"],
     }),
     getAdminMessages: builder.query({
-      query: (page = 1) => `admin/message-management?page=${page}`,
+      query: (page = 1) => ({
+        url: `admin/message-management?page=${page}`,
+        headers: {
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        },
+      }),
       providesTags: ["Messages"],
     }),
     getMessageById: builder.query({
-      query: (id) => `admin/message-management/${id}`,
+      query: (id) => ({
+        url: `admin/message-management/${id}`,
+        headers: {
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        },
+      }),
       providesTags: (result, error, id) => [{ type: "Messages", id }],
     }),
     updateMessage: builder.mutation({

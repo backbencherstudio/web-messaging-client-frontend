@@ -129,11 +129,7 @@ export default function Home() {
       });
   };
 
-  const formattedDate = lastMessage?.data?.created_at
-    ? isClient
-      ? format(new Date(lastMessage.data.created_at), "dd MMM yyyy")
-      : "Loading..."
-    : "N/A";
+  const formattedDate = lastMessage?.data?.formatted_time ?? "N/A";
 
   const renderLeaderboard = () => {
     if (!isClient) {

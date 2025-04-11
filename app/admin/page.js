@@ -3,7 +3,8 @@ import React from "react";
 import CustomTable from "../Components/SharedComponent/CustomTable";
 import { messageData, userData } from "./data";
 import { useGetDashboardDataQuery } from "../store/api/leaderboardApi";
-import { format } from "date-fns";
+// Removing date-fns import as it's no longer needed
+// import { format } from "date-fns";
 
 export default function AdminDashboard() {
   const { data: dashboardData, isLoading } = useGetDashboardDataQuery();
@@ -69,17 +70,7 @@ export default function AdminDashboard() {
     { label: "Posted by", accessor: "posted_by" },
     { label: "Views", accessor: "views" },
     // { label: "Pay", accessor: "pay" },
-    {
-      label: "Time Posted",
-      accessor: "time_posted",
-      customCell: (row) => {
-        try {
-          return format(new Date(row.time_posted), "dd MMMM yyyy");
-        } catch (error) {
-          return row.time_posted || "N/A";
-        }
-      },
-    },
+    { label: "Time Posted", accessor: "time_posted" },
     { label: "Ranking", accessor: "ranking" },
   ];
 
@@ -89,25 +80,7 @@ export default function AdminDashboard() {
     { label: "Email", accessor: "email" },
     { label: "Total Messages", accessor: "total_messages" },
     { label: "Total views", accessor: "total_views" },
-    {
-      label: "Last Message",
-      accessor: "last_message_date",
-      customCell: (row) => {
-        if (!row.last_message_date) return "N/A";
-
-        try {
-          const date = new Date(row.last_message_date);
-          // Check if date is valid before formatting
-          if (isNaN(date.getTime())) {
-            return "Invalid Date";
-          }
-          return format(date, "dd MMMM yyyy");
-        } catch (error) {
-          console.error("Date formatting error:", error);
-          return "Invalid Date";
-        }
-      },
-    },
+    { label: "Last Message", accessor: "last_message_date" }
   ];
 
   if (isLoading) {

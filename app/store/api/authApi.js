@@ -91,6 +91,37 @@ export const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
+
+    requestEmailChange: builder.mutation({
+      query: (email) => ({
+        url: "/auth/request-email-change",
+        method: "POST",
+        body: { email },
+      }),
+    }),
+
+    changeEmail: builder.mutation({
+      query: ({ email, token }) => ({
+        url: "/auth/change-email",
+        method: "POST",
+        body: { email, token },
+      }),
+      invalidatesTags: ["User"],
+    }),
+
+    // Add these endpoints to the existing authApi
+    enable2FA: builder.mutation({
+      query: () => ({
+        url: "auth/enable-2fa",
+        method: "POST",
+      }),
+    }),
+    disable2FA: builder.mutation({
+      query: () => ({
+        url: "auth/disable-2fa",
+        method: "POST",
+      }),
+    }),
   }),
 });
 
@@ -105,4 +136,8 @@ export const {
   useUpdateProfileMutation,
   useVerifyEmailMutation,
   useResendOtpMutation,
+  useRequestEmailChangeMutation,
+  useChangeEmailMutation,
+  useEnable2FAMutation,
+  useDisable2FAMutation,
 } = authApi;

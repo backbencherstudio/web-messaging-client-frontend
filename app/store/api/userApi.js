@@ -28,14 +28,14 @@ export const userApi = baseApi.injectEndpoints({
       invalidatesTags: ["User"],
     }),
 
-    updateMessage: builder.mutation({
-      query: ({ id, ...update }) => ({
-        url: `messages/${id}`,
-        method: "PUT",
-        body: update,
-      }),
-      invalidatesTags: (result, error, { id }) => [{ type: "Messages", id }],
-    }),
+    // updateMessage: builder.mutation({
+    //   query: ({ id, ...update }) => ({
+    //     url: `messages/${id}`,
+    //     method: "PUT",
+    //     body: update,
+    //   }),
+    //   invalidatesTags: (result, error, { id }) => [{ type: "Messages", id }],
+    // }),
 
     deleteUserMessage: builder.mutation({
       query: (id) => ({
@@ -44,10 +44,10 @@ export const userApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
-    getAdminMessages: builder.query({
-      query: (page = 1) => `admin/message-management?page=${page}`,
-      providesTags: ["Messages"],
-    }),
+    // getAdminMessages: builder.query({
+    //   query: (page = 1) => `admin/message-management?page=${page}`,
+    //   providesTags: ["Messages"],
+    // }),
   }),
 });
 

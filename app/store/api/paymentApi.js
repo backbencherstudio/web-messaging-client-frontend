@@ -3,7 +3,12 @@ import { baseApi } from "./baseApi";
 export const paymentApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getPayment: builder.query({
-      query: () => "payment",
+      query: () => ({
+        url: "payment",
+        headers: {
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        },
+      }),
       providesTags: ["Payment"],
     }),
     createPayment: builder.mutation({
@@ -11,6 +16,9 @@ export const paymentApi = baseApi.injectEndpoints({
         url: "post-status/paid",
         method: "POST",
         body: data,
+        headers: {
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        },
       }),
       invalidatesTags: ["Payment", "Messages"],
     }),

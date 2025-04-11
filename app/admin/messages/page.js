@@ -72,17 +72,8 @@ export default function MessagesPage() {
     { label: "Views", accessor: "views" },
     { label: "Pay", accessor: "pay" },
     { label: "Email ", accessor: "email" },
-    {
-      label: "Time Posted",
-      accessor: "time_posted",
-      customCell: (row) => {
-        try {
-          return format(new Date(row.time_posted), "dd MMMM yyyy");
-        } catch (error) {
-          return row.time_posted;
-        }
-      },
-    },
+    // Updated time_posted to show raw data
+    { label: "Time Posted", accessor: "time_posted" },
     {
       label: "Action",
       accessor: "action",

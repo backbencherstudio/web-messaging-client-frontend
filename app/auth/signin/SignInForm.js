@@ -82,23 +82,31 @@ export default function SignInForm({
         email: formData.email,
         password: formData.password,
       };
-      
+
       const response = await signin(data).unwrap();
-      
+
       if (response?.authorization?.token) {
         handleLoginSuccess(response);
       } else {
         // Store credentials and show OTP modal
         setTempCredentials(data);
         setIs2FARequired(true);
-        toast.success("Please check your email for verification code");
+        toast.success(
+          "Check your email (including spam) for the code we just sent!"
+        );
       }
     } catch (err) {
       // Check if this is a 2FA trigger response
-      if (err?.status === 401 && err?.data?.message?.message === "Please check your email for verification code") {
+      if (
+        err?.status === 401 &&
+        err?.data?.message?.message ===
+          "Check your email (including spam) for the code we just sent!"
+      ) {
         setTempCredentials(formData);
         setIs2FARequired(true);
-        toast.success("Please check your email for verification code");
+        toast.success(
+          "Check your email (including spam) for the code we just sent!"
+        );
       } else {
         const errorMessage =
           typeof err?.data?.message?.message === "string"
@@ -106,7 +114,7 @@ export default function SignInForm({
             : typeof err?.message?.message === "string"
             ? err.message.message
             : "Sign in failed. Please try again.";
-  
+
         toast.error(errorMessage);
       }
     }
@@ -341,5 +349,3 @@ export default function SignInForm({
     </>
   );
 }
-
-

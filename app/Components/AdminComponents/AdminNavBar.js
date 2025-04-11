@@ -47,9 +47,11 @@ const AdminNavBar = () => {
   return (
     <div className="max-w-[250px] bg-white h-screen  dark:bg-gray-800 border-r dark:border-gray-700 p-4 py-6">
       <div className="">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white ml-20 lg:ml-0">
-          SayThat.sh
-        </h1>
+        <Link href="/">
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white ml-20 lg:ml-0 cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+            SayThat.sh
+          </h1>
+        </Link>
       </div>
       <nav className="mt-8 text-sm font-medium">
         {navItems.map((item) => (

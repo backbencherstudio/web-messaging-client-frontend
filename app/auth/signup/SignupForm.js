@@ -674,8 +674,7 @@ export default function SignupForm({
             </div>
             <div>
               <div>
-                <a
-                  href="#"
+                <a href="#" aria-label="Additional information"
                   className="text-[#393C44] dark:text-[#ECF0FE] text-base font-medium mb-2"
                 ></a>
               </div>

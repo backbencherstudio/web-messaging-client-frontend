@@ -1,10 +1,12 @@
+"use client";
+
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useResendOtpMutation } from "@/app/store/api/authApi";
 import toast from "react-hot-toast";
 
-const OtpVerificationModal = ({ isOpen, onClose, onSubmit, email }) => {
+const EmailChangeOtpModal = ({ isOpen, onClose, onSubmit, email, newEmail }) => {
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(60);
   const [canResend, setCanResend] = useState(false);
@@ -40,38 +42,20 @@ const OtpVerificationModal = ({ isOpen, onClose, onSubmit, email }) => {
       toast.error("Please enter a valid 6-digit code");
       return;
     }
-    onSubmit(otp);
+    onSubmit({ otp, newEmail });
   };
 
   const handleResend = async () => {
-    if (!email) {
-      toast.error("Email is required for resending OTP");
-      return;
-    }
-
     try {
       const response = await resendOtp(email).unwrap();
       if (response.success) {
-        toast.success(response.message);
+        toast.success("Verification code resent successfully");
         setTimer(60);
         setCanResend(false);
         setOtp("");
-        // Restart the timer
-        const newInterval = setInterval(() => {
-          setTimer((prev) => {
-            if (prev <= 1) {
-              clearInterval(newInterval);
-              setCanResend(true);
-              return 0;
-            }
-            return prev - 1;
-          });
-        }, 1000);
       }
     } catch (err) {
-      toast.error(
-        err?.data?.message?.message?.[0] || "Failed to resend verification code"
-      );
+      toast.error(err?.data?.message || "Failed to resend verification code");
     }
   };
 
@@ -93,10 +77,10 @@ const OtpVerificationModal = ({ isOpen, onClose, onSubmit, email }) => {
       <DialogContent className="w-[80%] md:w-[50%] rounded-lg" onPointerDownOutside={(e) => e.preventDefault()}>
         <div className="w-full text-center p-6">
           <DialogTitle className="text-[#070707] dark:text-[#FDFEFF] leading-normal my-3 md:my-[18px] text-xl md:text-[32px] font-medium text-center">
-            Enter Verification Code
+            Verify Email Change
           </DialogTitle>
           <p className="text-[#393C44] dark:text-[#A8AAB4] leading-[160%] text-base font-normal text-center mb-6">
-            Please enter the verification code sent to your email
+            Please enter the verification code sent to {newEmail}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -132,7 +116,7 @@ const OtpVerificationModal = ({ isOpen, onClose, onSubmit, email }) => {
                 type="submit"
                 className="w-full bg-[#070707] dark:bg-[#F3F6FE] dark:text-[#070707] text-white font-medium py-6"
               >
-                Verify
+                Verify Email Change
               </Button>
               <Button
                 type="button"
@@ -150,4 +134,4 @@ const OtpVerificationModal = ({ isOpen, onClose, onSubmit, email }) => {
   );
 };
 
-export default OtpVerificationModal;
+export default EmailChangeOtpModal;
