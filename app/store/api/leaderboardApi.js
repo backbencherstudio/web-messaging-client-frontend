@@ -27,7 +27,7 @@ export const leaderboardApi = baseApi.injectEndpoints({
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         },
       }),
-      providesTags: ["Messages"],
+      providesTags: ["Leaderboard", "Messages", "Payment"],  // Add Payment tag here
     }),
   }),
 });

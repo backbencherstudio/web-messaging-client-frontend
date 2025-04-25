@@ -53,7 +53,6 @@ export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [createContact, { isLoading: isLoadingContact }] =
     useCreateContactMutation();
-  console.log(lastMessage);
 
   useEffect(() => {
     setIsClient(true);

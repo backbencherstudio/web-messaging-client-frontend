@@ -1,45 +1,19 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// Define your base API URL
-const baseUrl =
-  process.env.NEXT_PUBLIC_API_URL || "http://192.168.4.4:4000/api";
+// Simplified API URL handling
+const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+console.log("API URL:", baseUrl); // For debugging
 
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl,
     prepareHeaders: (headers, { getState }) => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        headers.set("authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
-  endpoints: () => ({}),
-  tagTypes: [
-    "Messages",
-    "User",
-    "Leaderboard",
-    "Notifications",
-    "Faq",
-    "AboutUs",
-    "Dashboard",
-    "Contacts",
-  ], // Added Notifications tag
-  // Add response transformer
-  extractRehydrationInfo: (action, { reducerPath }) => {
-    if (action.type === "REHYDRATE" && action.payload) {
-      return action.payload[reducerPath];
-    }
-  },
-  // Transform response to handle time objects
-  baseQuery: fetchBaseQuery({
-    baseUrl,
-    prepareHeaders: (headers, { getState }) => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        headers.set("authorization", `Bearer ${token}`);
+      if (typeof window !== "undefined") {
+        const token = localStorage.getItem("token");
+        if (token) {
+          headers.set("authorization", `Bearer ${token}`);
+        }
       }
       return headers;
     },
@@ -71,6 +45,23 @@ export const baseApi = createApi({
       return transformData(data);
     },
   }),
+  endpoints: () => ({}),
+  tagTypes: [
+    "Messages",
+    "User",
+    "Leaderboard",
+    "Notifications",
+    "Faq",
+    "AboutUs",
+    "Dashboard",
+    "Contacts",
+    "Payment",
+  ],
+  extractRehydrationInfo: (action, { reducerPath }) => {
+    if (action.type === "REHYDRATE" && action.payload) {
+      return action.payload[reducerPath];
+    }
+  },
 });
 
 // Export hooks for usage in components

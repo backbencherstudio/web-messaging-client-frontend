@@ -9,7 +9,14 @@ import {
   useMarkNotificationAsReadMutation,
 } from "@/app/store/api/notificationApi";
 
-const socket = io("http://192.168.4.4:4000", {
+// Simple socket URL derivation
+const socketUrl = process.env.NEXT_PUBLIC_API_URL 
+  ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api$/, '')
+  : "http://localhost:5000";
+
+console.log("Socket URL:", socketUrl); // For debugging
+
+const socket = io(socketUrl, {
   autoConnect: false,
   reconnection: true,
   reconnectionAttempts: 5,

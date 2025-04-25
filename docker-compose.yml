@@ -3,12 +3,22 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: app-frontend
-    container_name: app-frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://host.docker.internal:4000/api}
+        NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+        NEXT_PUBLIC_GA_MEASUREMENT_ID: ${NEXT_PUBLIC_GA_MEASUREMENT_ID:-G-MX896W6EHS}
+    image: saythat-frontend-image
+    container_name: saythat_frontend
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://localhost:4000
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://host.docker.internal:4000/api}
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+      NEXT_PUBLIC_GA_MEASUREMENT_ID: ${NEXT_PUBLIC_GA_MEASUREMENT_ID:-G-MX896W6EHS}
     working_dir: /usr/src/app
-    command: yarn start
+    command: npm start
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # depends_on:
+    #   - backend   # optional, if backend is defined in same file
