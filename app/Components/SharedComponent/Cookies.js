@@ -12,17 +12,52 @@ export default function CookieBanner() {
   const [marketingEnabled, setMarketingEnabled] = useState(false);
 
   useEffect(() => {
-    // Show banner only if the cookie doesn't exist
-    if (!Cookies.get("cookieConsent")) {
+    // Check existing cookies and set initial states
+    const cookieConsent = Cookies.get("cookieConsent");
+    const analyticsConsent = Cookies.get("analytics");
+
+    if (!cookieConsent) {
       setShowBanner(true);
     }
+
+    // Always set the states based on existing cookies
+    setAnalyticsEnabled(analyticsConsent === "true");
+    setMarketingEnabled(Cookies.get("marketing") === "true");
+
+    // Add event listener for showing cookie banner
+    const handleShowBanner = () => {
+      setShowBanner(true);
+      setShowPreferences(true);
+    };
+
+    window.addEventListener("showCookieBanner", handleShowBanner);
+
+    // Cleanup listener on component unmount
+    return () => {
+      window.removeEventListener("showCookieBanner", handleShowBanner);
+    };
   }, []);
 
   const handleAccept = () => {
     Cookies.set("cookieConsent", "all", { expires: 365 });
     Cookies.set("analytics", "true", { expires: 365 });
     Cookies.set("marketing", "true", { expires: 365 });
+    setAnalyticsEnabled(true);
+    setMarketingEnabled(true);
     setShowBanner(false);
+    // Reload the page to activate Google Analytics
+    window.location.reload();
+  };
+
+  const handleReject = () => {
+    Cookies.set("cookieConsent", "rejected", { expires: 365 });
+    Cookies.set("analytics", "false", { expires: 365 });
+    Cookies.set("marketing", "false", { expires: 365 });
+    setAnalyticsEnabled(false);
+    setMarketingEnabled(false);
+    setShowBanner(false);
+    // Reload the page to deactivate Google Analytics
+    window.location.reload();
   };
 
   const handleSavePreferences = () => {
@@ -30,6 +65,9 @@ export default function CookieBanner() {
     Cookies.set("analytics", analyticsEnabled.toString(), { expires: 365 });
     Cookies.set("marketing", marketingEnabled.toString(), { expires: 365 });
     setShowBanner(false);
+    setShowPreferences(false);
+    // Reload the page to apply analytics changes
+    window.location.reload();
   };
 
   if (!showBanner) return null;
@@ -63,7 +101,7 @@ export default function CookieBanner() {
               Accept All
             </button>
             <button
-              onClick={() => setShowBanner(false)}
+              onClick={handleReject}
               className="px-6 py-2.5 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 font-medium"
             >
               Reject All

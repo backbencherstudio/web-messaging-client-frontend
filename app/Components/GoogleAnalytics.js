@@ -1,24 +1,33 @@
 "use client";
 
 import Script from "next/script";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+import Cookies from "js-cookie";
 
-export default function GoogleAnalytics({ 
-  GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-MX896W6EHS" 
+export default function GoogleAnalytics({
+  GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ||
+    "G-MX896W6EHS",
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [hasAnalyticsConsent, setHasAnalyticsConsent] = useState(false);
 
   useEffect(() => {
-    if (pathname) {
-      // Track page views when the route changes
-      window.gtag?.("event", "page_view", {
+    // Check for analytics consent
+    const analyticsConsent = Cookies.get("analytics") === "true";
+    setHasAnalyticsConsent(analyticsConsent);
+
+    // Only track page view if consent is given
+    if (analyticsConsent && pathname && window.gtag) {
+      window.gtag("event", "page_view", {
         page_path: pathname,
         page_search: searchParams.toString(),
       });
     }
   }, [pathname, searchParams]);
+
+  if (!hasAnalyticsConsent) return null;
 
   return (
     <>
@@ -34,7 +43,9 @@ export default function GoogleAnalytics({
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', '${GA_MEASUREMENT_ID}');
+            gtag('config', '${GA_MEASUREMENT_ID}', {
+              page_path: window.location.pathname,
+            });
           `,
         }}
       />

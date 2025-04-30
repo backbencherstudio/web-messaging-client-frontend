@@ -1,12 +1,29 @@
-import React from "react";
-import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { LegalModal } from "./LegalModal";
 
 const Footer = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState("terms");
+
+  const handleLegalClick = (type) => (e) => {
+    e.preventDefault();
+    setModalType(type);
+    setShowModal(true);
+  };
+
   const handleNavigation = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
+  };
+
+  const handleCookieClick = (e) => {
+    e.preventDefault();
+    // Dispatch a custom event to show the cookie banner
+    const event = new CustomEvent('showCookieBanner');
+    window.dispatchEvent(event);
   };
 
   return (
@@ -68,11 +85,17 @@ const Footer = () => {
         <div className="mt-6 font-normal flex flex-col md:flex-row justify-between items-center">
           <p>Copyright © 2025 SayThat.sh All rights reserved.</p>
           <div className="flex gap-4">
-            <a href="#">Terms</a>
-            <a href="#">Privacy</a>
-            <a href="#">Cookies</a>
+            <a href="#" onClick={handleLegalClick("terms")}>Terms</a>
+            <a href="#" onClick={handleLegalClick("privacy")}>Privacy</a>
+            <a href="#" onClick={handleCookieClick}>Cookies</a>
           </div>
         </div>
+
+        <LegalModal 
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          type={modalType}
+        />
       </div>
     </div>
   );
