@@ -33,6 +33,7 @@ import toast from "react-hot-toast";
 import { format } from "date-fns";
 import { useCreateContactMutation } from "./store/api/contactApi";
 import { useRouter } from "next/navigation";
+import { useGetProfileQuery } from "./store/api/authApi";
 
 export default function Home() {
   const router = useRouter();
@@ -53,7 +54,7 @@ export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [createContact, { isLoading: isLoadingContact }] =
     useCreateContactMutation();
-
+  const { data: profile } = useGetProfileQuery();
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -74,9 +75,12 @@ export default function Home() {
   ];
 
   const handleSubmit = () => {
+    
+    const token = localStorage.getItem("token");
     const data = {
       name: name,
       status: message,
+      userId: token ? profile?.data?.id : null,
     };
     createMessage(data)
       .unwrap()

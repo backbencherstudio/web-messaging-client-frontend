@@ -51,7 +51,7 @@ export default function AdminDashboard() {
     },
     {
       title: "Revenue Generated",
-      value: dashboardData?.data?.overview?.total_revenue ?? 0,
+      value: `$${dashboardData?.data?.overview?.total_revenue ?? 0}`,
       // change: "+14.58%",
       // changeColor: "text-blue-500",
       icon: (
