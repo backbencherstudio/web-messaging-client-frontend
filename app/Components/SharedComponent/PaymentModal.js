@@ -317,7 +317,7 @@ const PaymentForm = ({ onSuccess, onClose, name, message }) => {
 
       <div className="flex gap-2">
         <div
-          className={`border rounded-lg p-4 bg-white flex-1 ${
+          className={`border rounded-lg p-4 bg-white  flex-1 ${
             lastMessage?.postCount < 50 ? "opacity-60 cursor-not-allowed" : ""
           }`}
         >
@@ -373,7 +373,7 @@ const PaymentForm = ({ onSuccess, onClose, name, message }) => {
 const PaymentModal = ({ open, onClose, setOpenSuccess, name, message }) => {
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="text-lg p-4 px-10 md:pt-[80px] pb-[40px] md:pb-[70px] rounded-lg md:max-w-[600px] w-[95%] md:w-[90%]">
+      <DialogContent className="text-lg p-4  px-10 md:pt-[80px] pb-[40px] md:pb-[70px] rounded-lg md:max-w-[600px] w-[95%] md:w-[90%] ">
         <DialogHeader>
           <DialogTitle className="text-2xl">Payment Details</DialogTitle>
         </DialogHeader>

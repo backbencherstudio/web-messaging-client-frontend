@@ -18,6 +18,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { set } from "date-fns";
 
 export default function CustomPagingTable({
   title,
@@ -34,7 +35,7 @@ export default function CustomPagingTable({
 }) {
   // Remove the local pagination logic
   const { currentPage, totalPages } = paginationData;
-
+  const [serchValue, setSearchValue] = useState("");
   // Generate page numbers to display
   const getPageNumbers = () => {
     const pageNumbers = [];
@@ -61,6 +62,14 @@ export default function CustomPagingTable({
     return withEllipsis;
   };
 
+  const handleSearch = (value) => {
+    setSearchValue(value);
+  };
+
+  const filterdData = data.filter((item) =>
+    item?.message_content?.toLowerCase()?.includes(serchValue.toLowerCase())
+  );
+
   return (
     <div className="bg-white dark:bg-custom-gradient rounded-lg shadow-md p-6">
       <div className="lg:flex justify-between items-center mb-4">
@@ -74,7 +83,8 @@ export default function CustomPagingTable({
               <input
                 type="text"
                 placeholder="Search Anything"
-                className=" w-full border bg-[#f9fafb] border-[#EAF1FF] rounded-lg p-2 pl-10"
+                onChange={(e) => handleSearch(e.target.value)}
+                className=" w-full border bg-[#f9fafb] dark:bg-transparent border-[#EAF1FF] rounded-lg p-2 pl-10"
               />
             </div>
           )}
@@ -92,7 +102,7 @@ export default function CustomPagingTable({
             {columns.map((col) => (
               <TableCell
                 key={col.accessor}
-                className="text-gray-800 dark:text-white font-bold py-4 px-6"
+                className="text-gray-800 dark:text-white font-bold py-4 px-4"
               >
                 {col.label}
               </TableCell>
@@ -128,7 +138,8 @@ export default function CustomPagingTable({
               </TableCell>
             </TableRow>
           ) : (
-            data.map((row) => (
+            <>
+              {(search ? filterdData : data)?.map((row) => (
               <TableRow
                 key={row.id}
                 onClick={() => onRowClick?.(row)}
@@ -143,7 +154,8 @@ export default function CustomPagingTable({
                   </TableCell>
                 ))}
               </TableRow>
-            ))
+              ))}
+            </>
           )}
         </TableBody>
       </Table>

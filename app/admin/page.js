@@ -65,7 +65,7 @@ export default function AdminDashboard() {
   ];
 
   const messageColumns = [
-    { label: "P No", accessor: "position" },
+    { label: "Msg #", accessor: "position" },
     { label: "Message content", accessor: "content" },
     { label: "Posted by", accessor: "posted_by" },
     { label: "Views", accessor: "views" },
@@ -75,7 +75,7 @@ export default function AdminDashboard() {
   ];
 
   const userColumns = [
-    { label: "P No", accessor: "position" },
+    { label: "Msg #", accessor: "position" },
     { label: "User Name", accessor: "name" },
     { label: "Email", accessor: "email" },
     { label: "Total Messages", accessor: "total_messages" },
@@ -129,7 +129,7 @@ export default function AdminDashboard() {
   return (
     <div>
       <h1 className="text-2xl font-semibold">Dashboard</h1>
-      <p className="mt-1.5 text-[#4A4C56] font-normal">
+      <p className="mt-1.5 text-[#4A4C56] dark:text-gray-400 font-normal">
         Here are your analytic details
       </p>
 
@@ -137,7 +137,7 @@ export default function AdminDashboard() {
         {analyticsData.map((item, index) => (
           <div
             key={index}
-            className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow"
+            className="p-6 bg-white dark:bg-transparent dark:shadow-lg dark:border rounded-lg shadow"
           >
             <div className="flex items-center gap-2 mb-4">
               <svg
@@ -150,7 +150,7 @@ export default function AdminDashboard() {
               >
                 {item.icon}
               </svg>
-              <h2 className="text-sm text-gray-500 font-medium">
+              <h2 className="text-sm text-gray-500 dark:text-gray-300 font-medium">
                 {item.title}
               </h2>
             </div>

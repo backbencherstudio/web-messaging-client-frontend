@@ -58,6 +58,8 @@ export default function Home() {
   useEffect(() => {
     setIsClient(true);
   }, []);
+  
+console.log(lastMessage,"last msg")
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -242,11 +244,11 @@ export default function Home() {
                 onChange={(e) => setMessage(e.target.value)}
                 className="py-8 px-6 my-6 min-h-[274px] md:placeholder:text-[18px] placeholder:text-[16px] "
               />
-              <div className="flex flex-col lg:flex-row justify-between gap-4">
+              <div className={`flex flex-col lg:flex-row  gap-4 ${lastMessage?.postCount >= 50 ?"justify-center" : "justify-between"} `}>
                 <Button
                   onClick={handleSubmit}
                   disabled={!name || !message || lastMessage?.postCount >= 50}
-                  className="w-full py-6 rounded-full text-[18px] cursor-pointer"
+                  className={`w-full py-6 rounded-full text-[18px] cursor-pointer ${lastMessage?.postCount >= 50 && "hidden"} `}
                 >
                   {lastMessage?.postCount >= 50
                     ? "Free Messages Limit Reached"

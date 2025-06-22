@@ -92,32 +92,34 @@ const ContentPage = () => {
     } catch (error) {
       console.error("Error updating About Us:", error);
       toast.error("An error occurred while updating About Us");
+    } finally{
+      setContent(""); // Clear content after update
     }
   };
   return (
     <div>
-      <div className="bg-white p-6 rounded-lg">
-        <div className="flex justify-between items-center bg-white rounded-lg">
+      <div className="bg-white dark:bg-transparent p-6 rounded-lg">
+        <div className="flex justify-between items-center bg-white dark:bg-transparent rounded-lg">
           <h1 className="text-2xl font-semibold flex items-center gap-2">
             <CiEdit /> About Us
           </h1>
           <button
             onClick={handleUpdateAboutUs}
             disabled={isUpdating}
-            className="bg-primary text-white px-4 py-2 rounded-full disabled:opacity-70"
+            className="bg-primary dark:bg-black/30 dark:hover:bg-black/70 text-white px-4 py-2 rounded-full disabled:opacity-70"
           >
             {isUpdating ? "Saving..." : "Save Changes"}
           </button>
         </div>
         <textarea
-          className="w-full min-h-[200px] p-4 border border-gray-300 rounded-lg mt-6"
+          className="w-full min-h-[200px] p-4 border dark:bg-transparent border-gray-300 rounded-lg mt-6"
           placeholder="Write your content here..."
           value={content}
           onChange={(e) => setContent(e.target.value)}
         ></textarea>
       </div>
-      <div className="bg-white p-6 mt-6 rounded-lg">
-        <div className="flex justify-between items-center bg-white rounded-lg">
+      <div className="bg-white dark:bg-transparent p-6 mt-6 rounded-lg">
+        <div className="flex justify-between items-center bg-white dark:bg-transparent rounded-lg">
           <h1 className="text-2xl font-semibold flex items-center gap-2">
             <CiEdit /> Frequently Asked Questions
           </h1>
@@ -137,7 +139,7 @@ const ContentPage = () => {
               <div key={index} className="border p-6 rounded-lg relative">
                 <button
                   onClick={() => handleDeleteFaq(faq?.id)}
-                  className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                  className="absolute right-4 top-4 text-red-500 hover:text-red-700 dark:bg-nav-dark-gradient bg-red-50 hover:bg-red-100 rounded-xl p-2"
                 >
                   <svg
                     className="w-5 h-5"
@@ -163,7 +165,7 @@ const ContentPage = () => {
         {/* Add FAQ button */}
         <button
           onClick={() => setIsModalOpen(true)}
-          className="mt-6 flex items-center justify-center gap-2 text-primary bg-[#f6f8fa] w-full text-center py-6 rounded-lg"
+          className="mt-6 flex items-center justify-center gap-2 text-primary bg-[#f6f8fa] dark:bg-nav-dark-gradient w-full text-center py-6 rounded-lg"
         >
           <svg
             className="w-9 h-9"
@@ -182,19 +184,19 @@ const ContentPage = () => {
 
         {/* Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg w-[80%] max-w-2xl">
+          <div className="fixed inset-0 bg-black dark:bg-black/60     bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white dark:bg-black/90 p-6 rounded-lg w-[80%] max-w-2xl">
               <h2 className="text-xl font-semibold mb-4">Add New FAQ</h2>
               <input
                 type="text"
                 placeholder="Question"
-                className="w-full p-2 border rounded-lg mb-4"
+                className="w-full dark:bg-black/20  p-2 border  rounded-lg mb-4"
                 value={newQuestion}
                 onChange={(e) => setNewQuestion(e.target.value)}
               />
               <textarea
                 placeholder="Answer"
-                className="w-full p-2 border rounded-lg mb-4 h-32"
+                className="w-full p-2 border dark:bg-black/40  rounded-lg mb-4 h-32"
                 value={newAnswer}
                 onChange={(e) => setNewAnswer(e.target.value)}
               />
@@ -207,7 +209,7 @@ const ContentPage = () => {
                 </button>
                 <button
                   onClick={handleSubmitFaq}
-                  className="px-4 py-2 bg-primary text-white rounded-lg"
+                  className="px-4 py-2 bg-primary text-white rounded-lg dark:bg-transparent dark:border "
                 >
                   Submit
                 </button>

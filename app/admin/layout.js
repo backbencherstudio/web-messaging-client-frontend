@@ -15,7 +15,7 @@ export default function AdminLayout({ children }) {
   }, [pathname]);
 
   return (
-    <div className="flex h-screen bg-[#F9FAFB] dark:bg-gray-900">
+    <div className="flex h-screen bg-[#F9FAFB] dark:bg-gray-900 dark:bg-[url('/bg.png')] dark:bg-cover dark:bg-no-repeat">
       {/* Mobile menu button */}
       {!hideNavbarRoutes.includes(pathname) && (
         <button

@@ -100,7 +100,7 @@ export default function CustomTable({
             {columns.map((col) => (
               <TableCell
                 key={col.accessor}
-                className="text-gray-800 dark:text-white font-bold py-4 px-6"
+                className="text-gray-800 dark:text-white font-bold py-4 px-2"
               >
                 {col.label}
               </TableCell>
@@ -192,7 +192,7 @@ export default function CustomTable({
                           className={`cursor-pointer min-w-[32px] h-8 flex items-center justify-center rounded transition-colors
                             ${
                               currentPage === pageNum
-                                ? "bg-primary text-white"
+                                ? "bg-primary dark:bg-transparent  text-white"
                                 : "hover:bg-gray-100 dark:hover:bg-gray-800"
                             }`}
                         >

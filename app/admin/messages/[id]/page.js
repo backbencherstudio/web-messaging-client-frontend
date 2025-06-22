@@ -71,8 +71,8 @@ const ContentPage = () => {
         <FaAngleLeft />{" "}
         <span className="text-gray-400">Message Management</span> / Edit Message
       </div>
-      <div className="bg-white p-6 rounded-lg mt-5">
-        <div className="flex justify-between items-center bg-white rounded-lg">
+      <div className="bg-white dark:bg-nav-dark-gradient p-6 rounded-lg mt-5">
+        <div className="flex justify-between items-center bg-white dark:bg-transparent rounded-lg">
           <h1 className="md:text-2xl text-xl font-semibold flex items-center gap-2">
             Message
           </h1>
@@ -94,7 +94,7 @@ const ContentPage = () => {
         </div>
         <>
           <textarea
-            className="w-full h-44 p-4 border border-gray-300 rounded-lg mt-6"
+            className="w-full h-44 p-4 border border-gray-300 dark:bg-transparent rounded-lg mt-6"
             placeholder="Write your content here..."
             value={content}
             disabled
@@ -105,11 +105,11 @@ const ContentPage = () => {
           <div className="flex items-center gap-6">
             <FaCircleUser size={64} color="#c9ccd8" />
             <p className=" text-gray-500 flex flex-col">
-              <span className="font-bold text-[#082B2E]">
+              <span className="font-bold text-[#082B2E] dark:text-white">
                 {messageById?.data?.posted_by}
               </span>
-              <span className="text-gray-400">
-                <span className=" text-[12px]">{messageById?.data?.email}</span>
+              <span className="text-gray-400 dark:text-white">
+                <span className=" text-[12px] ">{messageById?.data?.email}</span>
               </span>
             </p>
           </div>
@@ -117,7 +117,7 @@ const ContentPage = () => {
           <div className="flex items-center justify-center gap-20">
             <div>
               <p className="text-gray-400 text-[12px]">Time Posted</p>
-              <p className="text-[#082B2E] ">
+              <p className="text-[#082B2E] dark:text-white">
                 {messageById?.data?.time_posted
                   ? (() => {
                       try {
@@ -135,7 +135,7 @@ const ContentPage = () => {
             </div>
             <div>
               <p className="text-gray-400 text-[12px]">Views</p>
-              <p className="text-[#082B2E] ">{messageById?.data?.views}</p>
+              <p className="text-[#082B2E] dark:text-white ">{messageById?.data?.views}</p>
             </div>
           </div>
         </div>
