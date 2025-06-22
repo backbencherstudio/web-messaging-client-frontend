@@ -135,7 +135,7 @@ const NavBar = () => {
 
               {/* Theme Toggle & Sign In Button */}
               <div className="flex items-center justify-end space-x-2 w-full lg:space-x-6">
-                <ThemeToggle></ThemeToggle>
+                <ThemeToggle />
 
                 {isLoggedIn() ? (
                   // Render profile and notification links on /users/allmessage

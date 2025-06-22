@@ -3,6 +3,9 @@ import Image from "next/image";
 import React from "react";
 
 const SuccessModal = ({ open, onClose }) => {
+
+  const token = localStorage.getItem("token");
+
   return (
     <div>
       <Dialog open={open} onOpenChange={onClose}>
@@ -32,7 +35,7 @@ const SuccessModal = ({ open, onClose }) => {
                 Let&apos;s see how many views it gets before someone decides
                 theirs is more valuable.
               </p>
-              <p className="text-[#393C44] dark:text-[#C9CCD8] leading-[160%]  text-sm md:text-base font-medium max-w-[29ch] md:max-w-full   mt-2">
+              <p className={`${token ? "hidden" :"block"} text-[#393C44] dark:text-[#C9CCD8] leading-[160%]  text-sm md:text-base font-medium max-w-[29ch] md:max-w-full   mt-2`}>
                 Register now to claim ownership over your message and track its
                 exposure!
               </p>

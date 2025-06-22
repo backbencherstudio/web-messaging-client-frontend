@@ -66,7 +66,7 @@ export default function MessagesPage() {
         />
       ),
     },
-    { label: "P No", accessor: "message_number" },
+    { label: "Msg #", accessor: "message_number" },
     { label: "Message content", accessor: "message_content" },
     { label: "Posted by", accessor: "posted_by" },
     { label: "Views", accessor: "views" },
@@ -81,13 +81,13 @@ export default function MessagesPage() {
         <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
           <button
             onClick={() => router.push(`/admin/messages/${row.id}`)}
-            className="bg-gray-100 hover:bg-gray-200 rounded-xl p-2"
+            className="bg-gray-100 dark:bg-black/20 dark:hover:bg-black/70 hover:bg-gray-200 rounded-xl p-2"
           >
             <IoEyeOutline size={20} />
           </button>
           <button
             onClick={() => handleDelete(row)}
-            className="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-xl p-2"
+            className="text-red-500 hover:text-red-700 bg-red-50 dark:bg-nav-dark-gradient hover:bg-red-100 rounded-xl p-2"
           >
             <RiDeleteBin5Line size={20} />
           </button>

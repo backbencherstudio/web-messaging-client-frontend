@@ -18,6 +18,7 @@ const ContentPage = () => {
   const { id } = useParams();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { data: user, isLoading, error } = useGetUserByIdQuery(id);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedUser, setSelectedUser] = useState(null);
   const [deleteUserMessage, { isLoading: isDeleting }] =
@@ -43,13 +44,13 @@ const ContentPage = () => {
         <div className="flex gap-2">
           <button
             onClick={() => router.push(`/admin/messages/${row.id}`)}
-            className="bg-gray-100 hover:bg-gray-200 rounded-xl p-2"
+            className="bg-gray-100 dark:bg-black/20 dark:hover:bg-black/70 hover:bg-gray-200 rounded-xl p-2"
           >
             <CiEdit size={20} />
           </button>
           <button
             onClick={() => handleDelete(row)}
-            className="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-xl p-2"
+            className="text-red-500 hover:text-red-700 bg-red-50 dark:bg-nav-dark-gradient hover:bg-red-100 rounded-xl p-2"
           >
             <RiDeleteBin5Line size={20} />
           </button>
@@ -78,9 +79,9 @@ const ContentPage = () => {
         <FaAngleLeft /> <span className="text-gray-400">User Management</span> /
         User Details
       </div>
-      <div className="bg-white p-6 rounded-lg mt-5">
-        <div className="flex justify-between items-center bg-white rounded-lg">
-          <h1 className=" flex items-center gap-2 text-gray-500 text-sm">
+      <div className="bg-white dark:bg-nav-dark-gradient p-6 rounded-lg mt-5">
+        <div className="flex justify-between items-center bg-white dark:bg-transparent rounded-lg">
+          <h1 className=" flex items-center gap-2 text-gray-500 dark:text-gray-200  text-sm">
             User No #1234567890
           </h1>
         </div>
@@ -88,27 +89,27 @@ const ContentPage = () => {
           <div className="flex items-center gap-6">
             <FaCircleUser size={64} color="#c9ccd8" />
             <p className=" text-gray-500 flex flex-col">
-              <span className="font-bold text-[#082B2E]">
+              <span className="font-bold text-[#082B2E] dark:text-white">
                 {user?.data?.user_name}
               </span>
-              <span className="text-gray-400">
+              <span className="text-gray-400 dark:text-white">
                 <span className=" text-[12px]">{user?.data?.email}</span>
               </span>
             </p>
           </div>
           <div>
             <p className="text-gray-400 text-[12px]">Country</p>
-            <p className="text-[#082B2E] ">
+            <p className="text-[#082B2E] dark:text-white ">
               {user?.data?.location ? user?.data?.location : "N/A"}
             </p>
           </div>
           <div>
             <p className="text-gray-400 text-[12px]">Total Posts</p>
-            <p className="text-[#082B2E] ">{user?.data?.total_posts}</p>
+            <p className="text-[#082B2E] dark:text-white">{user?.data?.total_posts}</p>
           </div>
           <div>
             <p className="text-gray-400 text-[12px]">Total Views</p>
-            <p className="text-[#082B2E] ">{user?.data?.total_views}</p>
+            <p className="text-[#082B2E] dark:text-white">{user?.data?.total_views}</p>
           </div>
         </div>
       </div>
