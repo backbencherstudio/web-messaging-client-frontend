@@ -147,6 +147,19 @@ body {
   filter: blur(54.04999923706055px);
 }
 
+/* @keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 10s linear infinite;
+} */
+
 @layer base {
   :root {
     --background: 0 0% 100%;

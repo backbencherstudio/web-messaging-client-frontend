@@ -5,9 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import { IoIosSend } from "react-icons/io";
 import { SiComma } from "react-icons/si";
-import visa from "@/app/assets/visa.jpg";
-import stripe from "@/app/assets/stripe.png";
-import paypal from "@/app/assets/paypal.jpg";
+
 import CustomTable from "./Components/SharedComponent/CustomTable";
 import { messageData } from "./admin/data";
 
@@ -34,6 +32,33 @@ import { format } from "date-fns";
 import { useCreateContactMutation } from "./store/api/contactApi";
 import { useRouter } from "next/navigation";
 import { useGetProfileQuery } from "./store/api/authApi";
+import img1 from "@/public/payment/visa.png";
+import img2 from "@/public/payment/master.png";
+import img3 from "@/public/payment/american.png";
+import img4 from "@/public/payment/discover.png";
+import img5 from "@/public/payment/apple.png";
+import img6 from "@/public/payment/gpay.png";
+import img7 from "@/public/payment/paypal.png";
+import img8 from "@/public/payment/klarna.png";
+import img9 from "@/public/payment/sepa.png";
+import img10 from "@/public/payment/stripe.png";
+import "swiper/css";
+import "swiper/css/pagination";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
+
+const paymentMethods = [
+  { name: "Visa", imgUrl: img1.src },
+  { name: "MasterCard", imgUrl: img2.src },
+  { name: "American Express", imgUrl: img3.src },
+  { name: "Discover", imgUrl: img4.src },
+  { name: "Apple Pay", imgUrl: img5.src },
+  { name: "Google Pay", imgUrl: img6.src },
+  { name: "PayPal", imgUrl: img7.src },
+  { name: "Klarna", imgUrl: img8.src },
+  { name: "SEPA (EU)", imgUrl: img9.src },
+  { name: "stripe", imgUrl: img10.src },
+];
 
 export default function Home() {
   const router = useRouter();
@@ -58,8 +83,8 @@ export default function Home() {
   useEffect(() => {
     setIsClient(true);
   }, []);
-  
-console.log(lastMessage,"last msg")
+
+  console.log(lastMessage, "last msg");
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -77,7 +102,6 @@ console.log(lastMessage,"last msg")
   ];
 
   const handleSubmit = () => {
-    
     const token = localStorage.getItem("token");
     const data = {
       name: name,
@@ -226,7 +250,7 @@ console.log(lastMessage,"last msg")
         </div>
 
         <div className="dark:bg-[url('/shape-2.png')] dark:bg-center bg-cover dark:bg-no-repeat ">
-          <div className="max-w-[1080px] mx-auto md:pb-[58px] pb-[26px] px-5 2xl:px-0 ">
+          <div className="max-w-[1080px] mx-auto md:pb-[58px] pb-[26px] px-5 2xl:px-0  ">
             <h1 className="text-[clamp(32px,2vw,42px)] font-medium pt-[26px] lg:pt-[54px]">
               Is your message more valuable? Prove it!
             </h1>
@@ -244,11 +268,19 @@ console.log(lastMessage,"last msg")
                 onChange={(e) => setMessage(e.target.value)}
                 className="py-8 px-6 my-6 min-h-[274px] md:placeholder:text-[18px] placeholder:text-[16px] "
               />
-              <div className={`flex flex-col lg:flex-row  gap-4 ${lastMessage?.postCount >= 50 ?"justify-center" : "justify-between"} `}>
+              <div
+                className={`flex flex-col lg:flex-row  gap-4 ${
+                  lastMessage?.postCount >= 50
+                    ? "justify-center"
+                    : "justify-between"
+                } `}
+              >
                 <Button
                   onClick={handleSubmit}
                   disabled={!name || !message || lastMessage?.postCount >= 50}
-                  className={`w-full py-6 rounded-full text-[18px] cursor-pointer ${lastMessage?.postCount >= 50 && "hidden"} `}
+                  className={`w-full py-6 rounded-full text-[18px] cursor-pointer ${
+                    lastMessage?.postCount >= 50 && "hidden"
+                  } `}
                 >
                   {lastMessage?.postCount >= 50
                     ? "Free Messages Limit Reached"
@@ -264,7 +296,9 @@ console.log(lastMessage,"last msg")
                     }
                   }}
                   disabled={!name || !message}
-                  className="w-full py-6 hover:bg-gray-200 rounded-full bg-[#eff3fe] text-black dark:bg-[#1a1a1a] dark:text-white text-[18px]"
+                  className={`${
+                    lastMessage?.postCount >= 50 ? "" : "w-full"
+                  }   py-6 hover:bg-gray-200 rounded-full bg-[#eff3fe] text-black dark:bg-[#1a1a1a] dark:text-white text-[18px]`}
                 >
                   Submit Message
                 </Button>
@@ -274,22 +308,21 @@ console.log(lastMessage,"last msg")
                 for free! Just keep in mind, others can too
               </p>
               <p className="text-[18px] text-right">Payment Options </p>
-              <div className="flex justify-end mt-4">
-                <Image
-                  src={visa}
-                  alt="payment"
-                  className="rounded-md mx-1 h-6 w-9"
-                />
-                <Image
-                  src={stripe}
-                  alt="payment"
-                  className="rounded-md mx-1 h-6 w-9 "
-                />
-                <Image
-                  src={paypal}
-                  alt="payment"
-                  className="rounded-md mx-1 h-6 w-9"
-                />
+              <div className="md:flex grid grid-cols-3 flex-wrap flex-end justify-center animate-marquee gap-2 mt-4">
+                {paymentMethods.map((method, index) => (
+                  <div className="md:h-12 h-16 md:w-[90px]  rounded-md " key={index}  >
+                    <Image
+                      key={index}
+                      src={method.imgUrl}
+                      alt={method.name}
+                      className="rounded-md w-full h-full"
+                      width={100}
+                      height={100}
+                      unoptimized
+                    />
+                  </div>
+                ))}
+
               </div>
             </div>
           </div>
