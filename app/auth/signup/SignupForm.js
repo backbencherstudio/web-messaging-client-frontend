@@ -67,6 +67,7 @@ export default function SignupForm({
   const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
+    name2:"",
     email: "",
     location: "",
     password: "",
@@ -349,9 +350,9 @@ export default function SignupForm({
                 >
                   Country
                 </label>
-                <div className="relative">
+                <div className="">
                   <Command className="border border-[#DFE1E7] dark:border-[#393C44] rounded-[8px] overflow-hidden">
-                    <div className="flex items-center border-b">
+                    <div className="flex items-center border-b relative">
                       <Command.Input
                         placeholder={
                           isLoading
@@ -369,6 +370,7 @@ export default function SignupForm({
                         onBlur={() => setTimeout(() => setIsOpen(false), 200)}
                         disabled={isLoading}
                       />
+                       <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#878991] dark:text-[#ECF0FE] pointer-events-none" />
                     </div>
                     {isOpen && (
                       <Command.List className="max-h-[200px] overflow-y-auto custom-scrollbar">
@@ -396,7 +398,7 @@ export default function SignupForm({
                       </Command.List>
                     )}
                   </Command>
-                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#878991] dark:text-[#ECF0FE] pointer-events-none" />
+                 
                 </div>
               </div>
 
@@ -712,7 +714,7 @@ export default function SignupForm({
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div
-            className="bg-white dark:bg-gray-800 p-8 rounded-lg w-[400px] relative"
+            className="bg-white dark:bg-modal-gradient  p-8 rounded-lg w-[400px] relative"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -737,7 +739,7 @@ export default function SignupForm({
                   type="text"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 dark:bg-transparent dark:border-gray-600 dark:text-white"
                   placeholder="Enter OTP"
                   required
                 />

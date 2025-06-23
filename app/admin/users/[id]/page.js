@@ -69,7 +69,7 @@ const ContentPage = () => {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-
+ console.log("user", user);
   return (
     <div>
       <div
@@ -82,7 +82,7 @@ const ContentPage = () => {
       <div className="bg-white dark:bg-nav-dark-gradient p-6 rounded-lg mt-5">
         <div className="flex justify-between items-center bg-white dark:bg-transparent rounded-lg">
           <h1 className=" flex items-center gap-2 text-gray-500 dark:text-gray-200  text-sm">
-            User No #1234567890
+            User No #{user?.data?.user_number}
           </h1>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mt-6 items-center">

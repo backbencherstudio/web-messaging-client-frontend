@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import { SkeletonLoading } from "@/app/Components/SharedComponent/SkeletonLoading";
 import { MdDeleteSweep } from "react-icons/md";
 import { IoEyeOutline } from "react-icons/io5";
+import AdminDashboard from "../page";
 
 export default function MessagesPage() {
   const router = useRouter();
@@ -171,7 +172,7 @@ export default function MessagesPage() {
         columns={messageColumns}
         data={messages?.data}
         title="Messages"
-        subtitle="Your report payroll sofar"
+        subtitle="All messages posted by users"
         pagination={true}
         search={false}
         paginationData={{

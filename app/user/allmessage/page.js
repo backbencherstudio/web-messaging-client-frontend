@@ -50,7 +50,7 @@ export default function Allmessage() {
     //     />
     //   ),
     // },
-    { label: "P No", accessor: "post_number" },
+    { label: "Msg #", accessor: "post_number" },
     {
       label: "Message content",
       accessor: "body",

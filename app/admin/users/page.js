@@ -77,7 +77,7 @@ export default function UsersPage() {
         columns={userColumns}
         data={users?.data}
         title="All Users"
-        subtitle="Your report payroll sofar"
+        subtitle="Manage all registered users and monitor their message activity.”"
         pagination={true}
         search={false}
         paginationData={{

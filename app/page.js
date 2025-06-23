@@ -84,7 +84,7 @@ export default function Home() {
     setIsClient(true);
   }, []);
 
-  console.log(lastMessage, "last msg");
+
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -198,6 +198,7 @@ export default function Home() {
         setOpenSuccess={setOpenSuccess}
         name={name}
         message={message}
+        
       />
       <SuccessModal open={openSuccess} onClose={() => setOpenSuccess(false)} />
       <div>
@@ -288,12 +289,13 @@ export default function Home() {
                 </Button>
                 <Button
                   onClick={() => {
-                    const token = localStorage.getItem("token");
-                    if (token) {
-                      setShowModal(true);
-                    } else {
-                      router.push("/auth/signin");
-                    }
+                    // const token = localStorage.getItem("token");
+                    // if (token) {
+                    // } 
+                    setShowModal(true);
+                    // else {
+                    //   router.push("/auth/signin");
+                    // }
                   }}
                   disabled={!name || !message}
                   className={`${

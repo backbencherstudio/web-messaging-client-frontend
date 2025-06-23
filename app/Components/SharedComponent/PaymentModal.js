@@ -68,6 +68,7 @@ const PaymentForm = ({ onSuccess, onClose, name, message }) => {
   const { data: profile } = useGetProfileQuery();
   const { data: lastMessage } = useGetLastMessageQuery();
   const [createPayment, { isLoading }] = useCreatePaymentMutation();
+  const [email,setEmail] = useState("")
 
   const [isDark, setIsDark] = useState(false);
 
@@ -137,10 +138,10 @@ const PaymentForm = ({ onSuccess, onClose, name, message }) => {
       const token =
         typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-      if (!token) {
-        console.error("No authentication token found");
-        return;
-      }
+      // if (!token) {
+      //   console.error("No authentication token found");
+      //   return;
+      // }
 
       // Initialize socket with auth token
       socket = io(SOCKET_URL, {
@@ -204,6 +205,7 @@ const PaymentForm = ({ onSuccess, onClose, name, message }) => {
     }
 
     setLoading(true);
+    
 
     try {
       // First create payment intent with your API
@@ -211,6 +213,7 @@ const PaymentForm = ({ onSuccess, onClose, name, message }) => {
         name: name,
         status: message,
         bidAmount: parseFloat(amount), // Convert to number
+        email: profile?.data?.email || email, // Use email from profile or input
       }).unwrap();
 
       if (!paymentResponse.success) {
@@ -306,9 +309,11 @@ const PaymentForm = ({ onSuccess, onClose, name, message }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <Input
-        disabled
+        disabled = {profile?.data?.email ? true : false}
         value={profile?.data?.email}
+        placeholder="Enter your email"
         className="text-base md:text-lg p-6 bg-gray-200 dark:bg-transparent"
+        onChange={(e) => setEmail(e.target.value)}
       />
 
       <div className="relative">
@@ -418,6 +423,7 @@ const PaymentModal = ({ open, onClose, setOpenSuccess, name, message }) => {
             onClose={onClose}
             name={name}
             message={message}
+            // email={email}
           />
         </Elements>
       </DialogContent>

@@ -1,20 +1,18 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { User } from "lucide-react";
+import { User, X } from "lucide-react";
 import { io } from "socket.io-client";
 import { format } from "date-fns";
 import {
   useGetNotificationsQuery,
-  useMarkNotificationAsReadMutation,
+  useDeleteNotificationMutation,
+  useDeleteAllNotificationsMutation,
 } from "@/app/store/api/notificationApi";
 
-// Simple socket URL derivation
 const socketUrl = process.env.NEXT_PUBLIC_API_URL 
   ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api$/, '')
   : "http://localhost:5000";
-
-console.log("Socket URL:", socketUrl); // For debugging
 
 const socket = io(socketUrl, {
   autoConnect: false,
@@ -27,59 +25,42 @@ const NotificationPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [connected, setConnected] = useState(false);
   const itemsPerPage = 5;
+  const [hoveredId, setHoveredId] = useState(null);
 
-  // RTK Query hooks from injected API
   const {
     data: notificationData,
     isLoading,
     refetch,
-  } = useGetNotificationsQuery({
-    page: currentPage,
-    limit: itemsPerPage,
-  });
+  } = useGetNotificationsQuery({ page: currentPage, limit: itemsPerPage });
 
-  const [markAsRead] = useMarkNotificationAsReadMutation();
+  const [deleteNotification] = useDeleteNotificationMutation();
+  const [deleteAllNotifications] = useDeleteAllNotificationsMutation();
 
   const notifications = notificationData?.data || [];
   const totalPages = notificationData?.meta?.pages || 1;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (token) {
       socket.auth = { token };
       socket.connect();
     }
 
-    socket.on("connect", () => {
-      setConnected(true);
-      console.log("Socket connected");
-    });
-
-    socket.on("disconnect", () => {
-      setConnected(false);
-      console.log("Socket disconnected");
-    });
-
+    socket.on("connect", () => setConnected(true));
+    socket.on("disconnect", () => setConnected(false));
     socket.on("connect_error", (err) => {
       console.error("Connection error:", err);
       setConnected(false);
     });
 
     return () => {
-      socket.off("connect");
-      socket.off("disconnect");
-      socket.off("connect_error");
       socket.disconnect();
     };
   }, []);
 
   useEffect(() => {
     if (connected) {
-      socket.on("notification", () => {
-        // Refetch notifications when new one arrives
-        refetch();
-      });
+      socket.on("notification", () => refetch());
     }
 
     return () => {
@@ -87,26 +68,29 @@ const NotificationPage = () => {
     };
   }, [connected, refetch]);
 
-  const handleMarkAsRead = async (id) => {
+  const handleDeleteNotification = async (id) => {
     try {
-      await markAsRead(id).unwrap();
+      await deleteNotification(id).unwrap();
     } catch (error) {
-      console.error("Error marking notification as read:", error);
+      console.error("Failed to delete notification", error);
     }
   };
 
-  // Empty state for no notifications
+  const handleDeleteAll = async () => {
+    try {
+      await deleteAllNotifications().unwrap();
+    } catch (error) {
+      console.error("Failed to delete all notifications", error);
+    }
+  };
+
   if (!isLoading && notifications.length === 0) {
     return (
       <div className="flex justify-center bg-cover bg-no-repeat dark:bg-[url('/bg.png')] pb-[500px]">
         <div className="m-4 border dark:border-[#545460] bg-white dark:bg-[#1E1E1E] text-[#070707] dark:text-[#FDFEFF] rounded-lg shadow-lg max-w-[1080px] w-full px-6 py-6 md:px-10 md:py-8 leading-[130%]">
           <div className="flex flex-col items-center justify-center py-12">
-            <div className="text-gray-400 mb-4">
-              <User className="w-16 h-16" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-200 mb-2">
-              No Notifications
-            </h3>
+            <User className="w-16 h-16 text-gray-400 mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-200 mb-2">No Notifications</h3>
             <p className="text-gray-500 dark:text-gray-400 text-center">
               You don&apos;t have any notifications at the moment.
             </p>
@@ -121,27 +105,21 @@ const NotificationPage = () => {
       <div className="m-4 border dark:border-[#545460] bg-white dark:bg-[#1E1E1E] text-[#070707] dark:text-[#FDFEFF] rounded-lg shadow-lg max-w-[1080px] w-full px-6 py-6 md:px-10 md:py-8 leading-[130%]">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-semibold">Notifications</h1>
-          {!connected && (
-            <span className="text-red-500 text-sm">Reconnecting...</span>
-          )}
+          <button
+            onClick={handleDeleteAll}
+            className="text-sm bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition"
+          >
+            Clear All
+          </button>
         </div>
 
         {isLoading ? (
           <div className="animate-pulse min-h-[50vh]">
-            {[1].map((table) => (
-              <div key={table} className="mt-8 h-[10vh]">
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                  <div className="space-y-6">
-                    {[1, 2, 3, 4, 5].map((row) => (
-                      <div
-                        key={row}
-                        className="h-14 bg-gray-100 dark:bg-gray-700 rounded-md"
-                      ></div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
+            <div className="mt-8 h-[10vh] space-y-4">
+              {[...Array(5)].map((_, row) => (
+                <div key={row} className="h-14 bg-gray-100 dark:bg-gray-700 rounded-md"></div>
+              ))}
+            </div>
           </div>
         ) : (
           <>
@@ -149,29 +127,16 @@ const NotificationPage = () => {
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`flex items-start p-4 border dark:border-[#545460] rounded-lg transition-colors cursor-pointer ${
-                    notification.status === 1
-                      ? "bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-800"
-                      : "hover:bg-gray-100 dark:hover:bg-[#2A2A2A]"
-                  }`}
-                  onClick={() => {
-                    if (notification.status === 1) {
-                      handleMarkAsRead(notification.id);
-                    }
-                  }}
+                  className="flex items-start p-4 border dark:border-[#545460] rounded-lg relative hover:bg-gray-50 dark:hover:bg-[#2A2A2A]"
+                  onMouseEnter={() => setHoveredId(notification.id)}
+                  onMouseLeave={() => setHoveredId(null)}
                 >
                   <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-[#2A2A2A] flex-shrink-0 flex items-center justify-center">
                     <User className="w-6 h-6 text-gray-500 dark:text-gray-400" />
                   </div>
 
                   <div className="ml-4 flex-1">
-                    <h3
-                      className={`transition-all ${
-                        notification.status === 1
-                          ? "font-bold text-black dark:text-white"
-                          : "font-normal text-gray-700 dark:text-gray-300"
-                      }`}
-                    >
+                    <h3 className="font-medium text-gray-800 dark:text-white">
                       {notification.sender_name}
                     </h3>
                     <p className="text-gray-600 dark:text-gray-400 mt-1">
@@ -181,6 +146,15 @@ const NotificationPage = () => {
                       {format(new Date(notification?.created_at), "PPp")}
                     </span>
                   </div>
+
+                  {hoveredId === notification.id && (
+                    <button
+                      onClick={() => handleDeleteNotification(notification.id)}
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-700"
+                    >
+                      <X size={18} />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>

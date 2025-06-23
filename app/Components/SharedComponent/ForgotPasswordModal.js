@@ -119,7 +119,7 @@ export default function ForgotPasswordModal({ isOpen, onClose, title, type }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div
-        className="bg-white dark:bg-gray-800 p-8 rounded-lg w-[400px] relative"
+        className="bg-white dark:bg-modal-gradient  p-8 rounded-lg w-[400px] relative"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -147,7 +147,7 @@ export default function ForgotPasswordModal({ isOpen, onClose, title, type }) {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 dark:bg-transparent dark:border-gray-600 dark:text-white"
                   placeholder="Enter your email"
                   required
                 />
@@ -184,7 +184,7 @@ export default function ForgotPasswordModal({ isOpen, onClose, title, type }) {
                   type="text"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 dark:bg-transparent dark:border-gray-600 dark:text-white"
                   placeholder="Enter OTP"
                   required
                 />

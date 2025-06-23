@@ -18,13 +18,13 @@ export default function UserLayout({ children }) {
   }, [pathname, router]);
 
   return (
-    <div className="flex h-screen bg-[#F9FAFB] dark:bg-gray-900">
+    <div className="flex  bg-[#F9FAFB] dark:bg-transparent bg-cover bg-no-repeat dark:bg-[url('/bg.png')]">
       {/* Main Content */}
       <div className="flex-1 overflow-auto">
         <div className="flex-1 overflow-auto">
           <div
             className={`${
-              !hideNavbarRoutes.includes(pathname) ? "p-5 lg:p-6" : ""
+              !hideNavbarRoutes.includes(pathname) ? "" : ""
             }`}
           >
             {children}

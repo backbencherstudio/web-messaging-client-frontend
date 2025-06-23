@@ -68,7 +68,7 @@ export default function ContactsPage() {
         columns={contactColumns}
         data={contacts?.data}
         title="All Contacts"
-        subtitle="Your report payroll sofar"
+        subtitle="List of inquiries submitted by users."
         pagination={true}
         search={false}
         paginationData={{

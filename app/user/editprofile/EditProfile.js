@@ -34,7 +34,7 @@ const EditProfile = () => {
   const [enable2FA] = useEnable2FAMutation();
   const [disable2FA] = useDisable2FAMutation();
   const [is2FAEnabled, setIs2FAEnabled] = useState(false);
-const [is2FALoading, setIs2FALoading] = useState(false);
+  const [is2FALoading, setIs2FALoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -62,7 +62,6 @@ const [is2FALoading, setIs2FALoading] = useState(false);
         country: profile.data.country || "",
         password: profile.data.password || "",
       });
-      
     }
   }, [profile?.data]);
 
@@ -111,12 +110,17 @@ const [is2FALoading, setIs2FALoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if (formData.password && formData.password.length < 8) {
-        alert("Password must be at least 8 characters long");
-        return;
-      }
 
+    if (!formData.country) {
+      toast.error("Please select a valid country.");
+      return;
+    }
+    if (formData.password && formData.password.length < 8) {
+      toast.error("Password must be at least 8 characters long");
+      return;
+    }
+
+    try {
       const updateData = {
         name: formData.name,
         country: formData.country,
@@ -142,34 +146,34 @@ const [is2FALoading, setIs2FALoading] = useState(false);
     }
   };
 
-        const handleEmailChangeVerification = async ({ otp, newEmail }) => {
-          try {
-            const response = await changeEmail({
-              email: newEmail,
-              token: otp,
-            }).unwrap();
+  const handleEmailChangeVerification = async ({ otp, newEmail }) => {
+    try {
+      const response = await changeEmail({
+        email: newEmail,
+        token: otp,
+      }).unwrap();
 
-            if (!response.success) {
-              // Handle unsuccessful response
-              toast.error(response.message || "Failed to verify email change");
-              return;
-            }
+      if (!response.success) {
+        // Handle unsuccessful response
+        toast.error(response.message || "Failed to verify email change");
+        return;
+      }
 
-            setIsOtpModalOpen(false);
-            setFormData((prev) => ({
-              ...prev,
-              email: newEmail,
-            }));
-            toast.success("Email changed successfully");
-          } catch (error) {
-            const errorMessage =
-              error?.data?.message ||
-              error?.error ||
-              error?.message ||
-              "Failed to verify email change";
-            toast.error(errorMessage);
-          }
-        };
+      setIsOtpModalOpen(false);
+      setFormData((prev) => ({
+        ...prev,
+        email: newEmail,
+      }));
+      toast.success("Email changed successfully");
+    } catch (error) {
+      const errorMessage =
+        error?.data?.message ||
+        error?.error ||
+        error?.message ||
+        "Failed to verify email change";
+      toast.error(errorMessage);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -183,7 +187,7 @@ const [is2FALoading, setIs2FALoading] = useState(false);
 
   return (
     <>
-      <div className="flex justify-center pt-[100px] lg:pt-[120px] bg-cover bg-no-repeat dark:bg-[url('/bg.png')] pb-[100px]">
+      <div className="flex justify-center pt-[100px] lg:pt-[120px] pb-[100px]">
         <div className="m-4 border dark:border-[#545460] bg-white dark:bg-[#1E1E1E] text-[#070707] dark:text-[#FDFEFF] rounded-lg shadow-lg max-w-[942px] w-full px-6 py-6 md:px-10 md:py-8">
           {/* Header */}
           <h1 className="text-2xl font-semibold mb-8">Edit Profile</h1>
