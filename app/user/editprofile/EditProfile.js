@@ -22,6 +22,7 @@ import { twoFactorStorage } from "@/app/utils/twoFactorStorage";
 
 const EditProfile = () => {
   const { data: profile, isLoading, error } = useGetProfileQuery();
+  console.log(profile);
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
   const [requestEmailChange] = useRequestEmailChangeMutation();
   const [changeEmail] = useChangeEmailMutation();
