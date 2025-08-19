@@ -30,6 +30,7 @@ export const messageApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Messages"],
     }),
+
     deleteMessage: builder.mutation({
       query: (id) => ({
         url: `admin/message-management/${id}`,
@@ -37,6 +38,7 @@ export const messageApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Messages"],
     }),
+
     deleteMultipleMessages: builder.mutation({
       query: (ids) => ({
         url: `admin/message-management`,
@@ -45,6 +47,7 @@ export const messageApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Messages"],
     }),
+
     getUserMessages: builder.query({
       query: (id) => ({
         url: `message-list/user/${id}`,
@@ -54,15 +57,41 @@ export const messageApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Messages"],
     }),
+
+    // Updated getAdminMessages with enhanced parameters
     getAdminMessages: builder.query({
-      query: (page = 1) => ({
-        url: `admin/message-management?page=${page}`,
-        headers: {
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        },
-      }),
+      query: (params = {}) => {
+        const {
+          q = "",
+          page = 1,
+          limit = 10,
+          sortBy = "created_at",
+          sortOrder = "desc",
+          startDate = "",
+          endDate = "",
+        } = params;
+
+        const queryParams = new URLSearchParams();
+        if (q) queryParams.append("q", q);
+        if (page) queryParams.append("page", page.toString());
+        if (limit) queryParams.append("limit", limit.toString());
+        if (sortBy) queryParams.append("sortBy", sortBy);
+        if (sortOrder) queryParams.append("sortOrder", sortOrder);
+        if (startDate) queryParams.append("startDate", startDate);
+        if (endDate) queryParams.append("endDate", endDate);
+
+        return {
+          url: `admin/message-management${
+            queryParams.toString() ? `?${queryParams}` : ""
+          }`,
+          headers: {
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          },
+        };
+      },
       providesTags: ["Messages"],
     }),
+
     getMessageById: builder.query({
       query: (id) => ({
         url: `admin/message-management/${id}`,
@@ -72,6 +101,7 @@ export const messageApi = baseApi.injectEndpoints({
       }),
       providesTags: (result, error, id) => [{ type: "Messages", id }],
     }),
+
     updateMessage: builder.mutation({
       query: ({ id, ...update }) => ({
         url: `admin/message-management/${id}`,

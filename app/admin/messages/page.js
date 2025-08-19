@@ -10,46 +10,59 @@ import {
   useDeleteMultipleMessagesMutation,
   useGetAdminMessagesQuery,
 } from "@/app/store/api/messageApi";
-import CustomPagingTable from "@/app/Components/SharedComponent/CustomPagingTable";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
 import { SkeletonLoading } from "@/app/Components/SharedComponent/SkeletonLoading";
 import { MdDeleteSweep } from "react-icons/md";
 import { IoEyeOutline } from "react-icons/io5";
-import AdminDashboard from "../page";
 
 export default function MessagesPage() {
   const router = useRouter();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [selectedMessages, setSelectedMessages] = useState([]);
+  const [isMultiDeleteModalOpen, setIsMultiDeleteModalOpen] = useState(false);
+
+  // State for server-side functionality
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [sortConfig, setSortConfig] = useState({
+    field: "created_at",
+    order: "desc",
+  });
+
+  // API call with enhanced parameters
   const {
-    data: messages,
+    data: messagesResponse,
     isLoading,
     error,
-  } = useGetAdminMessagesQuery(currentPage);
+  } = useGetAdminMessagesQuery({
+    q: searchTerm,
+    page: currentPage,
+    limit: itemsPerPage,
+    sortBy: sortConfig.field,
+    sortOrder: sortConfig.order,
+  });
+
+  // Extract data from new response structure
+  const messages = messagesResponse?.data?.data || [];
+  const paginationData = messagesResponse?.data?.pagination || {};
+
   const [deleteMessage, { isLoading: isDeleting }] = useDeleteMessageMutation();
   const [deleteMultipleMessages, { isLoading: isDeletingMultiple }] =
     useDeleteMultipleMessagesMutation();
-  const [isMultiDeleteModalOpen, setIsMultiDeleteModalOpen] = useState(false);
 
-  // Add this style for hoverable rows
-  const rowClassName = (row) => {
-    return `cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200 ${
-      selectedMessages.includes(row.id) ? "bg-blue-50 dark:bg-blue-900/20" : ""
-    }`;
-  };
-
+  // Column definitions with proper sortField mappings
   const messageColumns = [
     {
       label: (
         <input
           type="checkbox"
-          checked={selectedMessages.length === messages?.data?.length}
+          checked={selectedMessages.length === messages?.length}
           onChange={(e) => {
-            e.stopPropagation(); // Prevent row click when clicking checkbox
-            handleSelectAll(messages?.data);
+            e.stopPropagation();
+            handleSelectAll(messages);
           }}
           className="w-4 h-4 rounded border-gray-300 cursor-pointer checked:bg-orange-500 checked:border-orange-500"
         />
@@ -60,21 +73,45 @@ export default function MessagesPage() {
           type="checkbox"
           checked={selectedMessages.includes(row.id)}
           onChange={(e) => {
-            e.stopPropagation(); // Prevent row click when clicking checkbox
+            e.stopPropagation();
             handleSelect(row.id);
           }}
           className="w-4 h-4 rounded border-gray-300 cursor-pointer"
         />
       ),
     },
-    { label: "Msg #", accessor: "message_number" },
-    { label: "Message content", accessor: "message_content" },
-    { label: "Posted by", accessor: "posted_by" },
-    { label: "Views", accessor: "views" },
-    { label: "Pay", accessor: "pay" },
-    { label: "Email ", accessor: "email" },
-    // Updated time_posted to show raw data
-    { label: "Time Posted", accessor: "time_posted" },
+    {
+      label: "Msg #",
+      accessor: "message_number",
+      sortField: "post_number",
+    },
+    {
+      label: "Message content",
+      accessor: "message_content",
+    },
+    {
+      label: "Posted by",
+      accessor: "posted_by",
+    },
+    {
+      label: "Views",
+      accessor: "views",
+      sortField: "views",
+    },
+    {
+      label: "Pay",
+      accessor: "pay",
+      sortField: "current_value",
+    },
+    {
+      label: "Email",
+      accessor: "email",
+    },
+    {
+      label: "Time Posted",
+      accessor: "time_posted",
+      sortField: "created_at",
+    },
     {
       label: "Action",
       accessor: "action",
@@ -97,11 +134,18 @@ export default function MessagesPage() {
     },
   ];
 
-  // Add this handler for row clicks
-  const handleRowClick = (row) => {
-    handleSelect(row.id);
-  };
+  // Sortable columns configuration
+  const sortableColumns = [
+    "post_number",
+    "views",
+    "current_value",
+    "created_at",
+  ];
 
+  // Searchable columns configuration
+  const searchableColumns = ["message_content", "posted_by", "email"];
+
+  // Event handlers
   const handleDelete = (message) => {
     setSelectedMessage(message);
     setIsDeleteModalOpen(true);
@@ -114,9 +158,6 @@ export default function MessagesPage() {
     toast.success("Message deleted successfully");
   };
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
   const handleSelect = (messageId) => {
     setSelectedMessages((prev) =>
       prev.includes(messageId)
@@ -124,6 +165,7 @@ export default function MessagesPage() {
         : [...prev, messageId]
     );
   };
+
   const handleSelectAll = (messages) => {
     if (selectedMessages.length === messages.length) {
       setSelectedMessages([]);
@@ -131,28 +173,51 @@ export default function MessagesPage() {
       setSelectedMessages(messages?.map((msg) => msg.id));
     }
   };
+
   const handleBulkDelete = () => {
     if (!selectedMessages.length) return;
     setIsMultiDeleteModalOpen(true);
   };
+
   const confirmBulkDelete = async () => {
     try {
       await deleteMultipleMessages(selectedMessages).unwrap();
       toast.success(`Successfully deleted ${selectedMessages.length} messages`);
-      setSelectedMessages([]); // Clear selection
+      setSelectedMessages([]);
       setIsMultiDeleteModalOpen(false);
     } catch (error) {
       toast.error("Failed to delete messages");
     }
   };
+
+  // Server-side event handlers
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+    setCurrentPage(1); // Reset to first page on search
+  };
+
+  const handleSort = (field, order) => {
+    setSortConfig({ field, order });
+    setCurrentPage(1); // Reset to first page on sort
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newLimit) => {
+    setItemsPerPage(newLimit);
+    setCurrentPage(1); // Reset to first page when changing limit
+  };
+
   if (isLoading) {
     return <SkeletonLoading />;
   }
 
   return (
-    <div className="relative ">
+    <div className="relative">
       {selectedMessages.length > 0 && (
-        <div className="mb-4 flex justify-between items-center absolute top-5 right-10 ">
+        <div className="mb-4 flex justify-between items-center absolute top-5 right-10">
           <div className="flex flex-col lg:flex-row items-center gap-2">
             <span className="text-gray-600">
               {selectedMessages.length} message
@@ -168,21 +233,27 @@ export default function MessagesPage() {
           </div>
         </div>
       )}
-      <CustomPagingTable
+
+      <CustomTable
         columns={messageColumns}
-        data={messages?.data}
+        data={messages}
         title="Messages"
         subtitle="All messages posted by users"
         pagination={true}
-        search={false}
-        paginationData={{
-          currentPage: messages?.pagination.current_page || 1,
-          totalPages: messages?.pagination.total_pages || 1,
-          totalItems: messages?.pagination.total_items || 0,
-        }}
+        search={true}
+        serverSide={true}
+        onSearch={handleSearch}
+        onSort={handleSort}
         onPageChange={handlePageChange}
-        onRowClick={handleRowClick}
-        rowClassName={rowClassName}
+        onItemsPerPageChange={handleItemsPerPageChange}
+        searchTerm={searchTerm}
+        sortConfig={sortConfig}
+        paginationData={paginationData}
+        loading={isLoading}
+        searchableColumns={searchableColumns}
+        sortableColumns={sortableColumns}
+        itemsPerPage={itemsPerPage}
+        itemsPerPageOptions={[10, 20, 50, 100]}
       />
 
       <DeleteModal
