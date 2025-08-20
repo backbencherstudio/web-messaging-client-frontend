@@ -1,37 +1,74 @@
 "use client";
 
-import CustomTable from "@/app/Components/SharedComponent/CustomTable";
-import { userData } from "../data";
-import { FaEye, FaTrash } from "react-icons/fa6";
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { PiWarningCircle } from "react-icons/pi";
-import DeleteModal from "@/app/Components/SharedComponent/DeleteModal";
-import { RiDeleteBin5Line } from "react-icons/ri";
-import { IoEyeOutline } from "react-icons/io5";
-import { useRouter } from "next/navigation";
 import {
-  useDeleteUserMutation,
   useGetUsersQuery,
+  useDeleteUserMutation,
 } from "@/app/store/api/userApi";
-import CustomPagingTable from "@/app/Components/SharedComponent/CustomPagingTable";
+import CustomTable from "@/app/Components/SharedComponent/CustomTable";
+import { IoEyeOutline } from "react-icons/io5";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { useRouter } from "next/navigation";
+import DeleteModal from "@/app/Components/SharedComponent/DeleteModal";
 import toast from "react-hot-toast";
 import { SkeletonLoading } from "@/app/Components/SharedComponent/SkeletonLoading";
+
 export default function UsersPage() {
   const router = useRouter();
+
+  // State management
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [sortConfig, setSortConfig] = useState({
+    field: "created_at",
+    order: "desc",
+  });
+
+  // API call with enhanced parameters
+  const {
+    data: usersData,
+    isLoading,
+    error,
+  } = useGetUsersQuery({
+    q: searchTerm,
+    page: currentPage,
+    limit: itemsPerPage,
+    sortBy: sortConfig.field,
+    sortOrder: sortConfig.order,
+  });
+
+  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const { data: users, isLoading, error } = useGetUsersQuery(currentPage);
-  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
+
+  // Column definitions with sort fields - ADDED POSITION COLUMN
   const userColumns = [
-    // { label: "S/N", accessor: "pNo" },
-    { label: "User Name", accessor: "user_name" },
-    { label: "Email", accessor: "email" },
-    { label: "Total Messages", accessor: "total_message" },
-    { label: "Total views", accessor: "total_views" },
-    // { label: "Last Message", accessor: "last_message" },
+    {
+      label: "#",
+      accessor: "position",
+      sortField: "position",
+    },
+    {
+      label: "User Name",
+      accessor: "user_name",
+      sortField: "name",
+    },
+    {
+      label: "Email",
+      accessor: "email",
+      sortField: "email",
+    },
+    {
+      label: "Total Messages",
+      accessor: "total_messages",
+      sortField: "total_messages",
+    },
+    {
+      label: "Total Views",
+      accessor: "total_views",
+      sortField: "total_views",
+    },
     {
       label: "Action",
       accessor: "action",
@@ -53,46 +90,92 @@ export default function UsersPage() {
       ),
     },
   ];
-  const handleDelete = (user) => {
-    setSelectedUser(user);
-    setIsDeleteModalOpen(true);
+
+  // Event handlers
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+    setCurrentPage(1); // Reset to first page on search
   };
 
-  const confirmDelete = () => {
-    deleteUser(selectedUser.id);
-    setIsDeleteModalOpen(false);
-    setSelectedUser(null);
-    toast.success("User deleted successfully");
+  const handleSort = (field, order) => {
+    setSortConfig({ field, order });
+    setCurrentPage(1); // Reset to first page on sort
   };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+
+  const handleItemsPerPageChange = (newLimit) => {
+    setItemsPerPage(newLimit);
+    setCurrentPage(1); // Reset to first page when changing limit
+  };
+
+  const handleDelete = (user) => {
+    setSelectedUser(user);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteUser(selectedUser.id).unwrap();
+      setIsDeleteModalOpen(false);
+      setSelectedUser(null);
+      toast.success("User deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete user");
+    }
+  };
+
   if (isLoading) {
     return <SkeletonLoading />;
   }
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-500">Error loading users: {error.message}</p>
+      </div>
+    );
+  }
+
   return (
     <div>
-      <CustomPagingTable
-        columns={userColumns}
-        data={users?.data}
+      <CustomTable
         title="All Users"
-        subtitle="Manage all registered users and monitor their message activity.”"
+        subtitle="Manage all registered users and monitor their message activity."
+        columns={userColumns}
+        data={usersData?.data?.data || []}
         pagination={true}
-        search={false}
-        paginationData={{
-          currentPage: users?.pagination.current_page || 1,
-          totalPages: users?.pagination.total_pages || 1,
-          totalItems: users?.pagination.total_items || 0,
-        }}
+        search={true}
+        serverSide={true}
+        onSearch={handleSearch}
+        onSort={handleSort}
         onPageChange={handlePageChange}
+        onItemsPerPageChange={handleItemsPerPageChange}
+        searchTerm={searchTerm}
+        sortConfig={sortConfig}
+        paginationData={usersData?.data?.pagination || {}}
+        loading={isLoading}
+        searchableColumns={["user_name", "email"]}
+        sortableColumns={[
+          "position",
+          "name",
+          "email",
+          "total_messages",
+          "total_views",
+          "created_at",
+        ]}
+        itemsPerPage={itemsPerPage}
+        itemsPerPageOptions={[10, 20, 50, 100]}
       />
+
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={confirmDelete}
         title="Delete User"
-        message={`Are you sure you want to delete user ${selectedUser?.userName}?`}
+        message={`Are you sure you want to delete user ${selectedUser?.user_name}?`}
       />
     </div>
   );

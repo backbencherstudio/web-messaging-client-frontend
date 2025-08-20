@@ -2,15 +2,78 @@ import { baseApi } from "./baseApi";
 
 export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // Enhanced getUsers with search, sorting, and filtering
     getUsers: builder.query({
-      query: (page = 1) => `admin/user?page=${page}`,
+      query: (params = {}) => {
+        const {
+          q = "",
+          page = 1,
+          limit = 10,
+          sortBy = "created_at",
+          sortOrder = "desc",
+          startDate = "",
+          endDate = "",
+          month = "",
+          type = "",
+          approved = "",
+        } = params;
+
+        const queryParams = new URLSearchParams();
+        if (q) queryParams.append("q", q);
+        if (page) queryParams.append("page", page);
+        if (limit) queryParams.append("limit", limit);
+        if (sortBy) queryParams.append("sortBy", sortBy);
+        if (sortOrder) queryParams.append("sortOrder", sortOrder);
+        if (startDate) queryParams.append("startDate", startDate);
+        if (endDate) queryParams.append("endDate", endDate);
+        if (month) queryParams.append("month", month);
+        if (type) queryParams.append("type", type);
+        if (approved) queryParams.append("approved", approved);
+
+        return {
+          url: `admin/user?${queryParams.toString()}`,
+          headers: {
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          },
+        };
+      },
       providesTags: ["User"],
     }),
 
+    // Enhanced getUserById with post filtering and pagination
     getUserById: builder.query({
-      query: (id) => `admin/user/${id}`,
-      providesTags: (result, error, id) => [{ type: "User", id }],
+      query: ({ id, ...params }) => {
+        const {
+          q = "",
+          page = 1,
+          limit = 10,
+          sortBy = "created_at",
+          sortOrder = "desc",
+          startDate = "",
+          endDate = "",
+          month = "",
+        } = params;
+
+        const queryParams = new URLSearchParams();
+        if (q) queryParams.append("q", q);
+        if (page) queryParams.append("page", page);
+        if (limit) queryParams.append("limit", limit);
+        if (sortBy) queryParams.append("sortBy", sortBy);
+        if (sortOrder) queryParams.append("sortOrder", sortOrder);
+        if (startDate) queryParams.append("startDate", startDate);
+        if (endDate) queryParams.append("endDate", endDate);
+        if (month) queryParams.append("month", month);
+
+        return {
+          url: `admin/user/${id}?${queryParams.toString()}`,
+          headers: {
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          },
+        };
+      },
+      providesTags: (result, error, { id }) => [{ type: "User", id }],
     }),
+
     deleteUser: builder.mutation({
       query: (id) => ({
         url: `admin/user/${id}`,
@@ -28,15 +91,6 @@ export const userApi = baseApi.injectEndpoints({
       invalidatesTags: ["User"],
     }),
 
-    // updateMessage: builder.mutation({
-    //   query: ({ id, ...update }) => ({
-    //     url: `messages/${id}`,
-    //     method: "PUT",
-    //     body: update,
-    //   }),
-    //   invalidatesTags: (result, error, { id }) => [{ type: "Messages", id }],
-    // }),
-
     deleteUserMessage: builder.mutation({
       query: (id) => ({
         url: `admin/user/post/${id}`,
@@ -44,10 +98,6 @@ export const userApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
-    // getAdminMessages: builder.query({
-    //   query: (page = 1) => `admin/message-management?page=${page}`,
-    //   providesTags: ["Messages"],
-    // }),
   }),
 });
 
@@ -55,7 +105,6 @@ export const {
   useGetUsersQuery,
   useGetUserByIdQuery,
   useCreateUserMutation,
-  useGetAdminMessagesQuery,
   useDeleteUserMutation,
   useDeleteUserMessageMutation,
 } = userApi;
