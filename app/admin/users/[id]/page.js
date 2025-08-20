@@ -9,7 +9,6 @@ import {
   useDeleteUserMessageMutation,
   useGetUserByIdQuery,
 } from "@/app/store/api/userApi";
-import { format } from "date-fns";
 import DeleteModal from "@/app/Components/SharedComponent/DeleteModal";
 import toast from "react-hot-toast";
 
@@ -45,8 +44,13 @@ const ContentPage = () => {
   const [deleteUserMessage, { isLoading: isDeleting }] =
     useDeleteUserMessageMutation();
 
-  // Column definitions for user posts
+  // Column definitions for user posts - UPDATED FOR BACKEND ENHANCEMENTS
   const messageColumns = [
+    {
+      label: "#",
+      accessor: "position",
+      sortField: "position",
+    },
     {
       label: "Message content",
       accessor: "message_content",
@@ -61,13 +65,7 @@ const ContentPage = () => {
       label: "Time Posted",
       accessor: "time_posted",
       sortField: "created_at",
-      customCell: (row) => {
-        try {
-          return format(new Date(row.time_posted), "dd MMMM yyyy");
-        } catch (error) {
-          return row.time_posted;
-        }
-      },
+      // ✅ REMOVED: No need for custom date formatting - backend provides formatted time
     },
     {
       label: "Action",
@@ -211,6 +209,7 @@ const ContentPage = () => {
           loading={isLoading}
           searchableColumns={["message_content"]}
           sortableColumns={[
+            "position",
             "created_at",
             "views",
             "post_number",
