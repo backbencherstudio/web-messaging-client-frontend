@@ -1,31 +1,23 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { User, X, ChevronLeft, ChevronRight } from "lucide-react";
-import { io } from "socket.io-client";
+import { User, X, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 import {
   useGetNotificationsQuery,
   useDeleteNotificationMutation,
   useDeleteAllNotificationsMutation,
 } from "@/app/store/api/notificationApi";
-
-const socketUrl = process.env.NEXT_PUBLIC_API_URL
-  ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api$/, "")
-  : "http://localhost:5000";
-
-const socket = io(socketUrl, {
-  autoConnect: false,
-  reconnection: true,
-  reconnectionAttempts: 5,
-  reconnectionDelay: 1000,
-});
+import { useSocket } from "@/lib/hooks/useSocket";
 
 const NotificationPage = () => {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
-  const [connected, setConnected] = useState(false);
   const itemsPerPage = 5;
   const [hoveredId, setHoveredId] = useState(null);
+
+  const { on, off } = useSocket();
 
   const {
     data: notificationData,
@@ -41,34 +33,16 @@ const NotificationPage = () => {
   const paginationData = notificationData?.data?.pagination || {};
   const totalPages = paginationData?.total_pages || 1;
 
+  // ✅ UPDATED: Use global socket service
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      socket.auth = { token };
-      socket.connect();
-    }
+    const handleNotification = () => refetch();
 
-    socket.on("connect", () => setConnected(true));
-    socket.on("disconnect", () => setConnected(false));
-    socket.on("connect_error", (err) => {
-      console.error("Connection error:", err);
-      setConnected(false);
-    });
+    on("notification:new", handleNotification);
 
     return () => {
-      socket.disconnect();
+      off("notification:new", handleNotification);
     };
-  }, []);
-
-  useEffect(() => {
-    if (connected) {
-      socket.on("notification", () => refetch());
-    }
-
-    return () => {
-      socket.off("notification");
-    };
-  }, [connected, refetch]);
+  }, [on, off, refetch]);
 
   const handleDeleteNotification = async (id) => {
     try {
@@ -84,6 +58,11 @@ const NotificationPage = () => {
     } catch (error) {
       console.error("Failed to delete all notifications", error);
     }
+  };
+
+  // ✅ NEW: Back navigation handler
+  const handleBack = () => {
+    router.back();
   };
 
   // ✅ NEW: Pagination handlers
@@ -103,6 +82,17 @@ const NotificationPage = () => {
     return (
       <div className="flex justify-center bg-cover bg-no-repeat dark:bg-[url('/bg.png')] pb-[500px]">
         <div className="m-4 border dark:border-[#545460] bg-white dark:bg-[#1E1E1E] text-[#070707] dark:text-[#FDFEFF] rounded-lg shadow-lg max-w-[1080px] w-full px-6 py-6 md:px-10 md:py-8 leading-[130%]">
+          {/* ✅ NEW: Back button for empty state */}
+          <div className="flex items-center gap-2 mb-6">
+            <button
+              onClick={handleBack}
+              className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors"
+            >
+              <ArrowLeft size={20} />
+              <span>Back</span>
+            </button>
+          </div>
+
           <div className="flex flex-col items-center justify-center py-12">
             <User className="w-16 h-16 text-gray-400 mb-4" />
             <h3 className="text-lg font-medium text-gray-900 dark:text-gray-200 mb-2">
@@ -120,6 +110,17 @@ const NotificationPage = () => {
   return (
     <div className="flex justify-center bg-cover bg-no-repeat dark:bg-[url('/bg.png')] pb-[500px]">
       <div className="m-4 border dark:border-[#545460] bg-white dark:bg-[#1E1E1E] text-[#070707] dark:text-[#FDFEFF] rounded-lg shadow-lg max-w-[1080px] w-full px-6 py-6 md:px-10 md:py-8 leading-[130%]">
+        {/* ✅ NEW: Back button and header */}
+        <div className="flex items-center gap-2 mb-6">
+          <button
+            onClick={handleBack}
+            className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors"
+          >
+            <ArrowLeft size={20} />
+            <span>Back</span>
+          </button>
+        </div>
+
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-semibold">Notifications</h1>
           <button

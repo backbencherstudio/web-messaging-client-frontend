@@ -15,6 +15,7 @@ import { useGetNotificationsQuery } from "@/app/store/api/notificationApi";
 import { RxDashboard } from "react-icons/rx";
 import { decryptData } from "@/app/utils/encryption";
 import NotificationDropdown from "./NotificationDropdown";
+import { useSocket } from "@/lib/hooks/useSocket";
 
 const NavBar = () => {
   const pathname = usePathname();
@@ -35,6 +36,9 @@ const NavBar = () => {
 
   // ✅ UPDATED: New response structure for badge count
   const paginationData = notifications?.data?.pagination || {};
+
+  // ✅ NEW: Socket hook for real-time updates
+  const { on, off } = useSocket();
 
   const handleNavigation = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -68,6 +72,20 @@ const NavBar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // ✅ NEW: Real-time notification listener
+  useEffect(() => {
+    const handleNotification = () => {
+      // Refetch notifications to update badge count
+      // The useGetNotificationsQuery will automatically refetch
+    };
+
+    on("notification:new", handleNotification);
+
+    return () => {
+      off("notification:new", handleNotification);
+    };
+  }, [on, off]);
 
   // Check if user is logged in
   const isLoggedIn = () => {

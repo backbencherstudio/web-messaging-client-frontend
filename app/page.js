@@ -84,8 +84,6 @@ export default function Home() {
     setIsClient(true);
   }, []);
 
-
-
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -185,6 +183,12 @@ export default function Home() {
   };
   const handleCloseModal = () => {
     setShowModal(false);
+  };
+
+  const handlePaymentSuccess = (result) => {
+    setShowModal(false);
+    setOpenSuccess(true);
+    // Optionally clear the form
     setName("");
     setMessage("");
   };
@@ -192,13 +196,11 @@ export default function Home() {
   return (
     <div id="home">
       <PaymentModal
-        open={showModal}
+        isOpen={showModal}
         onClose={handleCloseModal}
-        onCloseSuccess={() => setOpenSuccess(false)}
-        setOpenSuccess={setOpenSuccess}
+        onSuccess={handlePaymentSuccess}
         name={name}
         message={message}
-        
       />
       <SuccessModal open={openSuccess} onClose={() => setOpenSuccess(false)} />
       <div>
@@ -291,7 +293,7 @@ export default function Home() {
                   onClick={() => {
                     // const token = localStorage.getItem("token");
                     // if (token) {
-                    // } 
+                    // }
                     setShowModal(true);
                     // else {
                     //   router.push("/auth/signin");
@@ -312,7 +314,10 @@ export default function Home() {
               <p className="text-[18px] text-right">Payment Options </p>
               <div className="md:flex grid grid-cols-3 flex-wrap flex-end justify-center animate-marquee gap-2 mt-4">
                 {paymentMethods.map((method, index) => (
-                  <div className="md:h-12 h-16 md:w-[90px]  rounded-md " key={index}  >
+                  <div
+                    className="md:h-12 h-16 md:w-[90px]  rounded-md "
+                    key={index}
+                  >
                     <Image
                       key={index}
                       src={method.imgUrl}
@@ -324,7 +329,6 @@ export default function Home() {
                     />
                   </div>
                 ))}
-
               </div>
             </div>
           </div>
