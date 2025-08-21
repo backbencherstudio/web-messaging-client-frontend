@@ -10,6 +10,7 @@ import { PiNoteLight } from "react-icons/pi";
 import { IoIosLogOut } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import withAuth from "./withAuth";
+import { socketService } from "@/lib/socketService";
 
 const AdminNavBar = () => {
   const pathname = usePathname();
@@ -40,8 +41,18 @@ const AdminNavBar = () => {
   ];
 
   const handleLogout = () => {
+    console.log("Admin navbar logging out, disconnecting socket...");
+    
+    // Disconnect socket first
+    socketService.disconnect();
+    
+    // Clear auth data
     localStorage.removeItem("token");
+    localStorage.removeItem("type");
+    
+    // Redirect
     router.push("/auth/signin");
+    toast.success("Successfully logged out");
   };
 
   return (

@@ -69,8 +69,8 @@ const Footer = () => {
   // Get user profile
   const { data: profile, isLoading: profileLoading } = useGetProfileQuery();
   const isAdmin = profile?.data?.type === "admin";
-  console.log("from footer", profile);
-  console.log("from footer", isAdmin);
+  // console.log("from footer", profile);
+  // console.log("from footer", isAdmin);
 
   // Fetch social links on mount
   useEffect(() => {

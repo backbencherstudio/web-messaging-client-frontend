@@ -12,6 +12,7 @@ import { RxDashboard } from "react-icons/rx";
 import { decryptData } from "@/app/utils/encryption";
 import NotificationDropdown from "../SharedComponent/NotificationDropdown";
 import { useSocket } from "@/lib/hooks/useSocket";
+import { socketService } from "@/lib/socketService";
 
 const AdminHeader = () => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -20,8 +21,11 @@ const AdminHeader = () => {
   const { data: profile, isLoading, error } = useGetProfileQuery();
   const encryptedType = localStorage.getItem("type");
   const userType = decryptData(encryptedType);
-  const { data: notifications, isLoading: notificationsLoading } =
-    useGetNotificationsQuery({});
+  const {
+    data: notifications,
+    isLoading: notificationsLoading,
+    refetch,
+  } = useGetNotificationsQuery({ page: 1, limit: 5 });
 
   // ✅ NEW: Bell icon reference for dropdown positioning
   const bellIconRef = useRef(null);
@@ -34,29 +38,27 @@ const AdminHeader = () => {
 
   // ✅ NEW: Real-time notification listener
   React.useEffect(() => {
-    const handleNotification = () => {
-      // Refetch notifications to update badge count
-      // The useGetNotificationsQuery will automatically refetch
-    };
-
+    const handleNotification = () => refetch();
     on("notification:new", handleNotification);
-
     return () => {
       off("notification:new", handleNotification);
     };
-  }, [on, off]);
+  }, [on, off, refetch]);
 
   const handleLogout = () => {
-    // Clear all auth-related items
+    console.log("Admin logging out, disconnecting socket...");
+
+    // Disconnect socket first
+    socketService.disconnect();
+
+    // Clear auth data
     localStorage.removeItem("token");
     localStorage.removeItem("type");
-    // Optional: Clear any other user-related data
-    // localStorage.clear(); // Be careful with this as it clears everything
 
-    // Redirect to signin page
+    // Redirect
     window.location.href = "/auth/signin";
 
-    // Optional: Add a success message
+    // Success message
     toast.success("Successfully logged out");
   };
 

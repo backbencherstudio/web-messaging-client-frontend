@@ -15,6 +15,7 @@ import { MdOutlineReviews } from "react-icons/md";
 import AdminHeader from "../Components/AdminComponents/AdminHeader";
 import { FiUsers } from "react-icons/fi";
 import { AiOutlineUserAdd } from "react-icons/ai";
+import { socketService } from "@/lib/socketService";
 
 // Menu and Bottom items
 const menuItems = [
@@ -78,11 +79,21 @@ export default function AdminLayout({ children }) {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const router = useRouter()
+  const router = useRouter();
 
-    const handleLogout = () => {
+  const handleLogout = () => {
+    console.log("Admin layout logging out, disconnecting socket...");
+
+    // Disconnect socket first
+    socketService.disconnect();
+
+    // Clear auth data
     localStorage.removeItem("token");
+    localStorage.removeItem("type");
+
+    // Redirect
     router.push("/auth/signin");
+    toast.success("Successfully logged out");
   };
 
   const TopBar = () => {
@@ -122,10 +133,10 @@ export default function AdminLayout({ children }) {
         {/* Logo */}
         <div className="flex items-center py-2">
           <Link href="/">
-          <h1 className="text-2xl font-medium text-[#070707] dark:text-white  cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-            SayThat.sh
-          </h1>
-        </Link>
+            <h1 className="text-2xl font-medium text-[#070707] dark:text-white  cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+              SayThat.sh
+            </h1>
+          </Link>
         </div>
 
         {/* Menu Items */}
@@ -162,7 +173,7 @@ export default function AdminLayout({ children }) {
             return (
               <div className="px-2 py-1" key={index}>
                 <button
-                onClick={handleLogout}
+                  onClick={handleLogout}
                   className={`flex items-center text-sm font-semibold p-3 duration-300 rounded-[10px] gap-2.5 text-[#EB3D4D] ${
                     isActive
                       ? "bg-[#393C44]"

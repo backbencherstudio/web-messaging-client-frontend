@@ -28,9 +28,7 @@ import { baseApi } from "@/app/store/api/baseApi";
 import { useSocket } from "@/lib/hooks/useSocket";
 
 // Initialize Stripe (put your publishable key here)
-const stripePromise = loadStripe(
-  "pk_test_51Nokq8C8szXM8fPRu5jOPBoutxbXYDbnV7IpDIyNOG1HcLiI8XYA9xPbooHLoho7uAplF3wO5MtPfc3VadQcALN900Td6TrGBL"
-);
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 // First, create a dynamic style object based on the postCount
 const getStripeElementStyle = (isDisabled, isDark) => ({
