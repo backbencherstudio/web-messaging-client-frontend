@@ -1,10 +1,8 @@
 "use client";
-import CustomPagingTable from "@/app/Components/SharedComponent/CustomPagingTable";
-import { CiEdit } from "react-icons/ci";
+import { useState } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { useRouter } from "next/navigation";
 import { SkeletonLoading } from "@/app/Components/SharedComponent/SkeletonLoading";
-import { useState } from "react";
 import {
   useDeleteMessageMutation,
   useDeleteMultipleMessagesMutation,
@@ -13,44 +11,56 @@ import {
 import DeleteModal from "@/app/Components/SharedComponent/DeleteModal";
 import { useGetProfileQuery } from "@/app/store/api/authApi";
 import CustomTable from "@/app/Components/SharedComponent/CustomTable";
-import { format } from "date-fns";
 import { IoEyeOutline } from "react-icons/io5";
+import toast from "react-hot-toast";
+
 export default function Allmessage() {
   const router = useRouter();
+  const { data: user } = useGetProfileQuery();
+
+  // Server-side table state
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [sortConfig, setSortConfig] = useState({
+    field: "created_at",
+    order: "desc",
+  });
+
+  // Delete modal state
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
-  const [selectedMessages, setSelectedMessages] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const { data: user } = useGetProfileQuery();
+
+  // Enhanced API call with parameters
   const {
-    data: messages,
+    data: messagesResponse,
     isLoading,
     error,
-  } = useGetUserMessagesQuery(user?.data?.id);
+  } = useGetUserMessagesQuery({
+    userId: user?.data?.id,
+    q: searchTerm,
+    page: currentPage,
+    limit: itemsPerPage,
+    sortBy: sortConfig.field,
+    sortOrder: sortConfig.order,
+  });
+
   const [deleteMessage, { isLoading: isDeleting }] = useDeleteMessageMutation();
   const [deleteMultipleMessages, { isLoading: isDeletingMultiple }] =
     useDeleteMultipleMessagesMutation();
+
+  // Updated column definitions with position and backend-formatted dates
   const messageColumns = [
-    // {
-    //   label: (
-    //     <input
-    //       type="checkbox"
-    //       checked={selectedMessages.length === messages?.data?.length}
-    //       onChange={() => handleSelectAll(messages?.data)} // messages should be your data array
-    //       className="w-4 h-4 rounded border-gray-300 cursor-pointer checked:bg-orange-500 checked:border-orange-500"
-    //     />
-    //   ),
-    //   accessor: "select",
-    //   customCell: (row) => (
-    //     <input
-    //       type="checkbox"
-    //       checked={selectedMessages.includes(row.id)}
-    //       onChange={() => handleSelect(row.id)}
-    //       className="w-4 h-4 rounded border-gray-300 cursor-pointer"
-    //     />
-    //   ),
-    // },
-    { label: "Msg #", accessor: "post_number" },
+    {
+      label: "#",
+      accessor: "position",
+      sortField: "position",
+    },
+    {
+      label: "Msg #",
+      accessor: "post_number",
+      sortField: "post_number",
+    },
     {
       label: "Message content",
       accessor: "body",
@@ -58,19 +68,20 @@ export default function Allmessage() {
         return <div className="lg:w-[300px]">{row.body}</div>;
       },
     },
-    // { label: "Posted by", accessor: "posted_by" },
-    { label: "Views", accessor: "views" },
-    // { label: "Pay", accessor: "pay" },
+    {
+      label: "Views",
+      accessor: "views",
+      sortField: "views",
+    },
+    {
+      label: "Current Value",
+      accessor: "current_value",
+      sortField: "current_value",
+    },
     {
       label: "Time Posted",
-      accessor: "created_at",
-      customCell: (row) => {
-        try {
-          return format(new Date(row.created_at), "dd MMMM yyyy");
-        } catch (error) {
-          return row.created_at;
-        }
-      },
+      accessor: "created", // ✅ Changed from created_at to backend-formatted created
+      sortField: "created_at",
     },
     {
       label: "Action",
@@ -93,58 +104,43 @@ export default function Allmessage() {
       ),
     },
   ];
-  const handleDelete = (message) => {
-    setSelectedMessage(message);
-    setIsDeleteModalOpen(true);
+
+  // Event handlers
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+    setCurrentPage(1); // Reset to first page on search
   };
 
-  const confirmDelete = () => {
-    deleteMessage(selectedMessage.id);
-    setIsDeleteModalOpen(false);
-    setSelectedMessage(null);
-    toast.success("Message deleted successfully");
+  const handleSort = (field, order) => {
+    setSortConfig({ field, order });
+    setCurrentPage(1); // Reset to first page on sort
   };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-  const handleSelect = (messageId) => {
-    setSelectedMessages((prev) =>
-      prev.includes(messageId)
-        ? prev.filter((id) => id !== messageId)
-        : [...prev, messageId]
-    );
-  };
-  const handleSelectAll = (messages) => {
-    if (selectedMessages.length === messages.length) {
-      setSelectedMessages([]);
-    } else {
-      setSelectedMessages(messages?.map((msg) => msg.id));
-    }
-  };
-  const handleBulkDelete = async () => {
-    if (!selectedMessages.length) return;
 
-    if (
-      confirm(
-        `Are you sure you want to delete ${selectedMessages.length} messages?`
-      )
-    ) {
-      try {
-        deleteMultipleMessages(selectedMessages)
-          .unwrap()
-          .then((res) => {
-            toast.success(
-              `Successfully deleted ${selectedMessages.length} messages`
-            );
-            setSelectedMessages([]); // Clear selection
-            // Refresh your data here
-          });
-      } catch (error) {
-        toast.error("Failed to delete messages");
-      }
+  const handleItemsPerPageChange = (newLimit) => {
+    setItemsPerPage(newLimit);
+    setCurrentPage(1); // Reset to first page when changing limit
+  };
+
+  const handleDelete = (message) => {
+    setSelectedMessage(message);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteMessage(selectedMessage.id).unwrap();
+      setIsDeleteModalOpen(false);
+      setSelectedMessage(null);
+      toast.success("Message deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete message");
     }
   };
+
   if (isLoading) {
     return (
       <div className="mt-28 max-w-[1080px] mx-auto">
@@ -152,29 +148,53 @@ export default function Allmessage() {
       </div>
     );
   }
+
+  if (error) {
+    return (
+      <div className="mt-28 max-w-[1080px] mx-auto">
+        <div className="text-center py-8">
+          <p className="text-red-500">
+            Error loading messages: {error.message}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Extract data from new response structure
+  const messages = messagesResponse?.data?.data || [];
+  const paginationData = messagesResponse?.data?.pagination || {};
+
   return (
     <div className="mt-28 max-w-[1080px] mx-auto">
-      {/* <CustomPagingTable
-        columns={messageColumns}
-        data={messages?.data}
-        title="Messages"
-        subtitle="Your report payroll sofar"
-        pagination={true}
-        search={false}
-        paginationData={{
-          currentPage: messages?.pagination.current_page || 1,
-          totalPages: messages?.pagination.total_pages || 1,
-          totalItems: messages?.pagination.total_items || 0,
-        }}
-        onPageChange={handlePageChange}
-      /> */}
       <CustomTable
+        title="Messages"
+        subtitle="Your message history and activity"
         columns={messageColumns}
         data={messages}
-        title="Messages"
-        subtitle="Your report payroll sofar"
         pagination={true}
+        search={true}
+        serverSide={true}
+        onSearch={handleSearch}
+        onSort={handleSort}
+        onPageChange={handlePageChange}
+        onItemsPerPageChange={handleItemsPerPageChange}
+        searchTerm={searchTerm}
+        sortConfig={sortConfig}
+        paginationData={paginationData}
+        loading={isLoading}
+        searchableColumns={["body", "user_display_name"]}
+        sortableColumns={[
+          "position",
+          "created_at",
+          "views",
+          "current_value",
+          "post_number",
+        ]}
+        itemsPerPage={itemsPerPage}
+        itemsPerPageOptions={[10, 20, 50, 100]}
       />
+
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}

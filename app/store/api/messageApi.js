@@ -49,12 +49,37 @@ export const messageApi = baseApi.injectEndpoints({
     }),
 
     getUserMessages: builder.query({
-      query: (id) => ({
-        url: `message-list/user/${id}`,
-        headers: {
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        },
-      }),
+      query: ({ userId, ...params }) => {
+        const {
+          q = "",
+          page = 1,
+          limit = 10,
+          sortBy = "created_at",
+          sortOrder = "desc",
+          startDate = "",
+          endDate = "",
+          month = "",
+        } = params;
+
+        const queryParams = new URLSearchParams();
+        if (q) queryParams.append("q", q);
+        if (page) queryParams.append("page", page.toString());
+        if (limit) queryParams.append("limit", limit.toString());
+        if (sortBy) queryParams.append("sortBy", sortBy);
+        if (sortOrder) queryParams.append("sortOrder", sortOrder);
+        if (startDate) queryParams.append("startDate", startDate);
+        if (endDate) queryParams.append("endDate", endDate);
+        if (month) queryParams.append("month", month);
+
+        return {
+          url: `message-list/user/${userId}${
+            queryParams.toString() ? `?${queryParams}` : ""
+          }`,
+          headers: {
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          },
+        };
+      },
       providesTags: ["Messages"],
     }),
 
