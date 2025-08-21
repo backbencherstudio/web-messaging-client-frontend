@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { User, X } from "lucide-react";
+import { User, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { io } from "socket.io-client";
 import { format } from "date-fns";
 import {
@@ -10,8 +10,8 @@ import {
   useDeleteAllNotificationsMutation,
 } from "@/app/store/api/notificationApi";
 
-const socketUrl = process.env.NEXT_PUBLIC_API_URL 
-  ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api$/, '')
+const socketUrl = process.env.NEXT_PUBLIC_API_URL
+  ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api$/, "")
   : "http://localhost:5000";
 
 const socket = io(socketUrl, {
@@ -36,8 +36,10 @@ const NotificationPage = () => {
   const [deleteNotification] = useDeleteNotificationMutation();
   const [deleteAllNotifications] = useDeleteAllNotificationsMutation();
 
-  const notifications = notificationData?.data || [];
-  const totalPages = notificationData?.meta?.pages || 1;
+  // Updated response structure mapping
+  const notifications = notificationData?.data?.data || [];
+  const paginationData = notificationData?.data?.pagination || {};
+  const totalPages = paginationData?.total_pages || 1;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -84,13 +86,28 @@ const NotificationPage = () => {
     }
   };
 
+  // ✅ NEW: Pagination handlers
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   if (!isLoading && notifications.length === 0) {
     return (
       <div className="flex justify-center bg-cover bg-no-repeat dark:bg-[url('/bg.png')] pb-[500px]">
         <div className="m-4 border dark:border-[#545460] bg-white dark:bg-[#1E1E1E] text-[#070707] dark:text-[#FDFEFF] rounded-lg shadow-lg max-w-[1080px] w-full px-6 py-6 md:px-10 md:py-8 leading-[130%]">
           <div className="flex flex-col items-center justify-center py-12">
             <User className="w-16 h-16 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-200 mb-2">No Notifications</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-200 mb-2">
+              No Notifications
+            </h3>
             <p className="text-gray-500 dark:text-gray-400 text-center">
               You don&apos;t have any notifications at the moment.
             </p>
@@ -117,7 +134,10 @@ const NotificationPage = () => {
           <div className="animate-pulse min-h-[50vh]">
             <div className="mt-8 h-[10vh] space-y-4">
               {[...Array(5)].map((_, row) => (
-                <div key={row} className="h-14 bg-gray-100 dark:bg-gray-700 rounded-md"></div>
+                <div
+                  key={row}
+                  className="h-14 bg-gray-100 dark:bg-gray-700 rounded-md"
+                ></div>
               ))}
             </div>
           </div>
@@ -140,7 +160,9 @@ const NotificationPage = () => {
                       {notification.sender_name}
                     </h3>
                     <p className="text-gray-600 dark:text-gray-400 mt-1">
-                      {notification?.notification_event?.text || "No message"}
+                      {notification?.text ||
+                        notification?.notification_event?.text ||
+                        "No message"}
                     </p>
                     <span className="text-gray-400 text-sm mt-2 block">
                       {format(new Date(notification?.created_at), "PPp")}
@@ -159,22 +181,45 @@ const NotificationPage = () => {
               ))}
             </div>
 
+            {/* ✅ UPDATED: Next/Previous pagination */}
             <div className="flex justify-between items-center p-4 text-sm text-gray-600 dark:text-gray-300">
-              <span>Showing {itemsPerPage} entries</span>
-              <div className="flex gap-2">
-                {[...Array(totalPages)].map((_, i) => (
-                  <button
-                    key={i}
-                    className={`px-3 py-1 rounded-md ${
-                      currentPage === i + 1
-                        ? "bg-black text-white dark:bg-[#FDFEFF] dark:text-black"
-                        : "bg-gray-200 dark:bg-[#545460] dark:text-[#FDFEFF]"
-                    }`}
-                    onClick={() => setCurrentPage(i + 1)}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
+              <span>
+                Showing {paginationData.start_position || 1} to{" "}
+                {paginationData.end_position || notifications.length} of{" "}
+                {paginationData.total_items || notifications.length} entries
+              </span>
+
+              {/* ✅ NEW: Next/Previous pagination controls */}
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                  className={`flex items-center gap-1 px-3 py-1 rounded-md transition-colors ${
+                    currentPage === 1
+                      ? "bg-gray-200 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500"
+                      : "bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
+                  }`}
+                >
+                  <ChevronLeft size={16} />
+                  Previous
+                </button>
+
+                <span className="text-sm font-medium">
+                  Page {currentPage} of {totalPages}
+                </span>
+
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                  className={`flex items-center gap-1 px-3 py-1 rounded-md transition-colors ${
+                    currentPage === totalPages
+                      ? "bg-gray-200 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500"
+                      : "bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
+                  }`}
+                >
+                  Next
+                  <ChevronRight size={16} />
+                </button>
               </div>
             </div>
           </>

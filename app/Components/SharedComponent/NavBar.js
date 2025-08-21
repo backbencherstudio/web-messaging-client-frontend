@@ -14,6 +14,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { useGetNotificationsQuery } from "@/app/store/api/notificationApi";
 import { RxDashboard } from "react-icons/rx";
 import { decryptData } from "@/app/utils/encryption";
+import NotificationDropdown from "./NotificationDropdown";
 
 const NavBar = () => {
   const pathname = usePathname();
@@ -21,11 +22,20 @@ const NavBar = () => {
   const isAdminRoute = pathname?.startsWith("/auth");
   const isUserRoute = pathname?.startsWith("/user");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showNotificationDropdown, setShowNotificationDropdown] =
+    useState(false);
   const { data: profile, isLoading, error } = useGetProfileQuery();
   const encryptedType = localStorage.getItem("type");
   const userType = decryptData(encryptedType);
   const { data: notifications, isLoading: notificationsLoading } =
     useGetNotificationsQuery({});
+
+  // ✅ NEW: Bell icon reference for dropdown positioning
+  const bellIconRef = useRef(null);
+
+  // ✅ UPDATED: New response structure for badge count
+  const paginationData = notifications?.data?.pagination || {};
+
   const handleNavigation = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -77,6 +87,10 @@ const NavBar = () => {
 
     // Optional: Add a success message
     toast.success("Successfully logged out");
+  };
+
+  const toggleNotificationDropdown = () => {
+    setShowNotificationDropdown(!showNotificationDropdown);
   };
 
   return (
@@ -140,21 +154,23 @@ const NavBar = () => {
                 {isLoggedIn() ? (
                   // Render profile and notification links on /users/allmessage
                   <div className="flex items-center gap-3">
-                    <Link
-                      href="/user/notification"
-                      className="text-base font-medium"
+                    {/* ✅ UPDATED: Added ref to bell icon */}
+                    <button
+                      ref={bellIconRef}
+                      onClick={toggleNotificationDropdown}
+                      className="text-base font-medium relative"
                     >
                       <span className="relative md:w-[36px] md:h-[36px] w-[26px] h-[26px] flex items-center justify-center rounded-full bg-white dark:bg-[#080808]">
                         <IoNotifications className="text-2xl" />
-                        {notifications?.data?.length > 0 && (
+                        {paginationData?.total_items > 0 && (
                           <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
                             <span className="text-xs text-white">
-                              {notifications?.meta?.total}
+                              {paginationData.total_items}
                             </span>
                           </span>
                         )}
                       </span>
-                    </Link>
+                    </button>
 
                     <button
                       className="flex items-center gap-1"
@@ -297,6 +313,13 @@ const NavBar = () => {
           </div>
         </div>
       </div>
+
+      {/* ✅ UPDATED: Pass bell icon reference to dropdown */}
+      <NotificationDropdown
+        isOpen={showNotificationDropdown}
+        onClose={() => setShowNotificationDropdown(false)}
+        triggerRef={bellIconRef}
+      />
     </div>
   );
 };
