@@ -26,7 +26,10 @@ import {
   useGetLeaderboardQuery,
 } from "./store/api/leaderboardApi";
 import { useGetAboutUsQuery, useGetAllFaqQuery } from "./store/api/faqApi";
-import { useCreateMessageMutation } from "./store/api/messageApi";
+// import { useCreateMessageMutation } from "./store/api/messageApi";
+import { useCreateFreePostMutation } from "./store/api/paymentApi";
+import { useGetRecentStatusQuery } from "./store/api/paymentApi";
+import { useSocket } from "@/lib/hooks/useSocket";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
 import { useCreateContactMutation } from "./store/api/contactApi";
@@ -63,7 +66,9 @@ const paymentMethods = [
 export default function Home() {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
+  const [initialPaidAmount, setInitialPaidAmount] = useState(null);
   const [openSuccess, setOpenSuccess] = useState(false);
+  const [successVariant, setSuccessVariant] = useState("free");
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [contactName, setContactName] = useState("");
@@ -75,7 +80,13 @@ export default function Home() {
   const { data: faqs } = useGetAllFaqQuery();
   const { data: about } = useGetAboutUsQuery();
   const { data: lastMessage } = useGetLastMessageQuery();
-  const [createMessage, { isLoading }] = useCreateMessageMutation();
+  // Value-based model: fetch board state (minimumBid, free availability)
+  const { data: recentStatus, refetch: refetchRecentStatus } =
+    useGetRecentStatusQuery();
+  const { on, off } = useSocket();
+  // Legacy createMessage removed; using value-based free endpoint instead
+  const [createFreePost, { isLoading: isCreatingFree }] =
+    useCreateFreePostMutation();
   const [isClient, setIsClient] = useState(false);
   const [createContact, { isLoading: isLoadingContact }] =
     useCreateContactMutation();
@@ -99,22 +110,40 @@ export default function Home() {
     { label: "Time Posted", accessor: "time" },
   ];
 
-  const handleSubmit = () => {
-    const token = localStorage.getItem("token");
-    const data = {
-      name: name,
-      status: message,
-      userId: token ? profile?.data?.id : null,
+  // Real-time: keep recent status in sync when min bid updates
+  useEffect(() => {
+    const handleMinBid = () => {
+      refetchRecentStatus();
     };
-    createMessage(data)
+    on("payment:bid-updated", handleMinBid);
+    return () => off("payment:bid-updated", handleMinBid);
+  }, [on, off, refetchRecentStatus]);
+
+  // Free submit: use value-based free endpoint; if free ended, prompt paid
+  const handleSubmit = () => {
+    const payload = { name, status: message };
+    createFreePost(payload)
       .unwrap()
-      .then((res) => {
+      .then(() => {
         setName("");
         setMessage("");
         toast.success("Message submitted successfully");
+        refetchRecentStatus();
+        setSuccessVariant("free");
+        setOpenSuccess(true);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        const nextRequiredBid = error?.data?.nextRequiredBid;
+        const msg =
+          error?.data?.message || "Free posting is not available now.";
+        toast.error(msg);
+        // If backend suggests nextRequiredBid, guide user to paid flow
+        if (typeof nextRequiredBid === "number") {
+          setInitialPaidAmount(nextRequiredBid);
+          setShowModal(true);
+        }
+        // Refresh state in case free ended
+        refetchRecentStatus();
       });
   };
 
@@ -186,11 +215,17 @@ export default function Home() {
   };
 
   const handlePaymentSuccess = (result) => {
+    setSuccessVariant("paid");
     setShowModal(false);
     setOpenSuccess(true);
     // Optionally clear the form
     setName("");
     setMessage("");
+    // Refresh board state after paid success
+    try {
+      // Best-effort; page will also sync via socket
+      typeof refetchRecentStatus === "function" && refetchRecentStatus();
+    } catch (_) {}
   };
 
   return (
@@ -201,8 +236,13 @@ export default function Home() {
         onSuccess={handlePaymentSuccess}
         name={name}
         message={message}
+        initialAmount={initialPaidAmount}
       />
-      <SuccessModal open={openSuccess} onClose={() => setOpenSuccess(false)} />
+      <SuccessModal
+        open={openSuccess}
+        onClose={() => setOpenSuccess(false)}
+        variant={successVariant}
+      />
       <div>
         {/* about section  */}
         <div className="dark:bg-[url('/bg.png')] dark:bg-cover dark:bg-no-repeat ">
@@ -259,6 +299,13 @@ export default function Home() {
             </h1>
             {/* payment form  */}
             <div className="border rounded-lg md:p-6 p-4 mt-4 dark:bg-custom-gradient">
+              {/* Optional info banner: show only during free period to avoid mixed messaging */}
+              {recentStatus?.freePostStatus?.isInFreePeriod &&
+                recentStatus?.freePostStatus?.warningMessage && (
+                  <div className="mb-4 p-3 rounded-md bg-blue-50 text-blue-800 dark:bg-[#0b253a] dark:text-[#c9e6ff] border border-blue-200 dark:border-[#1a4a6e]">
+                    {recentStatus.freePostStatus.warningMessage}
+                  </div>
+                )}
               <Input
                 placeholder="Who are you?"
                 value={name}
@@ -271,24 +318,30 @@ export default function Home() {
                 onChange={(e) => setMessage(e.target.value)}
                 className="py-8 px-6 my-6 min-h-[274px] md:placeholder:text-[18px] placeholder:text-[16px] "
               />
+              {/* Value-based helper: always show current minimum for paid */}
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                Minimum payment required: $
+                {(recentStatus?.minimumBid ?? 0.5).toFixed
+                  ? (recentStatus?.minimumBid ?? 0.5).toFixed(2)
+                  : Number(recentStatus?.minimumBid ?? 0.5).toFixed(2)}
+              </p>
               <div
                 className={`flex flex-col lg:flex-row  gap-4 ${
-                  lastMessage?.postCount >= 50
+                  recentStatus?.freePostStatus?.isInFreePeriod === false
                     ? "justify-center"
                     : "justify-between"
                 } `}
               >
-                <Button
-                  onClick={handleSubmit}
-                  disabled={!name || !message || lastMessage?.postCount >= 50}
-                  className={`w-full py-6 rounded-full text-[18px] cursor-pointer ${
-                    lastMessage?.postCount >= 50 && "hidden"
-                  } `}
-                >
-                  {lastMessage?.postCount >= 50
-                    ? "Free Messages Limit Reached"
-                    : "Send Free Message"}
-                </Button>
+                {/* Free action: visible only while backend signals free period */}
+                {recentStatus?.freePostStatus?.isInFreePeriod && (
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={!name || !message}
+                    className={`w-full py-6 rounded-full text-[18px] cursor-pointer`}
+                  >
+                    Send Free Message
+                  </Button>
+                )}
                 <Button
                   onClick={() => {
                     // const token = localStorage.getItem("token");
@@ -301,15 +354,17 @@ export default function Home() {
                   }}
                   disabled={!name || !message}
                   className={`${
-                    lastMessage?.postCount >= 50 ? "" : "w-full"
+                    recentStatus?.freePostStatus?.isInFreePeriod === false
+                      ? ""
+                      : "w-full"
                   }   py-6 hover:bg-gray-200 rounded-full bg-[#eff3fe] text-black dark:bg-[#1a1a1a] dark:text-white text-[18px]`}
                 >
                   Submit Message
                 </Button>
               </div>
               <p className="text-[18px] opacity-70 my-8">
-                Note: While the message value is low, you can say what you want
-                for free! Just keep in mind, others can too
+                Note: Free posting is available while the current value remains
+                low. Paid submissions are always available.
               </p>
               <p className="text-[18px] text-right">Payment Options </p>
               <div className="md:flex grid grid-cols-3 flex-wrap flex-end justify-center animate-marquee gap-2 mt-4">

@@ -2,6 +2,16 @@ import { baseApi } from "./baseApi";
 
 export const paymentApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // Fetch the current board state (value-based model)
+    getRecentStatus: builder.query({
+      query: () => ({
+        url: "post-status/recent-status",
+        headers: {
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        },
+      }),
+      providesTags: ["PostStatus"],
+    }),
     getPayment: builder.query({
       query: () => ({
         url: "payment",
@@ -11,6 +21,7 @@ export const paymentApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Payment"],
     }),
+    // Submit a PAID message (always available; enforce minimum on client)
     createPayment: builder.mutation({
       query: (data) => ({
         url: "post-status/paid",
@@ -20,9 +31,39 @@ export const paymentApi = baseApi.injectEndpoints({
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         },
       }),
-      invalidatesTags: ["Payment", "Messages"],
+      invalidatesTags: [
+        "PostStatus",
+        "Payment",
+        "Messages",
+        "Leaderboard",
+        "User",
+      ],
+    }),
+
+    // Submit a FREE message (only when free period is active)
+    createFreePost: builder.mutation({
+      query: (data) => ({
+        url: "post-status/free",
+        method: "POST",
+        body: data,
+        headers: {
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        },
+      }),
+      invalidatesTags: [
+        "PostStatus",
+        "Payment",
+        "Messages",
+        "Leaderboard",
+        "User",
+      ],
     }),
   }),
 });
 
-export const { useGetPaymentQuery, useCreatePaymentMutation } = paymentApi;
+export const {
+  useGetRecentStatusQuery,
+  useGetPaymentQuery,
+  useCreatePaymentMutation,
+  useCreateFreePostMutation,
+} = paymentApi;

@@ -47,6 +47,7 @@ export const baseApi = createApi({
   }),
   endpoints: () => ({}),
   tagTypes: [
+    "PostStatus",
     "Messages",
     "User",
     "Leaderboard",
